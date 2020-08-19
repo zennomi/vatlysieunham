@@ -1,0 +1,49 @@
+extends ../layouts/common.pug
+
+block content
+
+    h1 Danh sách học sinh
+    #form-search(style="padding: 1rem")
+    form(action="/students/search", method="GET")
+        .form-row
+            .input-group.col-md-6.mb-3
+                .input-group-prepend
+                    span#inputGroup-sizing-default.input-group-text Name
+                input.form-control(name="name", type='text', value= name ? name : '', placeholder="Search by name...")
+            .input-group.col-md-3.mb-3
+                .input-group-prepend
+                    span#inputGroup-sizing-default.input-group-text ID
+                input.form-control(name="id", type='text', value= id ? id : '', placeholder="Search by id...")
+            .col-md-3.mb-3
+                select.form-control(name="class")
+                    option(value="", selected, disabled, hidden) Search by class
+                    each cla in classes
+                        option= cla.name
+            button.btn.btn-primary.ml-2 Search
+    if students.length == 0
+        p No result
+    else
+        table.table
+            thead
+                tr
+                    th ID
+                    th Name
+                    th Date of Birth
+                    th Class
+                    th Action
+            tbody
+                each student in students
+                    tr
+                        td= student.id
+                        td= student.name
+                        td= student.dob.toLocaleDateString()
+                        td= student.classroom.name
+                        td
+                            .dropdown
+                                button#dropdownMenuButton.btn.btn-light.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                    | Action
+                                .dropdown-menu(aria-labelledby='dropdownMenuButton')
+                                    a.dropdown-item(href="/students/" + student.id) View
+                                    a.dropdown-item(href="/students/edit/" + student.id) Edit
+                                    a.dropdown-item(href='/students/delete/' + student.id) Delete
+    

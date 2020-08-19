@@ -1,0 +1,13 @@
+extends ../layouts/common.pug
+
+block content
+    h1 Delete Student
+    .card.card-body.text-center(style="width: 18rem; margin: auto")
+        form(action="/students/delete", method="POST")
+            h5.mb-2 Confirm delete student
+            .input-group.mb-3
+                .input-group-prepend
+                    span#inputGroup-sizing-default.input-group-text ID
+                input.form-control(name="id", type='text', value= id, readonly)
+            button.btn.btn-danger Confirm
+            a.btn.btn-light.ml-2(href="/students/"+id) Cancel

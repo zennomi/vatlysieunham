@@ -1,0 +1,22 @@
+extends ../layouts/common.pug
+
+block content
+    h1 Create Student
+    if (errors)
+        each error in errors
+            .alert.alert-danger= error
+    form(action="/students/create", method="POST")
+        .form-group
+            label(for="name") Name
+            input#name.form-control(name="name", type="text", required)
+        .form-row
+            .form-group.col-md-6.mb-3
+                label Year Of Birth
+                input.form-control(name="dob", type="date", required)
+            .form-group.col-md-6.mb-3
+                label Class
+                select.form-control(name="class", required)
+                    option(value="", hidden, selected) Choose class
+                    each cla in classes
+                        option= cla.name
+        button.btn.btn-primary Create

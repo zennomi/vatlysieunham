@@ -1,0 +1,14 @@
+extends ../layouts/common.pug
+
+block content
+    h4 View Student 
+    .card
+        .card-header
+            h5 #{student.name}
+        .card-body
+            p ID: #{student.id}
+            p Class: 
+                a(href="/classes/"+student.classroom.name) #{student.classroom.name}
+            p Date of Birth: #{student.dob.toLocaleDateString()}
+        a.btn.btn-success(href="/students/edit/"+student.id) Edit this student
+        a.btn.btn-danger(href="/students/delete/"+student.id) Delete this student

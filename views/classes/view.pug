@@ -1,0 +1,29 @@
+extends ../layouts/common.pug
+block content
+    h1 Lớp #{cla.name}
+    if students.length == 0
+        p No result
+    else
+        table.table
+            thead
+                tr
+                    th ID
+                    th Name
+                    th Date of Birth
+                    th Class
+                    th View
+            tbody
+                each student in students
+                    tr
+                        td= student.id
+                        td= student.name
+                        td= student.dob.toLocaleDateString()
+                        td= student.classroom.name
+                        td
+                            .dropdown
+                                button#dropdownMenuButton.btn.btn-light.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                    | Action
+                                .dropdown-menu(aria-labelledby='dropdownMenuButton')
+                                    a.dropdown-item(href="/students/" + student.id) View
+                                    a.dropdown-item(href="/students/edit/" + student.id) Edit
+                                    a.dropdown-item(href='/students/delete/' + student.id) Delete

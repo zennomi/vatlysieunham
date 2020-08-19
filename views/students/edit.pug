@@ -1,0 +1,22 @@
+extends ../layouts/common.pug
+
+block content
+    h1 Edit Student
+    form(action="/students/edit", method="POST")
+        .form-group
+            label(for="id") ID
+            input#id.form-control(name="id", type="text", value=student.id, readonly)
+        .form-group
+            label(for="name") Name
+            input#name.form-control(name="name", type="text", value=student.name)
+        .form-group
+            label Year Of Birth
+            input.form-control(name="dob", type="date", value=student.dob.toISOString().slice(0,10))
+        .form-group
+            label Class
+            select.form-control(name="class")
+                option(selected, hidden)= student.classroom.name
+                each cla in classes
+                    option= cla.name
+        button.btn.btn-primary.mr-2 Save
+        a.btn.btn-light(href="/students/"+student.id) Cancel

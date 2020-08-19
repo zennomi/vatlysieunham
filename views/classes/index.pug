@@ -1,0 +1,16 @@
+extends ../layouts/common.pug
+block content
+    if classes.length == 0
+        p No result
+    else
+        table.table
+            thead
+                tr
+                    th Name class
+                    th View
+            tbody
+                each cla in classes
+                    tr
+                        td= cla.name
+                        td
+                            a.btn.btn-light(href="/classes/" + cla.name) View
