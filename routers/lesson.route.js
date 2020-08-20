@@ -58,7 +58,7 @@ router.post('/create', validate.postCreate, async (req, res) => {
         comment_of_student: req.body.comment_of_student
     })
     await lesson.save();
-    res.send(req.body);
+    res.redirect('/lessons');
 })
 
 module.exports = router;

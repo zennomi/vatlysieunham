@@ -14,7 +14,7 @@ block content
                 each lesson in lessons
                     tr
                         td
-                            a(href="/student/"+student_id.id)= lesson.student_id.name
+                            a(href="/students/"+lesson.student_id.id)= lesson.student_id.name
                         td= (lesson.time.start_hour) ? lesson.time.start_hour + ':'+ lesson.time.start_minute : ''
                         td= (lesson.time.end_hour) ? lesson.time.end_hour + ':' +lesson.time.end_minute : ''
                         td= (lesson.type == 'study') ? 'Lý thuyết' : 'Bài tập'
