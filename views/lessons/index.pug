@@ -1,0 +1,17 @@
+extends ../layouts/common.pug
+block content
+    a.btn.btn-primary(href='/lessons/create') Thêm học sinh đi trợ giảng
+    if lessons
+        table.table
+            thead
+                tr
+                    th Ngày
+                    th Số HS
+            tbody
+                each lesson in lessons
+                        tr
+                            td
+                                a(href='/lessons/'+lesson._id)= lesson._id
+                            td= lesson.totalStudents
+    else
+        p No result

@@ -1,0 +1,20 @@
+extends ../layouts/common.pug
+block content
+    p Hello
+    if lessons
+        table.table
+            thead
+                tr
+                    th Tên học sinh
+                    th Bắt đầu
+                    th Kết thúc
+                    th Loại
+                    th Chi tiết
+            tbody
+                each lesson in lessons
+                    tr
+                        td= lesson.student_id.name
+                        td= (lesson.time.start_hour) ? lesson.time.start_hour + ':'+ lesson.time.start_minute : ''
+                        td= (lesson.time.end_hour) ? lesson.time.end_hour + ':' +lesson.time.end_minute : ''
+                        td= (lesson.type == 'study') ? 'Lý thuyết' : 'Bài tập'
+                        td abc
