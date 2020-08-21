@@ -39,8 +39,10 @@ module.exports.create = async (req, res) => {
 };
 
 module.exports.getById = async (req, res) => {
+    let student = await Student.findOne({ id: req.params.id }).populate('classroom');
     res.render('students/view', {
-        student: await Student.findOne({ id: req.params.id }).populate('classroom')
+        student: student,
+        lessons: await Lesson.find({ student_id: student._id })
     })
 };
 

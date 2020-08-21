@@ -11,16 +11,19 @@ html
                 ul.navbar-nav
                     li.nav-item.active
                         a.nav-link(href='/') Trang chủ 
+                    li.nav-item.dropdown
+                        a.nav-link.dropdown-toggle(href="#", id="navbarDropdown", role="button", data-toggle="dropdown") Học sinh
+                        .dropdown-menu
+                            a.dropdown-item(href='/students') Danh sách
+                            a.dropdown-item(href="/students/search") Tìm học sinh
+                            a.dropdown-item(href="/students/create") Tạo học sinh
                     li.nav-item
-                        a.nav-link(href='/students') Học sinh
-                    li.nav-item 
                         a.nav-link(href='/classes') Lớp học
-                    li.nav-item
-                        a.nav-link(href="/students/search") Tìm học sinh
-                    li.nav-item
-                        a.nav-link(href="/students/create") Tạo học sinh
-                    li.nav-item
-                        a.nav-link(href="/lessons") Buổi trợ giảng
+                    li.nav-item.dropdown
+                        a.nav-link.dropdown-toggle(href="#", id="navbarDropdown", role="button", data-toggle="dropdown") Trợ giảng
+                        .dropdown-menu
+                            a.dropdown-item(href='/lessons') Danh sách
+                            a.dropdown-item(href='/lessons/create') Thêm học sinh trợ giảng
         .container.pt-5                
             block content
 

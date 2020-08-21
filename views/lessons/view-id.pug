@@ -1,31 +1,46 @@
 extends ../layouts/common.pug
 
 block content
-    h4 Xem chi tiết buổi trợ giảng
-    .card
-        .card-header
-            h5 Buổi trợ giảng #{lesson._id}
-        .card-body
-            .row
-                .col Học sinh
-                .col= lesson.student_id.name + ' - ' + lesson.student_id.classroom.name
-            .row
-                .col Thời gian học
-                .col= lesson.time.start_hour + (lesson.time.start_minute<10?':0':':') + lesson.time.start_minute + (lesson.time.end_hour?' - ' + lesson.time.end_hour + (lesson.time.end_minute<10?':0':':') + lesson.time.end_minute:'')
-                if (lesson.type)
-                    .col Loại
-                    .col= (lesson.type=='study')?'Lý thuyết':'Bài tập'
-            if (lesson.topic)
-                .row
-                    .col Chủ đề
-                    .col= lesson.topic
-            if (lesson.comment_of_tutor)
-                .row
-                    .col Nhận xét
-                    .col= lesson.comment_of_tutor
-            if (lesson.comment_of_student)
-                .row
-                    .col Vấn đề học sinh
-                    .col= lesson.comment_of_student
-        a.btn.btn-success(href='/lessons/edit/'+lesson._id) Sửa
-        a.btn.btn-danger(href='/lessons/delete'+lesson._id) Xóa
+    h5 Thông tin buổi trợ giảng
+    .row.text-center
+        .col-sm-4.mb-2
+            .card.h-100
+                h5.card-header Thông tin học sinh
+                .card-body
+                    a(href="/students/"+lesson.student_id.id)= lesson.student_id.name
+                    a.ml-2(href="/classes/"+lesson.student_id.classroom.name, class="badge badge-info")= lesson.student_id.classroom.name
+        .col-sm-4.mb-2
+            .card.h-100
+                h5.card-header Thời gian
+                .card-body
+                    b= lesson.date
+                    span : 
+                    span= lesson.time.start_hour + (lesson.time.start_minute<10?':0':':') + lesson.time.start_minute + (lesson.time.end_hour?' - ' + lesson.time.end_hour + (lesson.time.end_minute<10?':0':':') + lesson.time.end_minute:'')
+        if (lesson.type)
+            .col-sm-4.mb-2
+                .card.h-100
+                    h5.card-header Loại
+                    .card-body= (lesson.type=='study')?'Lý thuyết':'Bài tập'
+        if (lesson.topic)
+            .col-sm-4.mb-2
+                .card.h-100
+                    h5.card-header Chủ đề
+                    .card-body= lesson.topic
+        if (lesson.comment_of_tutor)
+            .col-sm-4.mb-2
+                .card.h-100
+                    h5.card-header Nhận xét của trợ giảng
+                    .card-body= lesson.comment_of_tutor
+        if (lesson.comment_of_student)
+            .col-sm-4.mb-2
+                .card.h-100
+                    h5.card-header Góp ý của học sinh
+                    .card-body= lesson.comment_of_student
+    .row.text-center
+        .col-sm-4.mb-2
+            a.btn.btn-success.w-75(href='/lessons/edit/'+lesson._id) Sửa
+        .col-sm-4.mb-2
+            a.btn.btn-primary.w-75(href='/lessons/'+lesson.date) Trở lại
+        .col-sm-4.mb-2
+            a.btn.btn-danger.w-75(href='/lessons/delete'+lesson._id) Xóa
+                    

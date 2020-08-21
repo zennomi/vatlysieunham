@@ -27,7 +27,7 @@ router.get('/create', (req, res) => {
     //  nowTime += 25200000;
     res.render('lessons/create', {
         time: {
-            date: nowTime.getFullYear() + '-' + (nowTime.getMonth() < 9 ? '0' : '') + (nowTime.getMonth() + 1) + '-' + nowTime.getDate(),
+            date: req.query.date || nowTime.getFullYear() + '-' + (nowTime.getMonth() < 9 ? '0' : '') + (nowTime.getMonth() + 1) + '-' + nowTime.getDate(),
             time: nowTime.getHours() + ':' + (nowTime.getMinutes() < 10 ? '0' : '') + nowTime.getMinutes()
         }
     });
@@ -37,6 +37,7 @@ router.get('/:date', (req, res) => {
     Lesson.find({ date: req.params.date }).populate('student_id').exec((err, lessons) => {
         if (err) res.send(err);
         res.render('lessons/view', {
+            date: req.params.date,
             lessons: lessons
         })
     })
@@ -45,7 +46,6 @@ router.get('/:date', (req, res) => {
 router.get('/view/:id', (req, res) => {
     Lesson.findById(req.params.id).populate({ path: 'student_id', populate: { path: 'classroom'}}).exec((err, lesson) => {
         if (err) res.render(err);
-        console.log(lesson);
         res.render('lessons/view-id', {
             lesson: lesson
         })

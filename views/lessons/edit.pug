@@ -44,7 +44,7 @@ block content
             label Góp ý của học sinh
             textarea.form-control(name="comment_of_student")= lesson.comment_of_student
         button.btn.btn-primary Lưu
-        a.btn.btn-light(href='/lessons/'+lesson.date) Hủy
+        a.btn.btn-light(href='/lessons/view/'+lesson._id) Hủy
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
     script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
     script(type='text/javascript', src='/student.search.js')

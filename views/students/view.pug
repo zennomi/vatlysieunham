@@ -10,5 +10,26 @@ block content
             p Class: 
                 a(href="/classes/"+student.classroom.name) #{student.classroom.name}
             p Date of Birth: #{student.dob.toLocaleDateString()}
-        a.btn.btn-success(href="/students/edit/"+student.id) Edit this student
-        a.btn.btn-danger(href="/students/delete/"+student.id) Delete this student
+    .row.text-center
+        .col-sm-6.mb-2
+            a.btn.btn-success.w-75(href="/students/edit/"+student.id) Edit this student
+        .col-sm-6.mb-2
+            a.btn.btn-danger.w-75(href="/students/delete/"+student.id) Delete this student
+    h4 Tham gia những buổi trợ giảng 
+    i.fas.fa-temperature-high
+    if (lessons)
+        .row.text-center
+            each lesson in lessons
+                .col-sm-2.mb-2
+                    .card.h-100
+                        h6.card-header= lesson.date + ': ' + lesson.time.start_hour + (lesson.time.start_minute<10?':0':':') + lesson.time.start_minute + (lesson.time.end_hour? ' - ' + lesson.time.end_hour + (lesson.time.end_minute<10?':0':':') + lesson.time.end_minute : '')
+                        .card-body
+                            if (lesson.type)
+                                h6= lesson.type
+                            if (lesson.topic)
+                                h6 Chủ đề 
+                                span= lesson.topic
+                        .bg-light
+                            a.text-muted(href="/lessons/view/"+lesson._id)
+                                svg.bi.bi-grip-vertical(width='2em', height='2em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+                                    path(d='M2 8a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2z')

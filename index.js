@@ -17,6 +17,8 @@ mongoose.connect('mongodb+srv://new-user_01:25112001@cluster0.nxm48.mongodb.net/
 });
 
 const Student = require('./models/student.model');
+const Classroom = require('./models/class.model');
+const Lesson = require('./models/lesson.model');
 
 var studentRoute = require('./routers/student.route');
 var classRoute = require('./routers/class.route');
@@ -29,8 +31,15 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', (req, res) => {
-    res.render('index');
+app.get('/', async (req, res) => {
+    let numStudents = await Student.countDocuments();
+    let numClasses = await Classroom.countDocuments();
+    let numLessons = await Lesson.countDocuments();
+    res.render('index', {
+        numStudents: numStudents,
+        numClasses: numClasses,
+        numLessons: numLessons
+    });
 });
 
 app.use('/students', studentRoute);
@@ -47,5 +56,6 @@ io.on('connection', (socket) => {
 
 
 http.listen(port, () => {
+    console.log('Linh xinh dep da het doi <3');
     console.log('Server is running at ' + port);
 });
