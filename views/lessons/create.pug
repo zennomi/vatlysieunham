@@ -1,23 +1,15 @@
 extends ../layouts/common.pug
 block content
-    h1 Thêm học sinh đi trợ giảng
+    h4 Thêm học sinh đi trợ giảng
     if errors
         each error in errors
-            .alert.alert-danger= error
-    form(action='')
-        .form-row
-            .input-group.col-md-6.mb-3
-                .input-group-prepend
-                    span#inputGroup-sizing-default.input-group-text Tên
-                input#n.form-control(autocomplete='off')
-            .input-group.col-md-6.mb-3
-                button.btn.btn-secondary Tìm ID nhanh
-        #list-students.card
-        
+            .alert.alert-danger= error        
+    input#n.form-control(type='text', autocomplete='off', placeholder="Nhập tên...")
+    #list-students.list-group
     form(action="/lessons/create", method="POST")
         .form-group
             label(for="id") ID học sinh
-            input#id.form-control(name="id", type="number", required)
+            input#id.form-control(name="student_id", type="number", required)
         .form-row
             .form-group.col-md-6.mb-3
                 label Ngày
@@ -44,7 +36,7 @@ block content
         .form-group
             label Góp ý của học sinh
             textarea.form-control(name="comment_of_student")
-        button.btn.btn-primary Create
-        script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
-        script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
-        script(type='text/javascript', src='/student.search.js')
+        button.btn.btn-primary Lưu
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
+    script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
+    script(type='text/javascript', src='/student.search.js')

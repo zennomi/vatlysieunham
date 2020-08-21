@@ -1,5 +1,6 @@
 const Student = require('../models/student.model');
 const Classroom = require('../models/class.model');
+const Lesson = require('../models/lesson.model');
 
 module.exports.index = async (req, res) => {
     let students = await Student.find().populate('classroom');
@@ -51,10 +52,15 @@ module.exports.editById = async (req, res) => {
     })
 }
 
-module.exports.deleteById = async (req, res) => {
-    res.render('students/delete', {
-        id: req.params.id
-    });
+module.exports.deleteById = (req, res) => {
+    Student.findOne({ id: req.params.id }).populate('classroom').exec((err, deleteStudent) => {
+        if (err) res.send(err);
+        else {
+            res.render('students/delete', {
+                student: deleteStudent
+            });
+        }
+    })
 }
 
 module.exports.postCreate = async (req, res) => {
@@ -70,8 +76,7 @@ module.exports.postCreate = async (req, res) => {
     });
     await Classroom.findOneAndUpdate({ name: req.body.class }, { $addToSet: { students: student._id }});
     await student.save();
-    console.log(student);
-    res.redirect('/students');
+    res.redirect('/students/'+student.id);
 };
 
 module.exports.postEdit = async (req, res) => {
@@ -94,6 +99,6 @@ module.exports.postDelete = async (req, res) => {
     classroom.deleteStudent(student._id);
     await classroom.save();
     await Student.deleteOne({ id: req.body.id });
-    
+    await Lesson.deleteOne({ student_id: student._id });
     res.redirect('/students');
 }

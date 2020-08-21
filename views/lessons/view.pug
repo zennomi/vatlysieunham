@@ -1,6 +1,5 @@
 extends ../layouts/common.pug
 block content
-    p Hello
     if lessons
         table.table
             thead
@@ -18,4 +17,10 @@ block content
                         td= (lesson.time.start_hour) ? lesson.time.start_hour + ':'+ lesson.time.start_minute : ''
                         td= (lesson.time.end_hour) ? lesson.time.end_hour + ':' +lesson.time.end_minute : ''
                         td= (lesson.type == 'study') ? 'Lý thuyết' : 'Bài tập'
-                        td abc
+                        td 
+                            .dropdown
+                                button#dropdownMenuButton.btn.btn-light.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                                .dropdown-menu(aria-labelledby='dropdownMenuButton')
+                                    a.dropdown-item(href="/lessons/view/" + lesson._id) Xem
+                                    a.dropdown-item(href="/lessons/edit/" + lesson._id) Sửa
+                                    a.dropdown-item(href='/lessons/delete/' + lesson._id) Xóa

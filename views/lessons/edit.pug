@@ -1,0 +1,50 @@
+extends ../layouts/common.pug
+block content
+    h4 Sửa buổi trợ giảng
+    if errors
+        each error in errors
+            .alert.alert-danger= error        
+
+    form(action="/lessons/edit", method="POST")
+        .form-group
+            label(for="id") ID buổi trợ giảng
+            input#id.form-control(name="id", type="text", value= lesson._id, readonly)
+        .form-group
+            label(for="id") ID học sinh
+            input#id.form-control(name="student_id", type="number", value= lesson.student_id.id, readonly)
+        .form-row
+            .form-group.col-md-6.mb-3
+                label Ngày
+                input.form-control(name="date", type="date", value= lesson.date || time.date, required)
+            .form-group.col-md-6.mb-3
+                label Loại
+                select.form-control(name="type")
+                    if (lesson.type)
+                        option(value=lesson.type, hidden, selected)= lesson.type
+                        option(value="study") Học lý thuyết
+                        option(value="exercise") Làm bài tập
+                    else
+                        option(value="", hidden, selected) Loại
+                        option(value="study") Học lý thuyết
+                        option(value="exercise") Làm bài tập
+        .form-row
+            .form-group.col-md-6.mb-3
+                label Bắt đầu
+                input.form-control(name="start_time", type="time", value= lesson.time.start_hour + ':' + (lesson.time.start_minute<10?'0':'') + lesson.time.start_minute)
+            .form-group.col-md-6.mb-3
+                label Kết thúc
+                input.form-control(name="end_time", type="time", value= lesson.time.end_hour ? lesson.time.end_hour + ':' + (lesson.time.end_minute<10?'0':'') + lesson.time.end_minute : '')
+        .form-group
+            label(for="topic") Chủ đề
+            input#input.form-control(name="topic", type="text", value= lesson.topic)
+        .form-group
+            label Nhận xét của trợ giảng
+            textarea.form-control(name="comment_of_tutor")= lesson.comment_of_tutor
+        .form-group
+            label Góp ý của học sinh
+            textarea.form-control(name="comment_of_student")= lesson.comment_of_student
+        button.btn.btn-primary Lưu
+        a.btn.btn-light(href='/lessons/'+lesson.date) Hủy
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
+    script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
+    script(type='text/javascript', src='/student.search.js')

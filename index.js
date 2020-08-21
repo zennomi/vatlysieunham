@@ -42,7 +42,6 @@ io.on('connection', (socket) => {
         let nameRegex = new RegExp(name, 'i');
         let matchedStudents = await Student.find({ name: {$regex: nameRegex} }).limit(5).populate('classroom');
         io.emit('quick search', matchedStudents);
-        console.log(matchedStudents);
     });
 });
 
