@@ -13,7 +13,7 @@ const lessonSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ['study', 'exercise']
+        enum: ['Lý thuyết', 'Bài tập']
     },
     time: {
         start_hour: Number,
@@ -22,6 +22,10 @@ const lessonSchema = new Schema({
         end_minute: Number
     },
     topic: String,
+    rating: {
+        type: String,
+        enum: ['Tốt', 'Khá', 'Yếu']
+    },
     comment_of_student: String,
     comment_of_tutor: String
 });

@@ -40,9 +40,49 @@ module.exports.create = async (req, res) => {
 
 module.exports.getById = async (req, res) => {
     let student = await Student.findOne({ id: req.params.id }).populate('classroom');
+    let lessonArr = await Lesson.find({ student_id: student._id });
+    let data = {
+        total: 0,
+        totalTimes: 0,
+        totalGoods: 0,
+        totalBads: 0,
+        totalLW: 0,
+        totalTimesLW: 0,
+        totalGoodsLW: 0,
+        totalBadsLW: 0,
+        
+    };
+    lessonArr.forEach( lesson => {
+        data.total++;
+        if (lesson.time.end_hour) {
+            data.totalTimes+= lesson.time.end_hour*60+lesson.time.end_minute-(lesson.time.start_hour*60+lesson.time.start_minute);
+        }
+        if (lesson.rating=='Tốt') {
+            data.totalGoods++;
+        } else if (lesson.rating=='Yếu') {
+            data.totalBads++;
+        }
+    });
+    let lwDate = new Date();
+    lwDate = lwDate.valueOf()-6048e5;
+	lwDate = new Date(lwDate)
+    lwDate = lwDate.toISOString().slice(0,10);
+
+    lessonArr.filter(lesson => lesson.date>lwDate ).forEach( lesson => {
+        data.totalLW++;
+        if (lesson.time.end_hour) {
+            data.totalTimesLW+= lesson.time.end_hour*60+lesson.time.end_minute-(lesson.time.start_hour*60+lesson.time.start_minute);
+        }
+        if (lesson.rating=='Tốt') {
+            data.totalGoodsLW++;
+        } else if (lesson.rating=='Yếu') {
+            data.totalBadsLW++;
+        }
+    });
     res.render('students/view', {
         student: student,
-        lessons: await Lesson.find({ student_id: student._id })
+        lessons: lessonArr,
+        data: data
     })
 };
 

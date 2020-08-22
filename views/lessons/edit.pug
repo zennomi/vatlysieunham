@@ -15,28 +15,31 @@ block content
         .form-row
             .form-group.col-md-6.mb-3
                 label Ngày
-                input.form-control(name="date", type="date", value= lesson.date || time.date, required)
+                input.form-control(name="date", type="date", value= lesson.date, required)
             .form-group.col-md-6.mb-3
                 label Loại
                 select.form-control(name="type")
-                    if (lesson.type)
-                        option(value=lesson.type, hidden, selected)= lesson.type
-                        option(value="study") Học lý thuyết
-                        option(value="exercise") Làm bài tập
-                    else
-                        option(value="", hidden, selected) Loại
-                        option(value="study") Học lý thuyết
-                        option(value="exercise") Làm bài tập
+                    option(value=lesson.type, hidden, selected)= lesson.type || Loại
+                    option Lý thuyết
+                    option Bài tập
         .form-row
             .form-group.col-md-6.mb-3
                 label Bắt đầu
-                input.form-control(name="start_time", type="time", value= lesson.time.start_hour + ':' + (lesson.time.start_minute<10?'0':'') + lesson.time.start_minute)
+                input.form-control(name="start_time", type="time", value= (lesson.time.start_hour<10?'0':'') + lesson.time.start_hour + ':' + (lesson.time.start_minute<10?'0':'') + lesson.time.start_minute)
             .form-group.col-md-6.mb-3
                 label Kết thúc
                 input.form-control(name="end_time", type="time", value= lesson.time.end_hour ? lesson.time.end_hour + ':' + (lesson.time.end_minute<10?'0':'') + lesson.time.end_minute : '')
-        .form-group
-            label(for="topic") Chủ đề
-            input#input.form-control(name="topic", type="text", value= lesson.topic)
+        .form-row
+            .form-group.col-md-6.mb-3
+                label(for="topic") Chủ đề
+                input#input.form-control(name="topic", type="text", value= lesson.topic)
+            .form-group.col-md-6.mb-3
+                label Đánh giá
+                select.form-control(name="rating")
+                    option(hidden, selected)= lesson.rating
+                    option Tốt
+                    option Khá
+                    option Yếu
         .form-group
             label Nhận xét của trợ giảng
             textarea.form-control(name="comment_of_tutor")= lesson.comment_of_tutor

@@ -18,25 +18,37 @@ block content
                 label Loại
                 select.form-control(name="type")
                     option(value="", hidden, selected) Loại
-                    option(value="study") Học lý thuyết
-                    option(value="exercise") Làm bài tập
+                    option Lý thuyết
+                    option Bài tập
         .form-row
             .form-group.col-md-6.mb-3
                 label Bắt đầu
-                input.form-control(name="start_time", type="time", value=time.time)
+                input.form-control(name="start_time", type="time", required)
             .form-group.col-md-6.mb-3
                 label Kết thúc
                 input.form-control(name="end_time", type="time")
-        .form-group
-            label(for="topic") Chủ đề
-            input#input.form-control(name="topic", type="text")
+        .form-row
+            .form-group.col-md-6.mb-3
+                label(for="topic") Chủ đề
+                input#input.form-control(name="topic", type="text")
+            .form-group.col-md-6.mb-3
+                label Đánh giá
+                select.form-control(name="rating")
+                    option(value="", hidden, selected) Đánh giá
+                    option.bg-success.text-white Tốt
+                    option.bg-warning.text-white Khá
+                    option.bg-danger.text-white Yếu
         .form-group
             label Nhận xét của trợ giảng
             textarea.form-control(name="comment_of_tutor")
         .form-group
             label Góp ý của học sinh
             textarea.form-control(name="comment_of_student")
-        button.btn.btn-primary Lưu
+        .row.row-cols-2
+            .col
+                button.btn.btn-primary.w-100 Lưu
+            .col
+                a.btn.btn-light.w-100(href="/lessons") Hủy
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
     script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
     script(type='text/javascript', src='/student.search.js')

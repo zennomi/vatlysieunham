@@ -1,46 +1,65 @@
 extends ../layouts/common.pug
-
+mixin card-rating(rating, text_header='Đánh giá')
+    if rating=='Tốt'
+        .card.border-success.text-success.h-100
+            h6.card-header.bg-success.text-white= text_header
+            block
+    else if rating=='Khá'
+        .card.border-warning.text-warning.h-100
+            h6.card-header.bg-warning.text-white= text_header
+            block
+    else if rating=='Yếu'
+        .card.border-danger.text-danger.h-100
+            h6.card-header.bg-danger.text-white= text_header
+            block
+    else
+        .card.h-100
+            h6.card-header= text_header
+            block
 block content
     h5 Thông tin buổi trợ giảng
-    .row.text-center
-        .col-sm-4.mb-2
-            .card.h-100
-                h5.card-header Thông tin học sinh
+    .row.row-cols-2.row-cols-md-3.text-center
+        .col-12.mb-2
+            .card.border-info.h-100
+                h6.card-header.bg-info.text-white Thông tin học sinh
                 .card-body
                     a(href="/students/"+lesson.student_id.id)= lesson.student_id.name
                     a.ml-2(href="/classes/"+lesson.student_id.classroom.name, class="badge badge-info")= lesson.student_id.classroom.name
-        .col-sm-4.mb-2
+        .col-12.mb-2
             .card.h-100
-                h5.card-header Thời gian
+                h6.card-header Thời gian
                 .card-body
                     b= lesson.date
                     span : 
                     span= lesson.time.start_hour + (lesson.time.start_minute<10?':0':':') + lesson.time.start_minute + (lesson.time.end_hour?' - ' + lesson.time.end_hour + (lesson.time.end_minute<10?':0':':') + lesson.time.end_minute:'')
         if (lesson.type)
-            .col-sm-4.mb-2
+            .col.mb-2
                 .card.h-100
-                    h5.card-header Loại
-                    .card-body= (lesson.type=='study')?'Lý thuyết':'Bài tập'
+                    h6.card-header Loại
+                    .card-body= lesson.type
         if (lesson.topic)
-            .col-sm-4.mb-2
+            .col.mb-2
                 .card.h-100
-                    h5.card-header Chủ đề
+                    h6.card-header Chủ đề
                     .card-body= lesson.topic
-        if (lesson.comment_of_tutor)
-            .col-sm-4.mb-2
-                .card.h-100
-                    h5.card-header Nhận xét của trợ giảng
-                    .card-body= lesson.comment_of_tutor
+        if (lesson.rating)
+            .col-12.mb-2
+                +card-rating(lesson.rating)
+                    .card-body
+                        if (lesson.comment_of_tutor)
+                            span= lesson.comment_of_tutor
+                        else
+                            b= lesson.rating
         if (lesson.comment_of_student)
-            .col-sm-4.mb-2
+            .col-12.mb-2
                 .card.h-100
-                    h5.card-header Góp ý của học sinh
+                    h6.card-header Góp ý của học sinh
                     .card-body= lesson.comment_of_student
-    .row.text-center
-        .col-sm-4.mb-2
-            a.btn.btn-success.w-75(href='/lessons/edit/'+lesson._id) Sửa
-        .col-sm-4.mb-2
-            a.btn.btn-primary.w-75(href='/lessons/'+lesson.date) Trở lại
-        .col-sm-4.mb-2
-            a.btn.btn-danger.w-75(href='/lessons/delete'+lesson._id) Xóa
+    .row.row-cols-3.text-center
+        .col.mb-2
+            a.btn.btn-success.w-100(href='/lessons/edit/'+lesson._id) Sửa
+        .col.mb-2
+            a.btn.btn-primary.w-100(href='/lessons/'+lesson.date) Trở lại
+        .col.mb-2
+            a.btn.btn-danger.w-100(href='/lessons/delete/'+lesson._id) Xóa
                     

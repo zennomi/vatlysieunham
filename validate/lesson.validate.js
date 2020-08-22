@@ -10,7 +10,12 @@ module.exports.postCreate = async (req, res, next) => {
         let startTimes = parseInt(req.body.start_time.slice(0, 2))*60+parseInt(req.body.start_time.slice(3, 5));
         let endTimes = parseInt(req.body.end_time.slice(0, 2))*60+parseInt(req.body.end_time.slice(3, 5));
         if (startTimes >= endTimes) {
-            errors.push('Tđn học xong trước cả bắt đầu học?')
+            errors.push('Học xong trước khi bắt đầu học.')
+        }
+    }
+    if (req.body.comment_of_tutor) {
+        if (!req.body.rating) {
+            errors.push('Nhận xét thì đánh giá luôn đi.');
         }
     }
     if (errors.length) {

@@ -28,8 +28,42 @@ router.get('/create', (req, res) => {
     res.render('lessons/create', {
         time: {
             date: req.query.date || nowTime.getFullYear() + '-' + (nowTime.getMonth() < 9 ? '0' : '') + (nowTime.getMonth() + 1) + '-' + nowTime.getDate(),
-            time: nowTime.getHours() + ':' + (nowTime.getMinutes() < 10 ? '0' : '') + nowTime.getMinutes()
         }
+    });
+});
+
+router.get('/analyse', async (req, res) => {
+    let data = await Lesson.aggregate([
+        {
+            $match: {
+                'time.end_hour': {$ne: null}
+            }
+        },
+        {
+            $group: {
+                _id: "$student_id",
+                total: {$sum: 1},
+                totalTimes: {$sum: {$subtract: [{$sum: [{$multiply: ['$time.end_hour',60]},'$time.end_minute']},
+                {$sum: [{$multiply: ['$time.start_hour',60]},'$time.start_minute']}]}}
+            }
+        },
+        {
+            $sort: {
+                totalTimes: -1
+            }
+        },
+        {
+            $lookup: {
+                from: "students",
+                localField: "_id",
+                foreignField: "_id",
+                as: 'student'
+            }
+        }
+    ])
+    console.log(data);
+    res.render('lessons/analyse', {
+        data: data
     });
 });
 
@@ -57,11 +91,7 @@ router.get('/edit/:id', (req, res) => {
         if (err) res.send(err);
         let nowTime = new Date();
         res.render('lessons/edit', {
-            lesson: lesson,
-            time: {
-                date: nowTime.getFullYear() + '-' + (nowTime.getMonth() < 9 ? '0' : '') + (nowTime.getMonth() + 1) + '-' + nowTime.getDate(),
-                time: nowTime.getHours() + ':' + (nowTime.getMinutes() < 10 ? '0' : '') + nowTime.getMinutes()
-            }
+            lesson: lesson
         });
     })
 })
@@ -77,6 +107,8 @@ router.get('/delete/:id', (req, res) => {
     })
 })
 
+
+
 router.post('/create', validate.postCreate, async (req, res) => {
     let lesson = new Lesson({
         date: req.body.date.toString(),
@@ -89,6 +121,7 @@ router.post('/create', validate.postCreate, async (req, res) => {
             end_minute: req.body.end_time ? parseInt(req.body.end_time.slice(3, 5)) : undefined
         },
         topic: req.body.topic,
+        rating: req.body.rating,
         comment_of_tutor: req.body.comment_of_tutor,
         comment_of_student: req.body.comment_of_student
     })
@@ -108,6 +141,7 @@ router.post('/edit', validate.postCreate, (req, res) => {
                 end_minute: req.body.end_time ? parseInt(req.body.end_time.slice(3, 5)) : undefined
             },
             topic: req.body.topic,
+            rating: req.body.rating,
             comment_of_tutor: req.body.comment_of_tutor,
             comment_of_student: req.body.comment_of_student
         }

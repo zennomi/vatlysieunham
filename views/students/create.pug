@@ -1,22 +1,23 @@
 extends ../layouts/common.pug
 
 block content
-    h1 Create Student
+    h1 Thêm học sinh mới
     if (errors)
         each error in errors
             .alert.alert-danger= error
     form(action="/students/create", method="POST")
         .form-group
-            label(for="name") Name
+            label(for="name") Tên
             input#name.form-control(name="name", type="text", required)
         .form-row
             .form-group.col-md-6.mb-3
-                label Year Of Birth
+                label Ngày sinh
                 input.form-control(name="dob", type="date", required)
             .form-group.col-md-6.mb-3
-                label Class
+                label Lớp
                 select.form-control(name="class", required)
-                    option(value="", hidden, selected) Choose class
+                    option(value="", hidden, selected) Chọn lớp
                     each cla in classes
                         option= cla.name
-        button.btn.btn-primary Create
+        button.btn.btn-primary Thêm
+        a.btn.btn-light(href="/students") Hủy

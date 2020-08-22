@@ -1,0 +1,15 @@
+extends ../layouts/common.pug
+block content
+    h5 Top học sinh chăm chỉ
+    if data.length > 0
+        table.table.table-hover
+            thead
+                tr
+                    th Tên
+                    th Số buổi
+                    th Số phút
+            each student in data
+                tr
+                    td= student.student[0].name
+                    td= student.total
+                    td= student.totalTimes
