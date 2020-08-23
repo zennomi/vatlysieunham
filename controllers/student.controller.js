@@ -53,7 +53,9 @@ module.exports.getById = async (req, res) => {
         
     };
     lessonArr.forEach( lesson => {
-        data.total++;
+        if (lesson.rating) {
+            data.total++;
+        }
         if (lesson.time.end_hour) {
             data.totalTimes+= lesson.time.end_hour*60+lesson.time.end_minute-(lesson.time.start_hour*60+lesson.time.start_minute);
         }
@@ -69,7 +71,9 @@ module.exports.getById = async (req, res) => {
     lwDate = lwDate.toISOString().slice(0,10);
 
     lessonArr.filter(lesson => lesson.date>lwDate ).forEach( lesson => {
-        data.totalLW++;
+        if (lesson.rating) {
+            data.totalLW++;
+        }
         if (lesson.time.end_hour) {
             data.totalTimesLW+= lesson.time.end_hour*60+lesson.time.end_minute-(lesson.time.start_hour*60+lesson.time.start_minute);
         }
@@ -107,9 +111,15 @@ module.exports.deleteById = (req, res) => {
 
 module.exports.postCreate = async (req, res) => {
     let classroom = await Classroom.findOne({ name: req.body.class });
-    let lastDigitYear = req.body.dob.split('-')[0].slice(2);
-    let regex = new RegExp(`^${lastDigitYear}`);
-    let id = lastDigitYear + (await Student.countDocuments({ id: { $regex: regex } } ) + 1);
+
+    let id = (await Student.aggregate([
+        {
+            $group: {
+                _id: null,
+                max: {$max: "$id"}
+            }
+        }
+    ]))[0].max+1;
     var student = new Student({
         name: req.body.name,
         classroom: classroom._id,

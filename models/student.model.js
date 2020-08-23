@@ -7,9 +7,9 @@ const studentSchema = new Schema({
     name: String,
     dob: {type: Date, default: '1970-01-01'},
     classroom: { type: Schema.Types.ObjectId, ref: 'Classroom' },
-    id: String
+    id: Number
 })
-
+//studentSchema.index({id: -1});
 const Student = mongoose.model('Student', studentSchema);
 
 module.exports = Student;

@@ -1,10 +1,38 @@
 html
     head
         link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css", integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z", crossorigin="anonymous")
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
         meta(name='viewport', content='width=device-width, initial-scale=1')
+        style(type='text/css').
+            body {
+                background: rgb(234,255,222);
+                background: -moz-linear-gradient(0deg, rgba(234,255,222,1) 0%, rgba(255,255,255,1) 100%);
+                background: -webkit-linear-gradient(0deg, rgba(234,255,222,1) 0%, rgba(255,255,255,1) 100%);
+                background: linear-gradient(0deg, rgba(234,255,222,1) 0%, rgba(255,255,255,1) 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#eaffde",endColorstr="#ffffff",GradientType=1);   
+                background-size: cover;
+                background-attachment: fixed;
+                background-position: center;
+            }
+            .table, .card:hover {
+                -webkit-box-shadow: 0px 0px 15px -5px rgba(0,0,0,0.75);
+                -moz-box-shadow: 0px 0px 15px -5px rgba(0,0,0,0.75);
+                box-shadow: 0px 0px 15px -5px rgba(0,0,0,0.75);0px 10px 0px rgba(0,0,0,0.75);
+            }
+            .bg-nav {
+                background: #eaffde;
+            }
+            .card:hover {
+                position: relative;
+                bottom: 5px;
+            }
+            .progress-bar:hover {
+                color:white !important;
+            }
     body
-        nav.navbar.navbar-expand-lg.navbar-light.bg-light
-            a.navbar-brand(href='https://facebook.com/ngdatuananh', target="_blank") Zennomi
+        nav.navbar.navbar-expand-lg.navbar-light.bg-nav
+            a.navbar-brand(href='https://facebook.com/ngdatuananh', target="_blank")
+                | Zennomi
             button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
                 span.navbar-toggler-icon
             #navbarNavDropdown.collapse.navbar-collapse
@@ -23,7 +51,8 @@ html
                         a.nav-link.dropdown-toggle(href="#", id="navbarDropdown", role="button", data-toggle="dropdown") Trợ giảng
                         .dropdown-menu
                             a.dropdown-item(href='/lessons') Danh sách
-                            a.dropdown-item(href='/lessons/create') Thêm học sinh trợ giảng
+                            a.dropdown-item(href='/lessons/create') Thêm buổi trợ giảng
+                            a.dropdown-item(href='/lessons/analyse') Xếp hạng
         .container.pt-5                
             block content
 

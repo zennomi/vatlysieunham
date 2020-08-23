@@ -5,7 +5,7 @@ block content
     form(action="/students/edit", method="POST")
         .form-group
             label(for="id") ID
-            input#id.form-control(name="id", type="text", value=student.id, readonly)
+            input#id.form-control(name="id", type="number", value=student.id, readonly)
         .form-group
             label(for="name") Name
             input#name.form-control(name="name", type="text", value=student.name)

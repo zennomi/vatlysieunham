@@ -1,24 +1,39 @@
 extends ../layouts/common.pug
 block content
-    h5 Sổ trợ giảng
-    a.btn.btn-primary.mb-2(href='/lessons/create') Thêm học sinh đi học trợ giảng
+    h3.text-shadow Sổ trợ giảng
+    .row.row-cols-2
+        .col
+            a.btn.btn-primary.mb-2.w-100(href='/lessons/create') 
+                svg.bi.bi-plus-square.mr-2(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+                    path(fill-rule='evenodd', d='M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z')
+                    path(fill-rule='evenodd', d='M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z')
+                    path(fill-rule='evenodd', d='M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z')
+
+                | Thêm
+        .col
+            a.btn.btn-primary.mb-2.w-100(href='/lessons/schedule')
+                svg.bi.bi-calendar-check.mr-2(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+                    path(fill-rule='evenodd', d='M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z')
+                    path(fill-rule='evenodd', d='M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1zm1-3a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2z')
+                    path(fill-rule='evenodd', d='M3.5 0a.5.5 0 0 1 .5.5V1a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5zm9 0a.5.5 0 0 1 .5.5V1a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5z')
+                | Lịch đăng ký
     if lessons
-        table.table
+        table.table.table-hover
             thead
                 tr
                     th Ngày
-                    th Số HS
-                    th Chi tiết
+                    th.text-center Số HS
+                    th.text-center Chi tiết
             tbody
                 each lesson in lessons
                         tr
                             td= lesson._id
-                            td= lesson.totalStudents
-                            td
+                            td.text-center= lesson.totalStudents
+                            td.text-center
                                 a.btn.btn-primary.mr-1(href='/lessons/'+lesson._id)
                                     svg.bi.bi-eye-fill(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
                                         path(d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z')
                                         path(fill-rule='evenodd', d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z')
 
     else
-        p No result
+        .alert.alert-warning Danh sách trống.

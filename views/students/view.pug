@@ -17,9 +17,9 @@ mixin card-rating(rating, text_header)
             h6.card-header= text_header
             block
 block content
-    h5 Thông tin học sinh
-    .row.row-cols-3.row-cols-md-4.text-center
-        .col-12.mb-2
+    h3 Thông tin học sinh
+    .row.row-cols-2.row-cols-md-6.text-center
+        .col-12.col-md-4.mb-2
             .card.border-info.h-100
                 h6.card-header.bg-info.text-white Họ tên
                 b.card-body.text-info= student.name
@@ -36,31 +36,29 @@ block content
             .card.h-100
                 h6.card-header Ngày sinh
                 .card-body= student.dob.toLocaleDateString()        
-    .row.row-cols-2.text-center
+    .row.row-cols-2.row-cols-md-3.mb-2
         .col.mb-2
             a.btn.btn-success.w-100(href="/students/edit/"+student.id) Sửa
         .col.mb-2
             a.btn.btn-danger.w-100(href="/students/delete/"+student.id) Xóa
-    
+        .col-12
+            a.btn.btn-secondary.w-100(href="/lessons/create/?id="+student.id) Đăng ký trợ giảng
+    hr
     if (lessons.length>0)
-        h5 Tình hình học trợ giảng
+        h3 Tình hình học trợ giảng
         .row.row-cols-1.row-cols-md-2.text-center
             .col.mb-2
-                .card
+                .card.border-info
                     h6.card-header.bg-info.text-white Tổng cộng
                     .card-body
-                        h6 #{data.total} BUỔI - #{data.totalTimes} PHÚT
-                        .progress(style="height: 2rem")
-                            .progress-bar.bg-success(style="width: "+data.totalGoods/data.total*100+"%") Tốt
-                            .progress-bar.bg-danger(style="width: "+data.totalBads/data.total*100+"%") Yếu
+                        h6 #{data.total} BUỔI - #{Math.round(data.totalTimes/60*10)/10} GIỜ - TB #{Math.round(data.totalTimes/data.total)} PHÚT/BUỔI
+                        .progress(style="height: 2rem; background-image: linear-gradient(to right, #60d394 "+data.totalGoods/data.total*100+"%, #ee6055 100%);")
             .col.mb-2
-                .card
+                .card.border-info
                     h6.card-header.bg-info.text-white Tuần vừa qua
                     .card-body
-                        h6 #{data.totalLW} BUỔI - #{data.totalTimesLW} PHÚT
-                        .progress(style="height: 2rem")
-                            .progress-bar.bg-success(style="width: "+data.totalGoodsLW/data.totalLW*100+"%") Tốt
-                            .progress-bar.bg-danger(style="width: "+data.totalBadsLW/data.totalLW*100+"%") Yếu
+                        h6 #{data.totalLW} BUỔI - #{Math.round(data.totalTimesLW/60*10)/10} GIỜ - TB #{Math.round(data.totalTimesLW/data.total)} PHÚT/BUỔI
+                        .progress(style="height: 2rem; background-image: linear-gradient(to right, #60d394 "+Math.round(data.totalGoodsLW/data.totalLW*100)+"%, #ee6055 100%);")
         .row.row-cols-2.row-cols-md-6.text-center
             each lesson in lessons
                 .col.mb-2
@@ -71,7 +69,7 @@ block content
                             if (lesson.topic)
                                 h6 Chủ đề 
                                 span= lesson.topic
-                        .bg-light
+                        .card-footer.p-0
                             a.text-muted(href="/lessons/view/"+lesson._id)
                                 svg.bi.bi-grip-vertical(width='2em', height='2em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
                                     path(d='M2 8a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2z')

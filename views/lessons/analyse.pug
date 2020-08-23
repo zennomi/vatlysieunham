@@ -1,15 +1,90 @@
 extends ../layouts/common.pug
+
+mixin td-progress(value, total)
+    td.p-1
+        .progress(style='height: 2rem')
+            .text-primary.progress-bar(style='width: '+value/total*100+'%;') #{value} PHÚT
+
 block content
-    h5 Top học sinh chăm chỉ
-    if data.length > 0
+    form(action="/lessons/analyse", method="GET")
+        .form-row.row-cols-2.mb-2
+            .col
+                label Bắt đầu
+                input.form-control(name='start_date', type='date', value=start_date)
+            .col
+                label Kết thúc
+                input.form-control(name='end_date', type='date', value=end_date)
+        button.btn.btn-primary Xếp hạng
+    if topStudents.length > 0
+        h3 Top #{topStudents.length} học sinh chăm chỉ
         table.table.table-hover
             thead
                 tr
+                    th #
                     th Tên
-                    th Số buổi
-                    th Số phút
-            each student in data
+                    th.text-center Số buổi
+                    th.text-center Số phút
+            each student, i in topStudents
                 tr
-                    td= student.student[0].name
-                    td= student.total
-                    td= student.totalTimes
+                    td= i+1
+                    td
+                        a.text-dark(href='/students/'+student.student[0].id)= student.student[0].name
+                    td.text-center= student.total
+                    td.text-center= student.totalTimes
+    else
+        .alert.alert-warning Không có data cho khoảng thời gian này.
+    .row.row-cols-md-2
+        .col
+            if topDates.length > 0
+                h3 Top #{topDates.length} ngày đông học sinh
+                table.table.table-hover
+                    thead
+                        tr
+                            th #
+                            th Ngày
+                            th.text-center Số phút
+                            th.text-center Số buổi
+                    each date, i in topDates
+                        tr
+                            td= i+1
+                            td
+                                a.text-dark(href='/lessons/'+date._id)= date._id
+                            td.text-center= date.totalTimes
+                            td.text-center= date.total
+            else
+                .alert.alert-warning Không có data cho khoảng thời gian này.
+        .col
+            if topDates.length > 0
+                h3 Xếp hạng #{topDays.length} ngày trong tuần
+                table.table.table-hover
+                    thead
+                        tr
+                            th #
+                            th Thứ
+                            th.text-center Số phút
+                            th.text-center Số buổi
+                    each day, i in topDays
+                        tr
+                            td= i+1
+                            td
+                                if day._id > 1
+                                    | Thứ #{day._id}
+                                else
+                                    | Chủ nhật
+                            td.text-center= day.totalTimes
+                            td.text-center= day.total
+            else
+                .alert.alert-warning Không có data cho khoảng thời gian này.
+    if topHours.length > 0
+        h3 Thống kê theo giờ
+        table.table.table-hover
+            thead
+                tr
+                    th Giờ
+                    th Phần trăm
+            tbody
+                each hour in topHours
+                    tr
+                        td= hour.hour
+                        +td-progress(hour.value,topHours[0].value)
+

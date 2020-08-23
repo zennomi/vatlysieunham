@@ -1,0 +1,18 @@
+extends ../layouts/common.pug
+block content
+    h3 Hẹn trợ giảng
+    if lessons.length > 0
+        table.table.table-hover
+            thead
+                tr
+                    th Tên
+                    th.text-center Thời gian
+            each lesson in lessons
+                tr
+                    td
+                        a.text-dark(href='/students/'+lesson.student_id.id)= lesson.student_id.name
+                    td.text-center
+                        b= lesson.date +': '
+                        span= lesson.time.start_hour + (lesson.time.start_minute<10?':0':':') + lesson.time.start_minute + (lesson.time.end_hour?' - ' + lesson.time.end_hour + (lesson.time.end_minute<10?':0':':') + lesson.time.end_minute:'')
+    else
+        .alert.alert-warning Không có học sinh đăng ký học trợ giảng trước.

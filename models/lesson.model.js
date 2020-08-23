@@ -24,12 +24,12 @@ const lessonSchema = new Schema({
     topic: String,
     rating: {
         type: String,
-        enum: ['Tốt', 'Khá', 'Yếu']
+        enum: ['Tốt', 'Khá', 'Yếu', '']
     },
     comment_of_student: String,
     comment_of_tutor: String
 });
-
+//lessonSchema.index({ date: -1 });
 const Lesson = mongoose.model('Lesson', lessonSchema);
 
 module.exports = Lesson;

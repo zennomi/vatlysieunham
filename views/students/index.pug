@@ -2,40 +2,43 @@ extends ../layouts/common.pug
 
 block content
 
-    h5 Danh sách học sinh
+    h3 Danh sách học sinh
     form(action="/students/search", method="GET")
         .form-row
             .input-group.col-md-6.mb-3
                 .input-group-prepend
-                    span#inputGroup-sizing-default.input-group-text Name
-                input.form-control(name="name", type='text', value= name ? name : '', placeholder="Search by name...")
+                    span#inputGroup-sizing-default.input-group-text Tên
+                input.form-control(name="name", type='text', value= name ? name : '', placeholder="Tìm bằng tên...")
             .input-group.col-md-3.mb-3
                 .input-group-prepend
                     span#inputGroup-sizing-default.input-group-text ID
-                input.form-control(name="id", type='text', value= id ? id : '', placeholder="Search by id...")
+                input.form-control(name="id", type='number', value= id ? id : '', placeholder="Tìm bằng ID...")
             .col-md-3.mb-3
                 select.form-control(name="class")
-                    option(value="", selected, disabled, hidden) Search by class
+                    option(value="", selected, disabled, hidden) Lớp
                     each cla in classes
                         option= cla.name
-            button.btn.btn-primary.ml-2 Search
+            button.btn.btn-primary.ml-2 Tìm
     if students.length == 0
         p No result
     else
-        table.table.table-hover
-            thead.thead-light
+        table.table.table-hover.table-light
+            thead
                 tr
                     th ID
                     th Tên
+                    th.d-none.d-md-block Ngày sinh
                     th Lớp
-                    th Chi tiết
+                    th.text-center
+                        span.d-none.d-md-inline Chi tiết
             tbody
                 each student in students
                     tr
                         td= student.id
                         td= student.name
+                        td.d-none.d-md-block= student.dob.toISOString().slice(0,10)
                         td= student.classroom.name
-                        td
+                        td.text-center
                             .dropdown
                                 button#dropdownMenuButton.btn.btn-light.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
                                 .dropdown-menu(aria-labelledby='dropdownMenuButton')

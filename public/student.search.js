@@ -12,9 +12,9 @@ $(function () {
     })
     socket.on('quick search', function (students) {
         if (students.length > 0) {
-            $('#list-students').show('');
-            $('#list-students').html('');
+            $('a#list-student').remove();
             students.forEach((student) => {
+                $('.alert.alert-danger').hide();
                 let liEle = document.createElement("a");
                 liEle.innerText = student.classroom.name + '/' + student.name;
                 liEle.setAttribute("id", "list-student");
@@ -22,13 +22,13 @@ $(function () {
                 liEle.classList.add('list-group-item-action');
                 liEle.onclick = () => {
                     $('input#id').val(student.id);
-                    $('#list-students').hide();
+                    $('a#list-student').remove();
                 }
                 $('#list-students').append(liEle);
             })
         }
         else {
-            $('#list-students').html('<div class="alert alert-danger" role="alert">Không có kết quả :((</div>');
+            $('.alert.alert-danger').show();
         }
 //        window.scrollTo(0, document.body.scrollHeight);
     });

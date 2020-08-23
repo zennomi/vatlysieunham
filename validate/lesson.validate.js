@@ -12,6 +12,9 @@ module.exports.postCreate = async (req, res, next) => {
         if (startTimes >= endTimes) {
             errors.push('Học xong trước khi bắt đầu học.')
         }
+        if (!req.body.rating) {
+            errors.push('Đánh giá đi bạn ôi!');
+        }
     }
     if (req.body.comment_of_tutor) {
         if (!req.body.rating) {

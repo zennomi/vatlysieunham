@@ -1,12 +1,16 @@
 extends ./layouts/common.pug
 block content
-    h1 Thống kê
-    p
-        b Số học sinh: 
-        span= numStudents
-    p
-        b Số lớp: 
-        span= numClasses
-    p
-        b Số buổi trợ giảng: 
-        span= numLessons
+    h3 Thống kê
+    .row.row-cols-1.row-cols-md-3.text-center
+        .col.mb-2
+            .card.border-info.h-100
+                h6.card-header.bg-info.text-white Số học sinh
+                b.card-body.text-info= numStudents
+        .col.mb-2
+            .card.border-info.h-100
+                h6.card-header.bg-info.text-white Số lớp
+                b.card-body.text-info= numClasses
+        .col.mb-2
+            .card.border-info.h-100
+                h6.card-header.bg-info.text-white Số buổi trợ giảng
+                b.card-body.text-info= numLessons
