@@ -1,41 +1,50 @@
 extends ../layouts/common.pug
 mixin card-rating(rating, text_header)
     if rating=='Tốt'
-        .card.border-success.text-success.h-100
+        .card.border-success.text-success
             h6.card-header.bg-success.text-white= text_header
             block
     else if rating=='Khá'
-        .card.border-warning.text-warning.h-100
+        .card.border-warning.text-warning
             h6.card-header.bg-warning.text-white= text_header
             block
     else if rating=='Yếu'
-        .card.border-danger.text-danger.h-100
+        .card.border-danger.text-danger
             h6.card-header.bg-danger.text-white= text_header
             block
     else
-        .card.h-100
+        .card
             h6.card-header= text_header
             block
 block content
     h3 Thông tin học sinh
     .row.row-cols-2.row-cols-md-6.text-center
         .col-12.col-md-4.mb-2
-            .card.border-info.h-100
+            .card.border-info
                 h6.card-header.bg-info.text-white Họ tên
                 b.card-body.text-info= student.name
         .col.mb-2
-            .card.h-100
+            .card
                 h6.card-header Lớp
                 .card-body
                     a.text-dark(href="/classes/"+student.classroom.name)= student.classroom.name
         .col.mb-2
-            .card.h-100
+            .card
                 h6.card-header ID
                 .card-body= student.id
-        .col.mb-2
-            .card.h-100
-                h6.card-header Ngày sinh
-                .card-body= student.dob.toLocaleDateString()        
+        if (student.dob)
+            .col.mb-2
+                .card
+                    h6.card-header Ngày sinh
+                    .card-body= student.dob.toISOString().slice(0,10)
+        if (student.note)
+            .col-12.col-md-4.mb-2
+                .card
+                    .card-body
+                        h6.card-title Ghi chú
+                        hr
+                        span= student.note
+
     .row.row-cols-2.row-cols-md-3.mb-2
         .col.mb-2
             a.btn.btn-success.w-100(href="/students/edit/"+student.id) Sửa

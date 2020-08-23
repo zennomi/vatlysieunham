@@ -1,16 +1,23 @@
 extends ../layouts/common.pug
 block content
+    h3
+        span.mr-2 Danh sách lớp học
+        span.badge.badge-primary= classes.length
     if classes.length == 0
-        p No result
+        .alert.alert-warning Không có data
     else
-        table.table
+        table.table.table-hover.text-center
             thead
                 tr
-                    th Name class
-                    th View
+                    th Tên lớp
+                    th Số học sinh
             tbody
                 each cla in classes
                     tr
-                        td= cla.name
                         td
-                            a.btn.btn-light(href="/classes/" + cla.name) View
+                            a.text-dark(href="/classes/" + cla.name)= cla.name
+                        td= cla.totalStudents
+    .alert.alert-warning.alert-dismissible.fade.show(role='alert')
+        |  Lớp không có học sinh sẽ không hiện ở đây.
+        button.close(type='button', data-dismiss='alert', aria-label='Close')
+            span(aria-hidden='true') &times;

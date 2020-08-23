@@ -4,10 +4,12 @@ const Schema = mongoose.Schema;
 const lessonSchema = new Schema({
     date: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     student_id: {
         type: mongoose.Schema.Types.ObjectId,
+        index: true,
         required: true,
         ref: 'Student'
     },
@@ -29,7 +31,8 @@ const lessonSchema = new Schema({
     comment_of_student: String,
     comment_of_tutor: String
 });
-//lessonSchema.index({ date: -1 });
+
+lessonSchema.index({ date: -1, student_id: 1 });
 const Lesson = mongoose.model('Lesson', lessonSchema);
 
 module.exports = Lesson;

@@ -1,8 +1,8 @@
 extends ../layouts/common.pug
 block content
-    h1 Lớp #{cla.name}
+    h1 Lớp #{nameClass}
     if students.length == 0
-        p No result
+        .alert.alert-warning Không có dữ liệu.
     else
         table.table
             thead
@@ -16,7 +16,9 @@ block content
                     tr
                         td= student.id
                         td= student.name
-                        td= student.dob.toLocaleDateString()
+                        td
+                            if (student.dob)
+                                student.dob.toLocaleDateString()
                         td
                             .dropdown
                                 button#dropdownMenuButton.btn.btn-light.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')

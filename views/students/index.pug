@@ -1,7 +1,6 @@
 extends ../layouts/common.pug
 
 block content
-
     h3 Danh sách học sinh
     form(action="/students/search", method="GET")
         .form-row
@@ -15,12 +14,16 @@ block content
                 input.form-control(name="id", type='number', value= id ? id : '', placeholder="Tìm bằng ID...")
             .col-md-3.mb-3
                 select.form-control(name="class")
-                    option(value="", selected, disabled, hidden) Lớp
+                    option(value=cla?cla:'', selected, hidden)= cla?cla:'Lớp'
                     each cla in classes
                         option= cla.name
-            button.btn.btn-primary.ml-2 Tìm
+        .row.row-cols-2
+            .col
+                button.btn.btn-primary.w-100(type='submit') Tìm kiếm
+            .col
+                a.btn.btn-primary.w-100(href='/students/create') Thêm HS
     if students.length == 0
-        p No result
+        .alert.alert-warning Không có kết quả
     else
         table.table.table-hover.table-light
             thead
@@ -36,7 +39,9 @@ block content
                     tr
                         td= student.id
                         td= student.name
-                        td.d-none.d-md-block= student.dob.toISOString().slice(0,10)
+                        td.d-none.d-md-block
+                            if student.dob
+                                span= student.dob.toISOString().slice(0,10)
                         td= student.classroom.name
                         td.text-center
                             .dropdown
@@ -45,4 +50,16 @@ block content
                                     a.dropdown-item(href="/students/" + student.id) Xem
                                     a.dropdown-item(href="/students/edit/" + student.id) Sửa
                                     a.dropdown-item(href='/students/delete/' + student.id) Xóa
-    
+    nav
+        ul.pagination.justify-content-center
+            if page > 1
+                li.page-item
+                    a.page-link(href='/students/?page='+(page-1), aria-label='Previous')
+                        span(aria-hidden='true') &laquo;
+            - for (var x = 1; x <= maxPage; x++)
+                li.page-item(class=x==page?'active':'')
+                    a.page-link(href='/students/?page='+x)= x
+            if page < maxPage    
+                li.page-item
+                    a.page-link(href='/students/?page='+(page+1), aria-label='Next')
+                        span(aria-hidden='true') &raquo;

@@ -6,6 +6,10 @@ const Lesson = require('../models/lesson.model');
 const Student = require('../models/student.model');
 
 router.get('/', async (req, res) => {
+    let nowTime = new Date();
+    nowTime = nowTime.valueOf() + 252e5;
+    nowTime = new Date(nowTime);
+    nowTime = nowTime.toISOString();
     let dateLesson = await Lesson.aggregate([
         {
             $group: {
@@ -18,7 +22,8 @@ router.get('/', async (req, res) => {
         }
     ]);
     res.render('lessons/index', {
-        lessons: dateLesson
+        lessons: dateLesson,
+        today: nowTime.slice(0,10)
     });
 });
 
@@ -27,7 +32,6 @@ router.get('/create', (req, res) => {
     nowTime = nowTime.valueOf() + 252e5;
     nowTime = new Date(nowTime);
     nowTime = nowTime.toISOString();
-    console.log(req.query.id);
     res.render('lessons/create', {
         time: {
             date: req.query.date || nowTime.slice(0, 10),

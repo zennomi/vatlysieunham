@@ -18,22 +18,21 @@ block content
                     path(fill-rule='evenodd', d='M3.5 0a.5.5 0 0 1 .5.5V1a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5zm9 0a.5.5 0 0 1 .5.5V1a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5z')
                 | Lịch đăng ký
     if lessons
-        table.table.table-hover
+        table.table.table-hover.text-center
             thead
                 tr
                     th Ngày
-                    th.text-center Số HS
-                    th.text-center Chi tiết
+                    th Số HS
             tbody
                 each lesson in lessons
                         tr
-                            td= lesson._id
-                            td.text-center= lesson.totalStudents
-                            td.text-center
-                                a.btn.btn-primary.mr-1(href='/lessons/'+lesson._id)
-                                    svg.bi.bi-eye-fill(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                                        path(d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z')
-                                        path(fill-rule='evenodd', d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z')
+                            td
+                                a.text-dark(href='/lessons/'+lesson._id)
+                                    if (lesson._id==today)
+                                        b= lesson._id
+                                    else
+                                        span= lesson._id
+                            td= lesson.totalStudents
 
     else
         .alert.alert-warning Danh sách trống.

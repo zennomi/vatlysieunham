@@ -11,12 +11,18 @@ block content
             input#name.form-control(name="name", type="text", value=student.name)
         .form-group
             label Year Of Birth
-            input.form-control(name="dob", type="date", value=student.dob.toISOString().slice(0,10))
+            input.form-control(name="dob", type="date", value= student.dob ? student.dob.toISOString().slice(0,10) : '')
         .form-group
             label Class
             select.form-control(name="class")
                 option(selected, hidden)= student.classroom.name
                 each cla in classes
                     option= cla.name
-        button.btn.btn-primary.mr-2 Save
-        a.btn.btn-light(href="/students/"+student.id) Cancel
+        .form-group
+            label Ghi chú
+            textarea.form-control(name="note")= student.note
+        .row.row-cols-2
+            .col
+                button.btn.btn-primary.w-100 Lưu
+            .col
+                a.btn.btn-light.w-100(href="/students/"+student.id) Hủy
