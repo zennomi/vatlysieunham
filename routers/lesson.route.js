@@ -258,7 +258,7 @@ router.post('/create', validate.postCreate, async (req, res) => {
     let lesson = new Lesson({
         date: req.body.date.toString(),
         student_id: (await Student.findOne({ id: req.body.student_id }))._id,
-        type: req.body.type ? req.body.type : undefined,
+        type: req.body.total_problems ? 'Bài tập' : (req.body.type ? req.body.type : undefined),
         time: {
             start_hour: req.body.start_time ? parseInt(req.body.start_time.slice(0, 2)) : undefined,
             start_minute: req.body.start_time ? parseInt(req.body.start_time.slice(3, 5)) : undefined,
@@ -266,12 +266,13 @@ router.post('/create', validate.postCreate, async (req, res) => {
             end_minute: req.body.end_time ? parseInt(req.body.end_time.slice(3, 5)) : undefined
         },
         topic: req.body.topic,
+        total_problems: req.body.total_problems,
         rating: req.body.rating,
         comment_of_tutor: req.body.comment_of_tutor,
         comment_of_student: req.body.comment_of_student
     })
     await lesson.save();
-    res.redirect('/lessons/view/' + lesson._id);
+    res.redirect('/lessons/' + lesson.date);
 })
 
 router.post('/edit', validate.postCreate, (req, res) => {
@@ -286,6 +287,7 @@ router.post('/edit', validate.postCreate, (req, res) => {
                 end_minute: req.body.end_time ? parseInt(req.body.end_time.slice(3, 5)) : undefined
             },
             topic: req.body.topic,
+            total_problems: req.body.total_problems,
             rating: req.body.rating,
             comment_of_tutor: req.body.comment_of_tutor,
             comment_of_student: req.body.comment_of_student

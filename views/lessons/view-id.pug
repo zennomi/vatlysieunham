@@ -41,6 +41,8 @@ block content
                 .card
                     h6.card-header Loại
                     .card-body= lesson.type
+                        if lesson.total_problems
+                            span : #{lesson.total_problems} câu
         if (lesson.topic)
             .col.mb-2
                 .card

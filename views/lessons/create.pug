@@ -10,31 +10,35 @@ block content
             .alert.alert-danger.mt-1(style='display: none') Hông thấy kết quả. 
                 a.alert-link(href='/students/create', target='_blank') Thêm học sinh mới.
     form(action="/lessons/create", method="POST")
-        .form-group
-            label(for="id") ID học sinh
-            input#id.form-control(name="student_id", type="number", value=student_id, required)
         .form-row
-            .form-group.col-md-6.mb-3
-                label Ngày
-                input.form-control(name="date", type="date", value=time.date, required)
-            .form-group.col-md-6.mb-3
+            .form-group.col-md-6.mb-2
+                label(for="id") ID học sinh
+                input#id.form-control(name="student_id", type="number", value=student_id, required)
+            .form-group.col-md-6.mb-2
+                    label Ngày
+                    input.form-control(name="date", type="date", value=time.date, required)
+        .form-row
+            .form-group.col-md-6.mb-2
                 label Loại
                 select.form-control(name="type")
                     option(value="", hidden, selected) Loại
                     option Lý thuyết
                     option Bài tập
+            .form-group.col-md-6.mb-2
+                label Số bài tập
+                input.form-control(name="total_problems", type="number") 
         .form-row.row-cols-2
-            .form-group.col-md-6.mb-3
+            .form-group.col-md-6.mb-2
                 label Bắt đầu
                 input.form-control(name="start_time", type="time", value=time.time, required)
-            .form-group.col-md-6.mb-3
+            .form-group.col-md-6.mb-2
                 label Kết thúc
                 input.form-control(name="end_time", type="time")
         .form-row
-            .form-group.col-md-6.mb-3
+            .form-group.col-md-6.mb-2
                 label(for="topic") Chủ đề
                 input#input.form-control(name="topic", type="text")
-            .form-group.col-md-6.mb-3
+            .form-group.col-md-6.mb-2
                 label Đánh giá
                 select.form-control(name="rating")
                     option(value= '', hidden, selected) Đánh giá
@@ -49,7 +53,7 @@ block content
             textarea.form-control(name="comment_of_student")
         .row.row-cols-2
             .col
-                button.btn.btn-primary.w-100 Lưu
+                button.btn.btn-primary.w-100(type='submit') Lưu
             .col
                 a.btn.btn-light.w-100(href="/lessons") Hủy
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
