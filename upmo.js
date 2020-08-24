@@ -13,12 +13,12 @@ const Classroom = require('./models/class.model');
 const Student = require('./models/student.model');
 const Lesson = require('./models/lesson.model');
 
-var students = ['Nguyễn Minh Hằng', 'Vũ Tuấn Phát', 'Nguyễn Minh Khang', 'Nguyễn Đức Nam', 'Trịnh Gia Hưng', 'Phùng Thế Vinh', 'Lê Trí Đức', 'Ngô Lam Phương', 'Lê Xuân Nhi', 'Lê Anh Huy', 'Phạm Công Ngọc Lam', 'Nguyễn Đức Anh', 'Lê Hoàng An', 'Vũ Ngọc Nhi', 'Nguyễ Hoàng Hải My', 'Cao Thế Phương', 'Bạch Long Hải', 'Vũ Đức Quang', 'Hoàng Minh Kiên', 'Vương Mỹ Anh Anh'];
+var students = ['Nguyễn Phan Anh', 'Hoàng Đức Anh', 'Phạm Hữu Duy Anh', 'Cù Minh Anh', 'Chu Bảo Ngọc', 'Nguyễn Hồng Phúc', 'Nguyễn Duy Anh', 'Nguyễn Hoàng Lâm', 'Lê Ngô Ngọc Minh', 'Nguyễn Mai Chi', 'Trần Hữu Nam Anh', 'Nguyẽn Hải Đức', 'Đặng Minh Đạt', 'Nguyễn Duy Anh', 'Phan Ngân Hà', 'Hồ Thái Đức', 'Tạ Hồng Phong', 'Mai Lan Nhi', 'Nguyễn Đức Huy', 'Trần Hữu Trí', 'Phạm Yến Nhi', 'Bùi Đức Phúc', 'Đào Vũ Thanh Phương', 'Hoàng Anh Tuấn', 'Ngô Minh Đức', 'Nguyễn Phúc Quỳnh Nhi', 'Trịnh Minh Nhật', 'Nguyễn Trọng Kiên'];
 students = students.map((ele,i) => {
     return {
         'name': ele,
-        id: i+178,
-        classroom: '5f428ca39dec1050bea1d3d6'
+        id: i+248,
+        classroom: '5f428c699dec1050bea1d3d5'
     }
 })
 
@@ -28,7 +28,7 @@ for (let i=0; i < students.length; i++) {
     let student = new Student({
         name: students[i].name,
         id: students[i].id,
-        classroom: '5f428ca39dec1050bea1d3d6'
+        classroom: '5f428c699dec1050bea1d3d5'
     });
     student.save((err, result) => {
         console.log(result)

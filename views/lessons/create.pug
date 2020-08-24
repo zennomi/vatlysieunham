@@ -8,7 +8,7 @@ block content
         input#n.form-control(type='text', autocomplete='off', placeholder="Nhập tên...")
         #list-students.list-group
             .alert.alert-danger.mt-1(style='display: none') Hông thấy kết quả. 
-                a.alert-link(href='/students/create') Thêm học sinh mới.
+                a.alert-link(href='/students/create', target='_blank') Thêm học sinh mới.
     form(action="/lessons/create", method="POST")
         .form-group
             label(for="id") ID học sinh

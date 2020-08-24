@@ -5,13 +5,13 @@ const { render } = require('pug');
 
 module.exports.index = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
-    let maxPage = Math.floor((await Student.countDocuments())/20)+1;
+    let maxPage = Math.floor((await Student.countDocuments())/40)+1;
     if (page > maxPage) {
         res.render('error', {
             errors: ['Đi đâu đấy bạn ôi!']
         });
     } else {
-        let students = await Student.find().populate('classroom').skip(20*(page-1)).limit(20);
+        let students = await Student.find().populate('classroom').skip(40*(page-1)).limit(40);
         let classes = await Classroom.find();
         res.render('students/index', {
             students: students,
@@ -30,7 +30,6 @@ module.exports.search = async (req, res) => {
     let nameRegex = new RegExp(req.query.name, 'i');
     let students = await Student.find({ name: {$regex: nameRegex} }).populate('classroom');
     let classes = await Classroom.find();
-    console.log(students);
     let matchedStudents = students.filter((student) => {
         return (!id || student.id == id) && (!cla || student.classroom.name == cla)
     });
@@ -52,6 +51,12 @@ module.exports.create = async (req, res) => {
 
 module.exports.getById = async (req, res) => {
     let student = await Student.findOne({ id: req.params.id }).populate('classroom');
+    if (!student) {
+        res.render('error', {
+            errors: ['Không tìm thấy HS này.']
+        });
+        return;
+    }
     let lessonArr = await Lesson.find({ student_id: student._id });
     let data = {
         total: 0,
@@ -155,6 +160,7 @@ module.exports.postEdit = async (req, res) => {
 }
 
 module.exports.postDelete = async (req, res) => {
+    let student = await Student.findOne({ id: req.body.id });
     await Student.deleteOne({ id: req.body.id });
     await Lesson.deleteOne({ student_id: student._id });
     res.redirect('/students');
