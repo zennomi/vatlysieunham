@@ -10,7 +10,7 @@ block content
             label(for="id") ID buổi trợ giảng
             input#id.form-control(name="id", type="text", value= lesson._id, readonly)
         .form-row
-            .form-group
+            .form-group.col-md-6.mb-2
                 label(for="id") ID học sinh
                 input#id.form-control(name="student_id", type="number", value= lesson.student_id.id, readonly)
             .form-group.col-md-6.mb-2
@@ -49,8 +49,11 @@ block content
         .form-group
             label Góp ý của học sinh
             textarea.form-control(name="comment_of_student")= lesson.comment_of_student
-        button.btn.btn-primary(type='submit') Lưu
-        a.btn.btn-light(href='/lessons/view/'+lesson._id) Hủy
+        .row.row-cols-2
+            .col
+                button.btn.btn-primary.w-100(type='submit') Lưu
+            .col
+                a.btn.btn-light.w-100(href='/lessons/view/'+lesson._id) Hủy
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
     script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
     script(type='text/javascript', src='/student.search.js')
