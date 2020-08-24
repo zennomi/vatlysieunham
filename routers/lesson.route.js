@@ -97,6 +97,51 @@ router.get('/analyse', async (req, res) => {
             }
         }
     ]);
+    let topHards = await Lesson.aggregate([
+        {
+            $match: {
+                'time.end_hour': { $ne: null },
+                'date': { $gte: req.query.start_date || '2019-06' },
+                'date': { $lte: req.query.end_date || nowTime.slice(0, 10) },
+                'total_problems': { $ne: null }
+            }
+        },
+        {
+            $group: {
+                _id: '$student_id',
+                totalProblems: {$sum: '$total_problems'},
+                totalTimes: {
+                    $sum: {
+                        $subtract: [{ $sum: [{ $multiply: ['$time.end_hour', 60] }, '$time.end_minute'] },
+                        { $sum: [{ $multiply: ['$time.start_hour', 60] }, '$time.start_minute'] }]
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                avgProblems: {$divide: ['$totalProblems', {$divide: ['$totalTimes', 60]}]}
+            }
+        },
+        {
+            $sort: {
+                avgProblems: -1
+            }
+        },
+        {
+            $limit: 10
+        },
+        {
+            $lookup: {
+                from: "students",
+                localField: "_id",
+                foreignField: "_id",
+                as: 'student'
+            }
+        }
+    ])
+    console.log(topHards)
     let topDates = await Lesson.aggregate([
         {
             $match: {
@@ -201,14 +246,14 @@ router.get('/analyse', async (req, res) => {
     topHours = topHours
     .map((ele,i) => { return {hour: i, value: ele }})
     .sort((a, b) => (a.value > b.value)?-1:(a.value<b.value)?1:0);
-    console.log(topHours);
     res.render('lessons/analyse', {
         start_date: req.query.start_date,
         end_date: req.query.end_date,
         topStudents: topStudents,
         topDates: topDates,
         topDays: topDays,
-        topHours: topHours
+        topHours: topHours,
+        topHards: topHards
     });
 });
 

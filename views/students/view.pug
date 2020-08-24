@@ -60,13 +60,20 @@ block content
                 .card.border-info
                     h6.card-header.bg-info.text-white Tổng cộng
                     .card-body
-                        h6 #{data.total} BUỔI - #{Math.round(data.totalTimes/60*10)/10} GIỜ - TB #{Math.round(data.totalTimes/data.total)} PHÚT/BUỔI
+                        h6 #{data.total} BUỔI - #{Math.round(data.totalTimes/60*10)/10} GIỜ
+                        .text-muted TB #{Math.round(data.totalTimes/data.total)} PHÚT/BUỔI
+                            if (data.totalExercises)
+                                |  - TB #{Math.round(data.totalProblems/data.totalExercises)} CÂU/BUỔI
                         .progress(style="height: 2rem; background-image: linear-gradient(to right, #60d394 "+data.totalGoods/data.total*100+"%, #ee6055 100%);")
             .col.mb-2
                 .card.border-info
                     h6.card-header.bg-info.text-white Tuần vừa qua
                     .card-body
-                        h6 #{data.totalLW} BUỔI - #{Math.round(data.totalTimesLW/60*10)/10} GIỜ - TB #{Math.round(data.totalTimesLW/data.total)} PHÚT/BUỔI
+                        h6 #{data.totalLW} BUỔI - #{Math.round(data.totalTimesLW/60*10)/10} GIỜ
+                        .text-muted TB #{Math.round(data.totalTimesLW/data.total)} PHÚT/BUỔI
+                            if (data.totalExercises)
+                                |  - TB #{Math.round(data.totalProblems/data.totalExercises)} CÂU/BUỔI
+
                         .progress(style="height: 2rem; background-image: linear-gradient(to right, #60d394 "+Math.round(data.totalGoodsLW/data.totalLW*100)+"%, #ee6055 100%);")
         .row.row-cols-2.row-cols-md-6.text-center
             each lesson in lessons

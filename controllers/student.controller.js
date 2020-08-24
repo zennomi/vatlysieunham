@@ -57,17 +57,20 @@ module.exports.getById = async (req, res) => {
         });
         return;
     }
-    let lessonArr = await Lesson.find({ student_id: student._id });
+    let lessonArr = await Lesson.find({ student_id: student._id }).sort({ date: -1 });
     let data = {
         total: 0,
         totalTimes: 0,
         totalGoods: 0,
+        totalExercises: 0,
+        totalProblems: 0,
         totalBads: 0,
         totalLW: 0,
         totalTimesLW: 0,
         totalGoodsLW: 0,
         totalBadsLW: 0,
-        
+        totalExercisesLW: 0,
+        totalProblemsLW: 0
     };
     lessonArr.forEach( lesson => {
         if (lesson.rating) {
@@ -80,6 +83,10 @@ module.exports.getById = async (req, res) => {
             data.totalGoods++;
         } else if (lesson.rating=='Yếu') {
             data.totalBads++;
+        }
+        if (lesson.total_problems) {
+            data.totalExercises++;
+            data.totalProblems+=lesson.total_problems;
         }
     });
     let lwDate = new Date();
@@ -99,12 +106,17 @@ module.exports.getById = async (req, res) => {
         } else if (lesson.rating=='Yếu') {
             data.totalBadsLW++;
         }
+        if (lesson.total_problems) {
+            data.totalExercisesLW++;
+            data.totalProblemsLW+=lesson.total_problems;
+        }
     });
     res.render('students/view', {
         student: student,
         lessons: lessonArr,
         data: data
     })
+    console.log(data)
 };
 
 module.exports.editById = async (req, res) => {
