@@ -173,7 +173,7 @@ module.exports.postEdit = async (req, res) => {
 
 module.exports.postDelete = async (req, res) => {
     let student = await Student.findOne({ id: req.body.id });
-    await Student.deleteOne({ id: req.body.id });
     await Lesson.deleteOne({ student_id: student._id });
+    await Student.deleteOne({ id: req.body.id });
     res.redirect('/students');
 }

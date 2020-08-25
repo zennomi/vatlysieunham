@@ -260,6 +260,7 @@ router.get('/analyse', authMiddleware.authRequire, async (req, res) => {
 
 router.get('/:date', (req, res) => {
     Lesson.find({ date: req.params.date }).populate('student_id').exec((err, lessons) => {
+        console.log(lessons);
         if (err) res.send(err);
         res.render('lessons/view', {
             date: req.params.date,
