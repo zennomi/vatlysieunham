@@ -121,6 +121,8 @@ block content
                     th Phần trăm
             tbody
                 each hour in topHours
+                    if hour.value == 0
+                        - break
                     tr
                         td= hour.hour
                         +td-progress(hour.value,topHours[0].value)

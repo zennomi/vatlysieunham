@@ -1,0 +1,13 @@
+extends ../layouts/common.pug
+block content
+    h3 Đăng nhập
+    .card.p-3
+        form(action="/auth/login", method="POST")
+            .form-row
+                .from-group.col-md-6
+                    label Tên tài khoản
+                    input.form-control(name='username', type='text', required, autocomplete)
+                .form-group.col-md-6
+                    label Mật khẩu
+                    input.form-control(name='password', type='password', required, autocomplete)
+            button.btn.btn-primary Đăng nhập

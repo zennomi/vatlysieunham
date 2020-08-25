@@ -4,6 +4,7 @@ var router = express.Router();
 const validate = require('../validate/lesson.validate');
 const Lesson = require('../models/lesson.model');
 const Student = require('../models/student.model');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 router.get('/', async (req, res) => {
     let nowTime = new Date();
@@ -55,7 +56,7 @@ router.get('/schedule', async (req, res) => {
         lessons: lessons
     });
 })
-router.get('/analyse', async (req, res) => {
+router.get('/analyse', authMiddleware.authRequire, async (req, res) => {
     let nowTime = new Date();
     nowTime = nowTime.valueOf() + 252e5;
     nowTime = new Date(nowTime);

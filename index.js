@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
@@ -22,16 +24,21 @@ mongoose.connect('mongodb+srv://new-user_01:25112001@cluster0.nxm48.mongodb.net/
 const Student = require('./models/student.model');
 const Classroom = require('./models/class.model');
 const Lesson = require('./models/lesson.model');
+const User = require('./models/user.model');
 
-var studentRoute = require('./routers/student.route');
-var classRoute = require('./routers/class.route');
-var lessonRoute = require('./routers/lesson.route');
+const studentRoute = require('./routers/student.route');
+const classRoute = require('./routers/class.route');
+const lessonRoute = require('./routers/lesson.route');
+const authRoute = require('./routers/auth.route');
+
+const authMiddleware = require('./middlewares/auth.middleware');
 
 app.set('views', './views');
 app.set('view engine', 'pug');
 
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', async (req, res) => {
@@ -48,6 +55,7 @@ app.get('/', async (req, res) => {
 app.use('/students', studentRoute);
 app.use('/classes', classRoute);
 app.use('/lessons', lessonRoute);
+app.use('/auth', authRoute);
 
 io.on('connection', (socket) => {
     socket.on('quick search', async function (name) {
