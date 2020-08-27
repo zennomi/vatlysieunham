@@ -5,6 +5,7 @@ const app = express();
 const http = require('http').Server(app);
 const port = process.env.PORT || 3000;
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
 
 var io = require('socket.io')(http);
@@ -43,30 +44,35 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.static(__dirname + '/public'));
 app.use(session({
-    cookie: { maxAge: 24 * 3600 * 1000 },
     secret: process.env.SESSION_SECRET,
-    saveUninitialized: false,
-    resave: false
+    maxAge: new Date(Date.now() + 3600000),
+    resave: true,
+    saveUninitialized: true,
+    cookie: { path: '/', maxAge: 24 * 3600 * 1000, httpOnly: true },
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
+
 app.use(flash());
 
 app.use((req, res, next) => {
-    if(req.signedCookies.username) {
-        if ((!app.locals.user) || app.locals.user.username != req.signedCookies.username) {
-            User.findOne({ username: req.signedCookies.username }).exec((err, user) => {
-                if (err) {
-                    app.render('error', {
-                        errors: [err]
-                    });
-                    return;
-                }
-                if (!user) {
-                    res.redirect('/auth/login');
-                    return;
-                }
-                app.locals.user = user;
-            })
-        }
+    if (req.signedCookies.username) {
+        User.findOne({ username: req.signedCookies.username }).exec((err, user) => {
+            if (err) {
+                res.render('error', {
+                    errors: [err]
+                });
+                return;
+            }
+            if (!user) {
+                res.redirect('/auth/login');
+                return;
+            }
+            res.locals.user = user;
+        })
+    }
+    
+    if (!req.signedCookies.username && res.locals.user) {
+        delete res.locals.user;
     }
     next();
 });
@@ -90,7 +96,7 @@ app.use('/students/delete', authMiddleware.adminRequire);
 app.use('/students', pushMessage, studentRoute);
 app.use('/classes', pushMessage, classRoute);
 app.use('/lessons', pushMessage, lessonRoute);
-app.use('/auth',pushMessage, authRoute);
+app.use('/auth', pushMessage, authRoute);
 
 app.get('/user/:username', authMiddleware.authRequire, (req, res) => {
     User.findOne({ username: req.params.username }).exec((err, user) => {
@@ -107,10 +113,10 @@ app.get('/user/:username', authMiddleware.authRequire, (req, res) => {
 });
 
 app.get('/auth/logout', (req, res) => {
-    app.locals.user = undefined;
+    res.locals.user = undefined;
     res.clearCookie('username');
     res.clearCookie('user_id');
-    req.flash('info','Đăng xuất thành công.');
+    req.flash('info', 'Đăng xuất thành công.');
     res.redirect('/');
 })
 
@@ -129,13 +135,12 @@ app.get('/flash', function (req, res) {
     req.flash('info', 'Flash is back!')
     res.redirect('/');
 });
-function pushMessage (req, res, next) {
+function pushMessage(req, res, next) {
     res.locals.messages = req.flash();
     next();
 }
 // end test
 
 http.listen(port, () => {
-    console.log('Linh xinh dep da het doi <3');
     console.log('Server is running at ' + port);
 });
