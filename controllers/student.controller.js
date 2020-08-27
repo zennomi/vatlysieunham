@@ -157,8 +157,8 @@ module.exports.postCreate = async (req, res) => {
         note: req.body.note
     });
     if (req.body.dob) student.dob = new Date(req.body.dob);
-    await Classroom.findOneAndUpdate({ name: req.body.class }, { $addToSet: { students: student._id }});
     await student.save();
+    req.flash('success', `Đã thêm học sinh mới tên ${req.body.name} - ID ${id}.`)
     res.redirect('/students/'+student.id);
 };
 
@@ -168,12 +168,14 @@ module.exports.postEdit = async (req, res) => {
         { id: req.body.id },
         { $set: { name: req.body.name, dob: req.body.dob, classroom: newClass._id, note: req.body.note }}
     );
+    req.flash('success', `Đã sửa học sinh tên ${req.body.name} - ID ${req.body.id}`);
     res.redirect('/students/' + req.body.id);
 }
 
 module.exports.postDelete = async (req, res) => {
     let student = await Student.findOne({ id: req.body.id });
-    await Lesson.deleteOne({ student_id: student._id });
+    await Lesson.deleteMany({ student_id: student._id });
     await Student.deleteOne({ id: req.body.id });
+    req.flash('danger', `Bạn vừa xóa học sinh tên ${student.name} - ID ${student.name}`);
     res.redirect('/students');
 }

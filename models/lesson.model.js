@@ -8,7 +8,7 @@ const lessonSchema = new Schema({
         index: true
     },
     student_id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         index: true,
         required: true,
         ref: 'Student'
@@ -30,7 +30,11 @@ const lessonSchema = new Schema({
         enum: ['Tốt', 'Khá', 'Yếu', '']
     },
     comment_of_student: String,
-    comment_of_tutor: String
+    comment_of_tutor: String,
+    last_update: {
+        time: {type: Date, default: Date.now},
+        user: {type: Schema.Types.ObjectId, ref: 'User'}
+    }
 });
 
 lessonSchema.index({ date: -1, student_id: 1 });

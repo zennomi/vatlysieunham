@@ -61,6 +61,15 @@ block content
                 .card
                     h6.card-header Góp ý của học sinh
                     .card-body= lesson.comment_of_student
+        .col-12.mb-2
+            .card
+                h6.card-header
+                    span.mr-1 Lần cuối cập nhật
+                    span.badge.badge-info= lastUpdateTime + ' trước'
+                if (lesson.last_update.user) 
+                    .card-body
+                        a.text-dark.mr-2(href='/user/'+lesson.last_update.user.username)= lesson.last_update.user.name
+                        span.badge.badge-success= lesson.last_update.user.role.toUpperCase()
     .row.row-cols-3.text-center
         .col.mb-2
             a.btn.btn-success.w-100(href='/lessons/edit/'+lesson._id) Sửa

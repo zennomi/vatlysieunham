@@ -1,0 +1,7 @@
+extends ../layouts/common.pug
+block content
+    p Tên: #{matchedUser.name}
+    p Role: #{matchedUser.role}
+    if user.username == matchedUser.username
+        p Tên tài khoản: #{matchedUser.username}
+        a.btn.btn-danger(href='/auth/logout') Đăng xuất

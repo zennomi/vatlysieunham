@@ -51,7 +51,6 @@ router.get('/schedule', async (req, res) => {
     let nowMinute = parseInt(nowTime.slice(14, 16));
     let lessons = await Lesson.find({ date: { $gte: nowTime.slice(0, 10) } }).populate('student_id');
     lessons = lessons.filter(lesson => lesson.time.start_hour >= nowHour).filter(lesson => lesson.time.start_hour);
-    console.log(lessons, nowHour, nowMinute);
     res.render('lessons/schedule', {
         lessons: lessons
     });
@@ -142,7 +141,6 @@ router.get('/analyse', authMiddleware.authRequire, async (req, res) => {
             }
         }
     ])
-    console.log(topHards)
     let topDates = await Lesson.aggregate([
         {
             $match: {
@@ -260,7 +258,6 @@ router.get('/analyse', authMiddleware.authRequire, async (req, res) => {
 
 router.get('/:date', (req, res) => {
     Lesson.find({ date: req.params.date }).populate('student_id').exec((err, lessons) => {
-        console.log(lessons);
         if (err) res.send(err);
         res.render('lessons/view', {
             date: req.params.date,
@@ -270,10 +267,26 @@ router.get('/:date', (req, res) => {
 })
 
 router.get('/view/:id', (req, res) => {
-    Lesson.findById(req.params.id).populate({ path: 'student_id', populate: { path: 'classroom' } }).exec((err, lesson) => {
+    Lesson.findById(req.params.id).populate({ path: 'student_id', populate: { path: 'classroom' } }).populate('last_update.user').exec((err, lesson) => {
         if (err) res.render(err);
+        let lastUpdateTime = '';
+        let nowTime = new Date();
+        if (lesson.last_update.time) {
+            if(nowTime.getUTCMonth() > lesson.last_update.time.getUTCMonth()) {
+                lastUpdateTime = nowTime.getUTCMonth() - lesson.last_update.time.getUTCMonth() + ' tháng';
+            } else if (nowTime.getUTCDate() > lesson.last_update.time.getUTCDate()) {
+                lastUpdateTime = nowTime.getUTCDate() - lesson.last_update.time.getUTCDate() + ' ngày';
+            } else if (nowTime.getUTCHours() > lesson.last_update.time.getUTCHours()) {
+                lastUpdateTime = nowTime.getUTCHours() - lesson.last_update.time.getUTCHours() + ' giờ';
+            } else if (nowTime.getUTCMinutes() > lesson.last_update.time.getUTCMinutes()) {
+                lastUpdateTime = nowTime.getUTCMinutes() - lesson.last_update.time.getUTCMinutes() + ' phút';
+            } else if (nowTime.getUTCSeconds() > lesson.last_update.time.getUTCSeconds()) {
+                lastUpdateTime = nowTime.getUTCSeconds() - lesson.last_update.time.getUTCSeconds() + ' giây';
+            } else lastUpdateTime = '1 giây'
+        }
         res.render('lessons/view-id', {
-            lesson: lesson
+            lesson: lesson,
+            lastUpdateTime: lastUpdateTime
         })
     })
 })
@@ -316,10 +329,15 @@ router.post('/create', validate.postCreate, async (req, res) => {
         total_problems: req.body.total_problems,
         rating: req.body.rating,
         comment_of_tutor: req.body.comment_of_tutor,
-        comment_of_student: req.body.comment_of_student
+        comment_of_student: req.body.comment_of_student,
+        last_update: {
+            time: Date.now(),
+            user: req.signedCookies.user_id
+        }
     })
     await lesson.save();
-    res.redirect('/lessons/' + lesson.date);
+    req.flash('success', 'Thêm buổi trợ giảng thành công.');
+    res.redirect('/lessons/' + req.body.date);
 })
 
 router.post('/edit', validate.postCreate, (req, res) => {
@@ -337,21 +355,30 @@ router.post('/edit', validate.postCreate, (req, res) => {
             total_problems: req.body.total_problems,
             rating: req.body.rating,
             comment_of_tutor: req.body.comment_of_tutor,
-            comment_of_student: req.body.comment_of_student
+            comment_of_student: req.body.comment_of_student,
+            last_update: {
+                time: Date.now(),
+                user: req.signedCookies.user_id
+            }
         }
     }).exec((err, lesson) => {
         if (err) res.send(err);
-        console.log(lesson);
+        req.flash('success', 'Sửa buổi trợ giảng thành công.');
         res.redirect('/lessons/view/' + lesson._id);
     })
 })
 
 router.post('/delete', (req, res) => {
+    
     Lesson.findByIdAndDelete(req.body.id).exec((err) => {
-        if (err) res.send(err);
-        else {
-            res.redirect('/lessons');
+        if (err) {
+            res.send('error', {
+                errors: [err]
+            });
+            return;
         }
+        req.flash('danger', 'Vừa xóa một buổi trợ giảng.');
+        res.redirect('/lessons');
     })
 })
 
