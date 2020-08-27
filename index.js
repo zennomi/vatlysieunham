@@ -43,17 +43,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.static(__dirname + '/public'));
 app.use(session({
-    cookie: { maxAge: 60000 },
-    secret: 'codeworkrsecret',
+    cookie: { maxAge: 24 * 3600 * 1000 },
+    secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
     resave: false
 }));
 app.use(flash());
 
-
 app.use((req, res, next) => {
     if(req.signedCookies.username) {
-        if (!app.locals.user) {
+        if ((!app.locals.user) || app.locals.user.username != req.signedCookies.username) {
             User.findOne({ username: req.signedCookies.username }).exec((err, user) => {
                 if (err) {
                     app.render('error', {
@@ -80,7 +79,6 @@ app.get('/', pushMessage, async (req, res) => {
         numStudents: numStudents,
         numClasses: numClasses,
         numLessons: numLessons
-//        messages: req.flash()
     });
 });
 
