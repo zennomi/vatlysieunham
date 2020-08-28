@@ -1,7 +1,6 @@
 const Student = require('../models/student.model');
 const Classroom = require('../models/class.model');
 const Lesson = require('../models/lesson.model');
-const { render } = require('pug');
 
 module.exports.index = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
@@ -176,6 +175,6 @@ module.exports.postDelete = async (req, res) => {
     let student = await Student.findOne({ id: req.body.id });
     await Lesson.deleteMany({ student_id: student._id });
     await Student.deleteOne({ id: req.body.id });
-    req.flash('danger', `Bạn vừa xóa học sinh tên ${student.name} - ID ${student.name}`);
+    req.flash('danger', `Bạn vừa xóa học sinh tên ${student.name} - ID ${student.id}`);
     res.redirect('/students');
 }

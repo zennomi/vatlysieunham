@@ -5,6 +5,13 @@ module.exports.login = (req, res) => {
     res.render('auth/login');
 }
 
+module.exports.logout = (req, res) => {
+    res.locals.user = undefined;
+    res.clearCookie('user');
+    req.flash('info', 'Đăng xuất thành công.');
+    res.redirect('/');
+}
+
 module.exports.postLogin = async (req, res) => {
     let user = await User.findOne({ username: req.body.username })
     if (!user) {
@@ -19,15 +26,11 @@ module.exports.postLogin = async (req, res) => {
         });
         return;
     }
-    res.cookie('username', user.username, {
-        signed: true
+    delete user.password;
+    res.cookie('user', user, {
+        signed: true,
+        maxAge: 24 * 3600 * 1000
     });
-    res.cookie('user_id', user._id, {
-        signed: true
-    });
-    res.locals.user = user;
-    res.render('user/view', {
-        matchedUser: user,
-        massages: {'success': ['Đăng nhập thành công.']}
-    });
+    req.flash('success', 'Đăng nhập thành công.');
+    res.redirect('/user/'+user.username);
 }

@@ -33,7 +33,7 @@ const studentRoute = require('./routers/student.route');
 const classRoute = require('./routers/class.route');
 const lessonRoute = require('./routers/lesson.route');
 const authRoute = require('./routers/auth.route');
-
+const userRoute = require('./routers/user.route');
 const authMiddleware = require('./middlewares/auth.middleware');
 
 app.set('views', './views');
@@ -54,28 +54,7 @@ app.use(session({
 
 app.use(flash());
 
-app.use((req, res, next) => {
-    if (req.signedCookies.username) {
-        User.findOne({ username: req.signedCookies.username }).exec((err, user) => {
-            if (err) {
-                res.render('error', {
-                    errors: [err]
-                });
-                return;
-            }
-            if (!user) {
-                res.redirect('/auth/login');
-                return;
-            }
-            res.locals.user = user;
-        })
-    }
-    
-    if (!req.signedCookies.username && res.locals.user) {
-        delete res.locals.user;
-    }
-    next();
-});
+app.use(authMiddleware.getAuth);
 
 app.get('/', pushMessage, async (req, res) => {
     let numStudents = await Student.countDocuments();
@@ -88,7 +67,6 @@ app.get('/', pushMessage, async (req, res) => {
     });
 });
 
-
 app.get(/\/edit\//, authMiddleware.authRequire);
 app.get(/\/create/, authMiddleware.authRequire);
 app.get(/\/delete/, authMiddleware.authRequire);
@@ -97,28 +75,7 @@ app.use('/students', pushMessage, studentRoute);
 app.use('/classes', pushMessage, classRoute);
 app.use('/lessons', pushMessage, lessonRoute);
 app.use('/auth', pushMessage, authRoute);
-
-app.get('/user/:username', authMiddleware.authRequire, (req, res) => {
-    User.findOne({ username: req.params.username }).exec((err, user) => {
-        if (!user) {
-            res.render('error', {
-                errors: ['Không tìm thấy user có tên này.']
-            });
-            return;
-        }
-        res.render('user/view', {
-            matchedUser: user
-        })
-    })
-});
-
-app.get('/auth/logout', (req, res) => {
-    res.locals.user = undefined;
-    res.clearCookie('username');
-    res.clearCookie('user_id');
-    req.flash('info', 'Đăng xuất thành công.');
-    res.redirect('/');
-})
+app.use('/user', authMiddleware.authRequire, pushMessage, userRoute)
 
 io.on('connection', (socket) => {
     socket.on('quick search', async function (name) {

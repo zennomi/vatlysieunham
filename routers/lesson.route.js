@@ -332,7 +332,7 @@ router.post('/create', validate.postCreate, async (req, res) => {
         comment_of_student: req.body.comment_of_student,
         last_update: {
             time: Date.now(),
-            user: req.signedCookies.user_id
+            user: req.signedCookies.user._id
         }
     })
     await lesson.save();
@@ -358,7 +358,7 @@ router.post('/edit', validate.postCreate, (req, res) => {
             comment_of_student: req.body.comment_of_student,
             last_update: {
                 time: Date.now(),
-                user: req.signedCookies.user_id
+                user: req.signedCookies.user._id
             }
         }
     }).exec((err, lesson) => {
