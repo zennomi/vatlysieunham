@@ -2,6 +2,11 @@ extends ../layouts/common.pug
 block content
     p Tên: #{matchedUser.name}
     p Role: #{matchedUser.role}
-    if currentUserName == matchedUser.username
+    p= matchedUser.note
+    if user.username == matchedUser.username
         p Tên tài khoản: #{matchedUser.username}
-        a.btn.btn-danger(href='/auth/logout') Đăng xuất
+        .row.row-cols-2
+            .col
+                a.btn.btn-success.w-100(href='/user/edit') Sửa thông tin
+            .col
+                a.btn.btn-danger.w-100(href='/auth/logout') Đăng xuất

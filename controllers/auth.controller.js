@@ -6,7 +6,6 @@ module.exports.login = (req, res) => {
 }
 
 module.exports.logout = (req, res) => {
-    res.locals.user = undefined;
     res.clearCookie('user');
     req.flash('info', 'Đăng xuất thành công.');
     res.redirect('/');

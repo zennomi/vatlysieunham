@@ -9,7 +9,8 @@ const userSchema = new Schema({
         enum: ['admin', 'mod']
     },
     name: String,
-    last_login: Date
+    last_login: Date,
+    note: String
 })
 
 userSchema.index({ username: 1 });
