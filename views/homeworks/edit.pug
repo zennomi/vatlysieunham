@@ -1,0 +1,39 @@
+extends ../layouts/common.pug
+block content
+    h3 Sửa thông tin
+    form(action="/homeworks/create", method="POST")
+        .form-row.row-cols-3
+            .col.form-group
+                label Tên
+                input.form-control(name='name', type='text', value=homework.name, required)
+            .col.form-group
+                label Ngày
+                input.form-control(name='date', type='date', value=homework.date.toISOString().slice(0,10), required)
+            .col.form-group 
+                label Số câu
+                input.form-control#total(name='total', type='number', value=homework.total)
+        button.btn.btn-primary Lưu
+        .alert.alert-warning chưa code lưu thông tin, test tính năng nhập điểm đi Đã
+    
+    h3 Nhập điểm
+    .input-group.mb-3
+        .input-group-prepend
+            span#basic-addon1.input-group-text Lọc
+        input.form-control#student-filter(type='text', placeholder='Tên, ID,...', aria-label='Username', aria-describedby='basic-addon1')
+
+    table.table.table-hover#student-table
+        thead
+            tr
+                th ID
+                th Tên
+                th Đã xong
+        tbody
+            each student in homework.student
+                tr
+                    td= student.student_id.id
+                    td= student.student_id.name
+                    td= (student.finish_count != undefined) ? student.finish_count : 'Chưa nhập'
+block script
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
+    script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
+    script(type='text/javascript', src='/student.filter.js')

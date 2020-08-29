@@ -1,0 +1,18 @@
+extends ../layouts/common.pug
+block content
+    h3 Danh sách bài tập
+    a.btn.btn-primary(href='/homeworks/create') Thêm
+    if homeworks.length > 0
+        table.table.table-hover
+            thead
+                tr
+                    th Tên
+                    th Lớp
+                    th ...
+            tbody
+                each homework in homeworks
+                    tr
+                        td
+                            a(href='/homeworks/view/'+homework._id)= homework.name
+                        td= homework.class.name
+                        td ...

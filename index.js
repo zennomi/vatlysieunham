@@ -34,7 +34,9 @@ const classRoute = require('./routers/class.route');
 const lessonRoute = require('./routers/lesson.route');
 const authRoute = require('./routers/auth.route');
 const userRoute = require('./routers/user.route');
+const homeworkRoute = require('./routers/homework.route');
 const authMiddleware = require('./middlewares/auth.middleware');
+const Homework = require('./models/homework.model');
 
 app.set('views', './views');
 app.set('view engine', 'pug');
@@ -48,8 +50,7 @@ app.use(session({
     maxAge: new Date(Date.now() + 3600000),
     resave: true,
     saveUninitialized: true,
-    cookie: { path: '/', maxAge: 24 * 3600 * 1000, httpOnly: true },
-    store: new MongoStore({ mongooseConnection: mongoose.connection })
+    cookie: { path: '/', maxAge: 24 * 3600 * 1000, httpOnly: true }
 }));
 
 app.use(flash());
@@ -75,6 +76,7 @@ app.use('/students', pushMessage, studentRoute);
 app.use('/classes', pushMessage, classRoute);
 app.use('/lessons', pushMessage, lessonRoute);
 app.use('/auth', pushMessage, authRoute);
+app.use('/homeworks', authMiddleware.authRequire, pushMessage, homeworkRoute);
 app.use('/user', authMiddleware.authRequire, pushMessage, userRoute)
 
 io.on('connection', (socket) => {
@@ -82,6 +84,23 @@ io.on('connection', (socket) => {
         let nameRegex = new RegExp(name, 'i');
         let matchedStudents = await Student.find({ name: { $regex: nameRegex } }).limit(5).populate('classroom');
         io.emit('quick search', matchedStudents);
+    });
+    socket.on('update-homework', async function (updateInfo) {
+        updateInfo.studentId = (await Student.findOne({ id: updateInfo.studentId }))._id;
+        console.log(updateInfo);
+        if (updateInfo.finishCount) {
+            await Homework.findOneAndUpdate({ _id: updateInfo.homeworkId, 'student.student_id': updateInfo.studentId }, {
+                $set: {
+                    'student.$.finish_count': updateInfo.finishCount
+                }
+            }).exec((err, result) => { console.log(result) })
+        } else {
+            await Homework.findOneAndUpdate({ _id: updateInfo.homeworkId, 'student.student_id': updateInfo.studentId }, {
+                $unset: {
+                    'student.$.finish_count': ''
+                }
+            }).exec((err, result) => { console.log(result) })
+        }
     });
 });
 

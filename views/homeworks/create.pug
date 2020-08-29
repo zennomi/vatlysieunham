@@ -1,0 +1,19 @@
+extends ../layouts/common.pug
+block content
+    h3 Thêm bài tập
+    form(action="/homeworks/create", method="POST")
+        .form-group
+            label Tên
+            input.form-control(name='name', type='text', required)
+        .form-group
+            label Ngày
+            input.form-control(name='date', type='date', required)
+        .form-group
+            label Lớp
+            select.form-control(name="class", required)
+                each cla in classes
+                    option(value=cla._id)= cla.name
+        .form-group
+            label Số câu
+            input.form-control(name='total', type='number')
+        button.btn.btn-primary Thêm
