@@ -15,7 +15,25 @@ block content
         button.btn.btn-primary Lưu
         .alert.alert-warning chưa code lưu thông tin, test tính năng nhập điểm đi Đã
     
-    h3 Nhập điểm
+    h3 Nhập BTVN
+    .modal.fade#update-modal(tabindex='-1', role='dialog')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    p
+                    form#form-update(action="")
+                        .input-group.mb-3
+                            .input-group-prepend
+                                span#basic-addon1.input-group-text BTVN
+                            input.form-control.rounded-right#finish_count(type='number', placeholder='Không nhập gì là xóa', aria-describedby='basic-addon1')
+                            .invalid-feedback#validate(style='display: none')
+                        button.btn.btn-primary#submit-update.mr-2(type='submit') Lưu
+                        button.btn.btn-secondary(type='button', data-dismiss='modal') Hủy
+
     .input-group.mb-3
         .input-group-prepend
             span#basic-addon1.input-group-text Lọc
@@ -26,7 +44,7 @@ block content
             tr
                 th ID
                 th Tên
-                th Đã xong
+                th BTVN
         tbody
             each student in homework.student
                 tr
@@ -35,5 +53,4 @@ block content
                     td= (student.finish_count != undefined) ? student.finish_count : 'Chưa nhập'
 block script
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
-    script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
     script(type='text/javascript', src='/student.filter.js')
