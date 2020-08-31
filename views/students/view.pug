@@ -1,14 +1,14 @@
 extends ../layouts/common.pug
 mixin card-rating(rating, text_header)
-    if rating=='Tốt'
+    if rating > 8
         .card.border-success.text-success
             h6.card-header.bg-success.text-white= text_header
             block
-    else if rating=='Khá'
+    else if rating > 6
         .card.border-warning.text-warning
             h6.card-header.bg-warning.text-white= text_header
             block
-    else if rating=='Yếu'
+    else if rating > 4
         .card.border-danger.text-danger
             h6.card-header.bg-danger.text-white= text_header
             block
@@ -57,24 +57,21 @@ block content
         h3 Tình hình học trợ giảng
         .row.row-cols-1.row-cols-md-2.text-center
             .col.mb-2
-                .card.border-info
-                    h6.card-header.bg-info.text-white Tổng cộng
+                +card-rating(data.totalRating/data.total, 'Tổng cộng')
                     .card-body
                         h6 #{data.total} BUỔI - #{Math.round(data.totalTimes/60*10)/10} GIỜ
                         .text-muted TB #{Math.round(data.totalTimes/data.total)} PHÚT/BUỔI
                             if (data.totalExercises)
                                 |  - TB #{Math.round(data.totalProblems/data.totalExercises)} CÂU/BUỔI
-                        .progress(style="height: 2rem; background-image: linear-gradient(to right, #60d394 "+data.totalGoods/data.total*100+"%, #ee6055 100%);")
+                        .progress(style="height: 2rem; background-image: linear-gradient(to right, #60d394 "+data.totalRating/data.total*10+"%, #ee6055 100%);")
             .col.mb-2
-                .card.border-info
-                    h6.card-header.bg-info.text-white Tuần vừa qua
+                +card-rating(data.totalRatingLW/data.totalLW, 'Tuần vừa qua')
                     .card-body
                         h6 #{data.totalLW} BUỔI - #{Math.round(data.totalTimesLW/60*10)/10} GIỜ
                         .text-muted TB #{Math.round(data.totalTimesLW/data.total)} PHÚT/BUỔI
                             if (data.totalExercises)
                                 |  - TB #{Math.round(data.totalProblems/data.totalExercises)} CÂU/BUỔI
-
-                        .progress(style="height: 2rem; background-image: linear-gradient(to right, #60d394 "+Math.round(data.totalGoodsLW/data.totalLW*100)+"%, #ee6055 100%);")
+                        .progress(style="height: 2rem; background-image: linear-gradient(to right, #60d394 "+Math.round(data.totalRatingLW/data.totalLW*10)+"%, #ee6055 100%);")
         .row.row-cols-2.row-cols-md-6.text-center
             each lesson in lessons
                 .col.mb-2

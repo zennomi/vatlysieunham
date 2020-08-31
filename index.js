@@ -91,13 +91,17 @@ io.on('connection', (socket) => {
         if (updateInfo.finishCount) {
             await Homework.findOneAndUpdate({ _id: updateInfo.homeworkId, 'student.student_id': updateInfo.studentId }, {
                 $set: {
-                    'student.$.finish_count': updateInfo.finishCount
+                    'student.$.finish_count': updateInfo.finishCount,
+                    'student.$.note': updateInfo.note
                 }
             }).exec((err, result) => { console.log(result) })
         } else {
             await Homework.findOneAndUpdate({ _id: updateInfo.homeworkId, 'student.student_id': updateInfo.studentId }, {
                 $unset: {
                     'student.$.finish_count': ''
+                },
+                $set: {
+                    'student.$.note': updateInfo.note
                 }
             }).exec((err, result) => { console.log(result) })
         }

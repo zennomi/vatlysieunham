@@ -35,7 +35,8 @@ for (let i=0; i < students.length; i++) {
     });
 } */
 
-Lesson.updateMany({student_id: '5f4297732d80862de414db39'}, {student_id: '5f450f4bce9d4b0e905509e9'}).exec((err, result) => {
-    if (err) console.log(err);
-    console.log(result);
+Lesson.updateMany({grade: 5}, {
+    $set: {rating: 5},
+    $unset: {grade: ''}
 })
+.exec((err, result) => {console.log(result)});

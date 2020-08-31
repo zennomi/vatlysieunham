@@ -2,6 +2,9 @@ extends ../layouts/common.pug
 block content
     h3 Sửa thông tin
     form(action="/homeworks/create", method="POST")
+        .form-group
+            label ID
+            input.form-control(name='id', type='text', value= homework._id, readonly, required)
         .form-row.row-cols-3
             .col.form-group
                 label Tên
@@ -31,6 +34,11 @@ block content
                                 span#basic-addon1.input-group-text BTVN
                             input.form-control.rounded-right#finish_count(type='number', placeholder='Không nhập gì là xóa', aria-describedby='basic-addon1')
                             .invalid-feedback#validate(style='display: none')
+                        .input-group.mb-3
+                            .input-group-prepend
+                                span#basic-addon1.input-group-text Ghi chú
+                            input.form-control.rounded-right#note(type='text', placeholder='Không nhập gì là xóa', aria-describedby='basic-addon1')
+                            .invalid-feedback#validate(style='display: none')
                         button.btn.btn-primary#submit-update.mr-2(type='submit') Lưu
                         button.btn.btn-secondary(type='button', data-dismiss='modal') Hủy
 
@@ -45,12 +53,14 @@ block content
                 th ID
                 th Tên
                 th BTVN
+                th Ghi chú
         tbody
             each student in homework.student
                 tr
                     td= student.student_id.id
                     td= student.student_id.name
-                    td= (student.finish_count != undefined) ? student.finish_count : 'Chưa nhập'
+                    td= student.finish_count
+                    td= student.note
 block script
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
     script(type='text/javascript', src='/student.filter.js')

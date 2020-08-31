@@ -34,17 +34,16 @@ block content
             .form-group.col-md-6.mb-2
                 label Kết thúc
                 input.form-control(name="end_time", type="time")
-        .form-row
-            .form-group.col-md-6.mb-2
-                label(for="topic") Chủ đề
-                input#input.form-control(name="topic", type="text")
-            .form-group.col-md-6.mb-2
+        .form-group
+            label(for="topic") Chủ đề
+            input#input.form-control(name="topic", type="text")
+        .form-row.row-cols-1.row-cols-md-2
+            .col.form-group.mb-2
                 label Đánh giá
-                select.form-control(name="rating")
-                    option(value= '', hidden, selected) Đánh giá
-                    option.bg-success.text-white Tốt
-                    option.bg-warning.text-white Khá
-                    option.bg-danger.text-white Yếu
+                input.form-control-range#rating.slider(type='range', min=0, max=10)
+            .col.form-group.mb-2
+                label Điểm
+                input.form-control(name="rating", type='number', min=0, max=10)
         .form-group
             label Nhận xét của trợ giảng
             textarea.form-control(name="comment_of_tutor")
@@ -60,3 +59,4 @@ block script
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
     script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
     script(type='text/javascript', src='/student.search.js')
+    script(type='text/javascript', src='/lesson.rating.js')

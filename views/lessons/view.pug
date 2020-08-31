@@ -1,12 +1,12 @@
 extends ../layouts/common.pug
 mixin tr-rating(rating)
-    if rating=='Tốt'
+    if rating > 8
         tr.table-success
             block
-    else if rating=='Khá'
+    else if rating > 6
         tr.table-warning    
             block
-    else if rating=='Yếu'
+    else if rating > 4
         tr.table-danger
             block
     else

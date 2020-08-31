@@ -1,14 +1,14 @@
 extends ../layouts/common.pug
 mixin card-rating(rating, text_header='Đánh giá')
-    if rating=='Tốt'
+    if rating > 8
         .card.border-success.text-success
             h6.card-header.bg-success.text-white= text_header
             block
-    else if rating=='Khá'
+    else if rating > 6
         .card.border-warning.text-warning
             h6.card-header.bg-warning.text-white= text_header
             block
-    else if rating=='Yếu'
+    else if rating > 4
         .card.border-danger.text-danger
             h6.card-header.bg-danger.text-white= text_header
             block

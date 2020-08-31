@@ -1,6 +1,7 @@
 const Student = require('../models/student.model');
 const Classroom = require('../models/class.model');
 const Lesson = require('../models/lesson.model');
+const Homework = require('../models/homework.model');
 
 module.exports.index = async (req, res) => {
     let page = parseInt(req.query.page) || 1;
@@ -56,32 +57,50 @@ module.exports.getById = async (req, res) => {
         });
         return;
     }
-    let lessonArr = await Lesson.find({ student_id: student._id }).sort({ date: -1 });
+    
     let data = {
         total: 0,
         totalTimes: 0,
-        totalGoods: 0,
+        totalRating: 0,
         totalExercises: 0,
         totalProblems: 0,
-        totalBads: 0,
         totalLW: 0,
         totalTimesLW: 0,
-        totalGoodsLW: 0,
-        totalBadsLW: 0,
+        totalRatingLW: 0,
         totalExercisesLW: 0,
         totalProblemsLW: 0
     };
+/*     let lessons = (await Lesson.aggregate([
+        {
+            $match: {
+                'student_id': student._id,
+                'time.end_hour': { $ne: null },
+                'rating': { $ne: undefined }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: {$sum: 1},
+                avgRating: {$avg: '$rating'},
+                totalProblems: {$sum: '$total_problems'},
+                totalTime: {
+                    $sum: {
+                        $subtract: [{ $sum: [{ $multiply: ['$time.end_hour', 60] }, '$time.end_minute'] },
+                        { $sum: [{ $multiply: ['$time.start_hour', 60] }, '$time.start_minute'] }]
+                    }
+                }
+            }
+        }
+    ]))[0]; */
+     let lessonArr = await Lesson.find({ student_id: student._id }).sort({ date: -1 });
     lessonArr.forEach( lesson => {
         if (lesson.rating) {
             data.total++;
+            data.totalRating+=lesson.rating
         }
         if (lesson.time.end_hour) {
             data.totalTimes+= lesson.time.end_hour*60+lesson.time.end_minute-(lesson.time.start_hour*60+lesson.time.start_minute);
-        }
-        if (lesson.rating=='Tốt') {
-            data.totalGoods++;
-        } else if (lesson.rating=='Yếu') {
-            data.totalBads++;
         }
         if (lesson.total_problems) {
             data.totalExercises++;
@@ -96,14 +115,10 @@ module.exports.getById = async (req, res) => {
     lessonArr.filter(lesson => lesson.date>lwDate ).forEach( lesson => {
         if (lesson.rating) {
             data.totalLW++;
+            data.totalRatingLW+=lesson.rating;
         }
         if (lesson.time.end_hour) {
             data.totalTimesLW+= lesson.time.end_hour*60+lesson.time.end_minute-(lesson.time.start_hour*60+lesson.time.start_minute);
-        }
-        if (lesson.rating=='Tốt') {
-            data.totalGoodsLW++;
-        } else if (lesson.rating=='Yếu') {
-            data.totalBadsLW++;
         }
         if (lesson.total_problems) {
             data.totalExercisesLW++;
@@ -115,7 +130,6 @@ module.exports.getById = async (req, res) => {
         lessons: lessonArr,
         data: data
     })
-    console.log(data)
 };
 
 module.exports.editById = async (req, res) => {
@@ -175,6 +189,9 @@ module.exports.postDelete = async (req, res) => {
     let student = await Student.findOne({ id: req.body.id });
     await Lesson.deleteMany({ student_id: student._id });
     await Student.deleteOne({ id: req.body.id });
+    await Homework.updateMany({}, {
+        $pull: {student: {student_id: student._id}}
+    });
     req.flash('danger', `Bạn vừa xóa học sinh tên ${student.name} - ID ${student.id}`);
     res.redirect('/students');
 }

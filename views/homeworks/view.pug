@@ -2,6 +2,7 @@ extends ../layouts/common.pug
 block content
     h3 #{homework.name}
     a.btn.btn-primary(href='/homeworks/edit/'+homework._id) Cập nhật
+    a.btn.btn-danger(href='/homeworks/delete/'+homework._id) Xóa
     p Thời gian: #{homework.date}
     p Số BTVN: #{homework.total}
     p Lớp: #{homework.class.name}
@@ -10,11 +11,13 @@ block content
             tr
                 th ID
                 th Tên
-                th Đã xong
+                th BTVN
+                th Ghi chú
         tbody
             each student in homework.student
                 tr
                     td= student.student_id.id
                     td
                         a(href='/students/'+student.student_id.id)= student.student_id.name
-                    td= (student.finish_count != undefined) ? student.finish_count+'/'+homework.total : 'Chưa nhập'
+                    td= (student.finish_count != undefined) ? student.finish_count+'/'+homework.total : ''
+                    td= student.note

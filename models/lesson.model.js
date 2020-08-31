@@ -26,8 +26,9 @@ const lessonSchema = new Schema({
     topic: String,
     total_problems: Number,
     rating: {
-        type: String,
-        enum: ['Tốt', 'Khá', 'Yếu', '']
+        type: Number,
+        max: 10,
+        min: 0
     },
     comment_of_student: String,
     comment_of_tutor: String,
