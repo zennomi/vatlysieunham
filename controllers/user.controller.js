@@ -47,7 +47,6 @@ module.exports.postEdit = (req, res) => {
             note: req.body.note
         }
     }, {new: true}).exec((err, user) => {
-        req.signedCookies.user = user;
         req.flash('success', `Sửa thông tin của user ${req.body.username} thành công.`);
         req.flash('info', 'Đăng nhập lại cho chắc.');
         res.redirect('/auth/logout');

@@ -2,15 +2,27 @@ extends ../layouts/common.pug
 mixin card-rating(rating, text_header='Đánh giá')
     if rating > 8
         .card.border-success.text-success
-            h6.card-header.bg-success.text-white= text_header
+            h6.card-header.bg-success.text-white
+                span.mr-1= text_header
+                span.badge.badge-light= rating
             block
     else if rating > 6
-        .card.border-warning.text-warning
-            h6.card-header.bg-warning.text-white= text_header
+        .card.border-info.text-info
+            h6.card-header.bg-info.text-white
+                span.mr-1= text_header
+                span.badge.badge-light= rating
             block
     else if rating > 4
+        .card.border-warning.text-warning
+            h6.card-header.bg-warning.text-white
+                span.mr-1= text_header
+                span.badge.badge-light= rating
+            block
+    else if rating > 0
         .card.border-danger.text-danger
-            h6.card-header.bg-danger.text-white= text_header
+            h6.card-header.bg-danger.text-white
+                span.mr-1= text_header
+                span.badge.badge-light= rating
             block
     else
         .card

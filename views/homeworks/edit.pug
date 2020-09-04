@@ -1,11 +1,11 @@
 extends ../layouts/common.pug
 block content
     h3 Sửa thông tin
-    form(action="/homeworks/create", method="POST")
+    form(action="/homeworks/edit", method="POST")
         .form-group
             label ID
             input.form-control(name='id', type='text', value= homework._id, readonly, required)
-        .form-row.row-cols-3
+        .form-row.row-cols-1.row-cols-md-3
             .col.form-group
                 label Tên
                 input.form-control(name='name', type='text', value=homework.name, required)
@@ -15,8 +15,13 @@ block content
             .col.form-group 
                 label Số câu
                 input.form-control#total(name='total', type='number', value=homework.total)
-        button.btn.btn-primary Lưu
-        .alert.alert-warning chưa code lưu thông tin, test tính năng nhập điểm đi Đã
+        .row.row-cols-3
+            .col
+                button.btn.btn-primary.w-100 Lưu
+            .col
+                a.btn.btn-danger.w-100(href='/homeworks/delete/'+homework._id) Xóa
+            .col
+                a.btn.btn-light.w-100(href='/homeworks/view/'+homework._id) Trở về
     
     h3 Nhập BTVN
     .modal.fade#update-modal(tabindex='-1', role='dialog')
@@ -64,3 +69,4 @@ block content
 block script
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
     script(type='text/javascript', src='/student.filter.js')
+    script(type='text/javascript', src='/homework.update.js')

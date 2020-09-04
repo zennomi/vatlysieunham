@@ -4,9 +4,12 @@ mixin tr-rating(rating)
         tr.table-success
             block
     else if rating > 6
-        tr.table-warning    
+        tr.table-info    
             block
     else if rating > 4
+        tr.table-warning    
+            block
+    else if rating > 0
         tr.table-danger
             block
     else

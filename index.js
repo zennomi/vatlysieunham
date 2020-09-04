@@ -77,7 +77,15 @@ app.use('/classes', pushMessage, classRoute);
 app.use('/lessons', pushMessage, lessonRoute);
 app.use('/auth', pushMessage, authRoute);
 app.use('/homeworks', authMiddleware.authRequire, pushMessage, homeworkRoute);
-app.use('/user', authMiddleware.authRequire, pushMessage, userRoute)
+app.use('/user', authMiddleware.authRequire, pushMessage, userRoute);
+
+app.get('/api/students/:id', (req, res) => {
+    Student.findOne({id: req.params.id}, '_id name classroom')
+        .populate('classroom')
+        .exec((err, student) => {
+            res.json(student);
+        });
+})
 
 io.on('connection', (socket) => {
     socket.on('quick search', async function (name) {

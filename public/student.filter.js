@@ -1,6 +1,4 @@
 $(document).ready(function () {
-  var socket = io();
-
   // Filter
   $("#student-filter").on("keyup", function () {
     var value = $(this).val().toLowerCase();
@@ -16,60 +14,25 @@ $(document).ready(function () {
   $("#student-filter").focus(function () {
     $(this).trigger('select');
   })
-
-  // Update
-  let id, currentTr;
-  let updateInfo = { homeworkId: window.location.pathname.split('/')[3] };
-  $("#student-table tbody tr").on('click', function () {
-    currentTr = $('currentTr');
-    console.log(currentTr);
-    $('#update-modal').modal('show');
-    id = $(this).children('td:first').text();
-    updateInfo.studentId = parseInt(id);
-
-    let currentPoint = $(this).children('td:nth-child(3)').text();
-    let currentNote = $(this).children('td:nth-child(4)').text();
-    $('h5.modal-title').text(`Nhập điểm`);
-    $('.modal-body p').text(`Học sinh ID ${id} - Tên: ${$(this).children('td:nth-child(2)').text()}`);
-    $('#finish_count').val(currentPoint);
-    $('#note').val(currentNote);
-    $('#update-modal').on('shown.bs.modal', function () {
-      $('#finish_count').trigger('focus');
-      $('#finish_count').trigger('select');
-    });
-    $('#finish_count').on('keyup', function () {
-      if ($('#finish_count').val() == '') {
-        $('#validate').hide();
-        $('#submit-update').prop('disabled', false);
-        $('#finish_count').addClass('is-valid');
-        return;
-      }
-      if (parseInt($('#finish_count').val()) > $('#total').val()) {
-        $('#validate').show();
-        $('#validate').text('Vượt quá tổng số BTVN.');
-        $('#submit-update').prop('disabled', true);
-        $('#finish_count').removeClass('is-valid');
-      } else {
-        $('#validate').hide();
-        $('#submit-update').prop('disabled', false);
-        $('#finish_count').addClass('is-valid')
-      }
-    });
-    //  Click and submit
-  })
-  $('#form-update').on('submit', function (e) {
-    e.preventDefault();
-    $('#update-modal').modal('hide');
-    $("#student-table tbody tr")
-      .filter(function () { return $(this).children('td:first').text() == id })
-      .children('td:nth-child(3)')
-      .text($('#finish_count').val());
-      $("#student-table tbody tr")
-      .filter(function () { return $(this).children('td:first').text() == id })
-      .children('td:nth-child(4)')
-      .text($('#note').val());
-    updateInfo.finishCount = $('#finish_count').val();
-    updateInfo.note = $('#note').val();
-    socket.emit('update-homework', updateInfo);
-  })
+  $('th').css('cursor', 'pointer');
 });
+$('th').click(function(){
+  var table = $(this).parents('table').eq(0)
+  var rows = table.find('tr:gt(0)').toArray().sort(comparer($(this).index()))
+  this.asc = !this.asc
+  if (!this.asc){rows = rows.reverse()}
+  for (var i = 0; i < rows.length; i++){table.append(rows[i])}
+})
+function comparer(index) {
+  return function(a, b) {
+      var valA = getCellValue(a, index), valB = getCellValue(b, index)
+      return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : getName(valA).localeCompare(getName(valB));
+  }
+}
+function getCellValue(row, index){ return $(row).children('td').eq(index).text() }
+
+function getName(string) {
+  let stringArray = string.split(' ');
+  name = stringArray[stringArray.length-1];
+  return name;
+}

@@ -51,7 +51,7 @@ module.exports.postCreate = (req, res) => {
             total: req.body.total || 100,
             student: students.map(student => {return {student_id: student._id}})
         })
-        homework.save().exec((err, homework) => {
+        homework.save((err, homework) => {
             req.flash('success', 'Thêm BTVN thành công.');
             res.redirect('/homeworks/view/'+homework._id);
         });
@@ -61,8 +61,13 @@ module.exports.postCreate = (req, res) => {
 module.exports.postEdit = (req, res) => {
     Homework.findByIdAndUpdate(req.body.id, {
         $set: {
-            
+            name: req.body.name,
+            date: new Date(req.body.date),
+            total: req.body.total || 100,
         }
+    }).exec((err, homework) => {
+        req.flash('success', 'Cập nhật BTVN thành công.');
+        res.redirect('/homeworks/view/'+req.body.id);
     })
 }
 

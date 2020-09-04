@@ -1,5 +1,5 @@
-$(document).ready(function(){
-    $('#rating').on('change', function() {
+$(document).ready(function () {
+    $('#rating').on('change', function () {
         let value = $(this).val();
         $('input[name="rating"]').val(value);
         $('input[name="rating"]').css('color', 'white');
@@ -13,7 +13,7 @@ $(document).ready(function(){
             $('input[name="rating"]').css('background', '#E58D7B');
         }
     })
-    $('input[name="rating"]').on('change', function() {
+    $('input[name="rating"]').on('change', function () {
         console.log('Loo')
     })
-  });
+});

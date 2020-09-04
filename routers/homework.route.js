@@ -15,6 +15,8 @@ router.get('/create', controller.create);
 
 router.post('/create', controller.postCreate);
 
+router.post('/edit', controller.postEdit);
+
 router.post('/delete', controller.postDelete);
 
 module.exports = router;

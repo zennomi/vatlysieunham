@@ -5,10 +5,14 @@ mixin card-rating(rating, text_header)
             h6.card-header.bg-success.text-white= text_header
             block
     else if rating > 6
+        .card.border-info.text-info
+            h6.card-header.bg-info.text-white= text_header
+            block
+    else if rating > 4
         .card.border-warning.text-warning
             h6.card-header.bg-warning.text-white= text_header
             block
-    else if rating > 4
+    else if rating > 0
         .card.border-danger.text-danger
             h6.card-header.bg-danger.text-white= text_header
             block
@@ -74,7 +78,7 @@ block content
                         .progress(style="height: 2rem; background-image: linear-gradient(to right, #60d394 "+Math.round(data.totalRatingLW/data.totalLW*10)+"%, #ee6055 100%);")
         .row.row-cols-2.row-cols-md-6.text-center
             each lesson in lessons
-                .col.mb-2
+                .col.mb-2(data-toggle="tooltip", title=lesson.comment_of_tutor)
                     +card-rating(lesson.rating, lesson.date + ': ' + lesson.time.start_hour + (lesson.time.start_minute<10?':0':':') + lesson.time.start_minute + (lesson.time.end_hour? ' - ' + lesson.time.end_hour + (lesson.time.end_minute<10?':0':':') + lesson.time.end_minute : ''))
                         .card-body
                             if (lesson.type)

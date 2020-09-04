@@ -1,12 +1,20 @@
 extends ../layouts/common.pug
 block content
     h3 #{homework.name}
-    a.btn.btn-primary(href='/homeworks/edit/'+homework._id) Cập nhật
-    a.btn.btn-danger(href='/homeworks/delete/'+homework._id) Xóa
-    p Thời gian: #{homework.date}
+    p Thời gian: #{homework.date.toISOString().slice(0,10)}
     p Số BTVN: #{homework.total}
     p Lớp: #{homework.class.name}
-    table.table.table-hover
+    .input-group.mb-3
+        .input-group-prepend
+            span#basic-addon1.input-group-text Lọc
+        input.form-control#student-filter(type='text', placeholder='Tên, ID,...', aria-label='Username', aria-describedby='basic-addon1')
+    .row.row-cols-2
+        .col
+            a.btn.btn-primary.w-100(href='/homeworks/edit/'+homework._id) Cập nhật
+        .col
+            a.btn.btn-danger.w-100(href='/homeworks/delete/'+homework._id) Xóa
+
+    table.table.table-hover#student-table
         thead
             tr
                 th ID
@@ -21,3 +29,5 @@ block content
                         a(href='/students/'+student.student_id.id)= student.student_id.name
                     td= (student.finish_count != undefined) ? student.finish_count+'/'+homework.total : ''
                     td= student.note
+block script
+    script(type='text/javascript', src='/student.filter.js')
