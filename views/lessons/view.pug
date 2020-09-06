@@ -17,7 +17,8 @@ mixin tr-rating(rating)
             block
 block content
     h3
-        span.mr-2 Danh sách học sinh đi trợ giảng ngày #{date}
+        span.mr-2 Danh sách học sinh đi trợ giảng 
+            span#simpleDate= date
         span.badge.badge-primary= lessons.length
     .input-group.mb-3
         .input-group-prepend
@@ -91,3 +92,4 @@ block content
 block script
     script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
     script(type='text/javascript', src='/lesson.filter.js')
+    script(type='text/javascript', src='/time.convert.js')

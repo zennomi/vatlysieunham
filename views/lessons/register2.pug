@@ -1,0 +1,79 @@
+extends ../layouts/common.pug
+mixin card-day(day)
+    .card.mb-2
+        .card-header
+            label.container-checkbox
+                if (day!=8)
+                    | Thứ #{day}
+                else
+                    | Chủ nhật
+                input(type='checkbox')
+                span.checkmark
+        .card-body(style="display: none;")
+            .form-row.row-cols-2#time-card
+                .form-group.col-md-6.mb-2
+                    label Bắt đầu
+                    input.form-control(name="start_time_"+day, type="time")
+                .form-group.col-md-6.mb-2
+                    label Kết thúc
+                    input.form-control(name="end_time_"+day, type="time")
+            #time-note.text-danger(style="display: none") Bắt buộc đăng ký giờ bắt đầu.
+            .form-row.row-cols-2#topic-card
+                .form-group.col-md-6.mb-2
+                        label Loại
+                        select.form-control(name="type_"+day)
+                            option(value="", hidden, selected) Loại
+                            option Lý thuyết
+                            option Bài tập
+                .form-group.col-md-6.mb-2
+                    label(for="topic") Chủ đề
+                    input#input.form-control(name="topic_"+day, type="text")
+            #topic-note(style="display: none")
+                b Lý thuyết: 
+                | Nếu em muốn đến nghe giảng lại bài trên lớp.
+                br
+                b Bài tập: 
+                | Nếu em muốn đến ngồi làm bài tập tại trung tâm.
+
+block content
+    h3 Đăng ký đi học trợ giảng
+
+    form(action="/lessons/register", method="POST")
+        .card#id-card.mb-2
+            .card-body
+                .form-group
+                    label(for="id") ID học sinh
+                    input#id.form-control(name="student_id", type="number", required)
+                #id-note(style="display: none")
+                    span
+                        | Nếu em chưa biết ID của mình, em có thể tìm ID của mình tại 
+                        a(href='/students', target='_blank') Danh sách học sinh
+                        | . 
+                        br
+                        b Không tìm thấy? 
+                        | Liên hệ ngay trợ giảng nhé em.
+                #matched-student
+        
+        +card-day(2)
+        +card-day(3)
+        +card-day(4)
+        +card-day(5)
+        +card-day(6)
+        +card-day(7)
+        +card-day(8)
+
+        .card#comment-card.mb-2
+            .card-body
+                .form-group
+                    label Ghi chú của học sinh
+                    textarea.form-control(name="comment_of_student")
+                #comment-note(style="display: none") Em muốn dặn dò gì trợ giảng? Chuẩn bị cho em một cuốn giáo trình, tâm hồn đẹp,...
+        .row.row-cols-2
+            .col
+                button.btn.btn-primary.w-100(type='submit') Lưu
+            .col
+                a.btn.btn-light.w-100(href="/lessons/registers") Hủy
+block script
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
+    script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
+    script(type='text/javascript', src='/lesson.register.js')

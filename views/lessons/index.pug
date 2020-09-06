@@ -29,10 +29,12 @@ block content
                             td
                                 a.text-dark(href='/lessons/'+lesson._id)
                                     if (lesson._id==today)
-                                        b= lesson._id
+                                        b#simpleDate= lesson._id
                                     else
-                                        span= lesson._id
+                                        span#simpleDate= lesson._id
                             td= lesson.totalStudents
 
     else
         .alert.alert-warning Danh sách trống.
+block script
+    script(type='text/javascript', src='/time.convert.js')

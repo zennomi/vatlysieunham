@@ -1,5 +1,21 @@
 extends ./layouts/common.pug
 block content
+    h3 Web App Quản lý học sinh
+    if (!user)
+        .row.row-cols-1.row-cols-md-2
+            .col.mb-2
+                .card
+                    .card-body
+                        h5.card-title Giáo viên, trợ lý, trợ giảng
+                        p.card-text Vui lòng đăng nhập để sử dụng các chức năng trên web.
+                        a.btn.btn-success(href='/auth/login') Đăng nhập
+            .col.mb-2
+                .card
+                    .card-body
+                        h5.card-title Học sinh của hệ thống
+                        p.card-text Em có thể đăng ký học trợ giảng hoặc xem danh sách những buổi trợ giảng em đã đăng ký trên thiết bị này.
+                        a.btn.btn-success.mr-2(href='/lessons/register') Đăng ký học trợ giảng
+                        a.btn.btn-success(href='/lessons/registers') Xem danh sách
     h3 Thống kê
     .row.row-cols-1.row-cols-md-3.text-center
         .col.mb-2

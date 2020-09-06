@@ -1,11 +1,9 @@
 $(document).ready(function () {
     var socket = io();
     // Update
-    let id, currentTr;
+    let id;
     let updateInfo = { homeworkId: window.location.pathname.split('/')[3] };
     $("#student-table tbody tr").on('click', function () {
-        currentTr = $('currentTr');
-        console.log(currentTr);
         $('#update-modal').modal('show');
         id = $(this).children('td:first').text();
         updateInfo.studentId = parseInt(id);

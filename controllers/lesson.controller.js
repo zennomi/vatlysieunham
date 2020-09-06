@@ -47,14 +47,7 @@ module.exports.register = (req, res) => {
             maxAge: 7 * 24 * 3600 * 1000
         });
     }
-    console.log(req.signedCookies.registerLesson);
-    let nowTime = new Date();
-    nowTime = nowTime.valueOf() + 252e5 + 864e5;
-    nowTime = new Date(nowTime);
-    nowTime = nowTime.toISOString().slice(0,10);
-    res.render('lessons/register', {
-        date: nowTime
-    });
+    res.render('lessons/register2');
 }
 
 module.exports.viewRegisters = (req, res) => {
@@ -365,29 +358,63 @@ module.exports.postCreate = async (req, res) => {
 }
 
 module.exports.postRegister = async (req, res) => {
-    let lesson = new Lesson({
-        date: req.body.date.toString(),
-        student_id: (await Student.findOne({ id: req.body.student_id }))._id,
-        type: req.body.type ? req.body.type : undefined,
-        time: {
-            start_hour: req.body.start_time ? parseInt(req.body.start_time.slice(0, 2)) : undefined,
-            start_minute: req.body.start_time ? parseInt(req.body.start_time.slice(3, 5)) : undefined,
-            end_hour: req.body.end_time ? parseInt(req.body.end_time.slice(0, 2)) : undefined,
-            end_minute: req.body.end_time ? parseInt(req.body.end_time.slice(3, 5)) : undefined
-        },
-        topic: req.body.topic,
-        comment_of_student: req.body.comment_of_student
-    })
-    await lesson.save();
-    let lists = req.signedCookies.registerLesson;
-    lists.push(lesson._id);
-    res.cookie('registerLesson', lists, {
-        signed: true,
-        maxAge: 7 * 24 * 3600 * 1000
-    });
-    console.log(req.signedCookies.registerLesson);
+    let monday = new Date();
+    monday = monday.valueOf() + 252e5 + 864e5;
+    monday = new Date(monday);
+    while (monday.getUTCDay() != 1) {
+        monday = monday.valueOf() - 864e5;
+        monday = new Date(monday);
+    }
+    let id = (await Student.findOne({ id: req.body.student_id }))._id;
+    
+    if (req.body.start_time_2) {
+        await registerDay(0, req.body.type_2, req.body.start_time_2, req.body.end_time_2, req.body.topic_2)
+    }
+    if (req.body.start_time_3) {
+        await registerDay(1, req.body.type_3, req.body.start_time_3, req.body.end_time_3, req.body.topic_3)
+    }
+    if (req.body.start_time_4) {
+        await registerDay(2, req.body.type_4, req.body.start_time_4, req.body.end_time_4, req.body.topic_4)
+    }
+    if (req.body.start_time_5) {
+        await registerDay(3, req.body.type_5, req.body.start_time_5, req.body.end_time_5, req.body.topic_5)
+    }
+    if (req.body.start_time_6) {
+        await registerDay(4, req.body.type_6, req.body.start_time_6, req.body.end_time_6, req.body.topic_6)
+    }
+    if (req.body.start_time_7) {
+        await registerDay(5, req.body.type_7, req.body.start_time_7, req.body.end_time_7, req.body.topic_7)
+    }
+    if (req.body.start_time_8) {
+        await registerDay(6, req.body.type_8, req.body.start_time_8, req.body.end_time_8, req.body.topic_8)
+    }
     req.flash('success', 'Đăng ký trợ giảng thành công.');
     res.redirect('/lessons/registers');
+
+    async function registerDay(value, type, start_time, end_time, topic) {
+        let date = monday.valueOf() + value*864e5;
+        date = new Date(date);
+        let lesson = new Lesson({
+            date: date.toISOString().slice(0,10),
+            student_id: id,
+            type: type ? type : undefined,
+            time: {
+                start_hour: start_time ? parseInt(start_time.slice(0, 2)) : undefined,
+                start_minute: start_time ? parseInt(start_time.slice(3, 5)) : undefined,
+                end_hour: end_time ? parseInt(end_time.slice(0, 2)) : undefined,
+                end_minute: end_time ? parseInt(end_time.slice(3, 5)) : undefined
+            },
+            topic: topic,
+            comment_of_student: req.body.comment_of_student
+        });
+        await lesson.save();
+        let lists = req.signedCookies.registerLesson;
+        lists.push(lesson._id);
+        res.cookie('registerLesson', lists, {
+            signed: true,
+            maxAge: 7 * 24 * 3600 * 1000
+        });
+    }
 }
 
 module.exports.postEdit =(req, res) => {

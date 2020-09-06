@@ -24,17 +24,17 @@ $(document).ready(function () {
             })
         }
     });
-    $('#time-card').focusin(function() {
-        $('#time-note').show();
+    $('div#time-card').focusin(function() {
+        $(this).closest('.card-body').children('#time-note').show();
     });
-    $('#time-card').focusout(function() {
-            $('#time-note').hide();
+    $('div#time-card').focusout(function() {
+        $(this).closest('.card-body').children('#time-note').hide();
     });
-    $('#topic-card').focusin(function() {
-        $('#topic-note').show();
+    $('div#topic-card').focusin(function() {
+        $(this).closest('.card-body').children('#topic-note').show();
     });
-    $('#topic-card').focusout(function() {
-            $('#topic-note').hide();
+    $('div#topic-card').focusout(function() {
+        $(this).closest('.card-body').children('#topic-note').hide();
     });
     $('#comment-card').focusin(function() {
         $('#comment-note').show();
@@ -42,4 +42,13 @@ $(document).ready(function () {
     $('#comment-card').focusout(function() {
             $('#comment-note').hide();
     });
+    $('input[type="checkbox"]').on('click', function() {
+        if (this.checked == true) {
+            $(this).closest('.card').find('.card-body').show();
+            $(this).closest('.card').find('input[type="time"]').first().focus();
+        } else {
+            $(this).closest('.card').find('.card-body').hide();
+            $(this).closest('.card').find('input').val('');
+        }
+    })
 });

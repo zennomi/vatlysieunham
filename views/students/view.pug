@@ -79,7 +79,7 @@ block content
         .row.row-cols-2.row-cols-md-6.text-center
             each lesson in lessons
                 .col.mb-2(data-toggle="tooltip", title=lesson.comment_of_tutor)
-                    +card-rating(lesson.rating, lesson.date + ': ' + lesson.time.start_hour + (lesson.time.start_minute<10?':0':':') + lesson.time.start_minute + (lesson.time.end_hour? ' - ' + lesson.time.end_hour + (lesson.time.end_minute<10?':0':':') + lesson.time.end_minute : ''))
+                    +card-rating(lesson.rating, lesson.getDetailedDate() + ': ' + lesson.getDetailedTime())
                         .card-body
                             if (lesson.type)
                                 h6= lesson.type
@@ -90,3 +90,4 @@ block content
                             a.text-muted(href="/lessons/view/"+lesson._id)
                                 svg.bi.bi-grip-vertical(width='2em', height='2em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
                                     path(d='M2 8a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2z')
+

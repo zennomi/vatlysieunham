@@ -45,9 +45,9 @@ block content
                         span.badge.badge-info= lesson.time.end_hour*60 + lesson.time.end_minute - lesson.time.start_hour*60 - lesson.time.start_minute
                             |  phút
                 .card-body
-                    b= lesson.date
+                    b= lesson.getDetailedDate()
                     span : 
-                    span= lesson.time.start_hour + (lesson.time.start_minute<10?':0':':') + lesson.time.start_minute + (lesson.time.end_hour?' - ' + lesson.time.end_hour + (lesson.time.end_minute<10?':0':':') + lesson.time.end_minute:'')
+                    span= lesson.getDetailedTime()
         if (lesson.type)
             .col.mb-2
                 .card

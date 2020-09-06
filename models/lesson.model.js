@@ -39,6 +39,20 @@ const lessonSchema = new Schema({
 });
 
 lessonSchema.index({ date: -1, student_id: 1 });
+
+lessonSchema.methods.getDetailedDate = function () {
+    let date = new Date(this.date);
+    let day = date.getUTCDay();
+    if (date.getUTCDay() != 0) {
+        day = 'Thứ ' + (day+1)
+    } else {
+        day = 'Chủ nhật'
+    }
+    return `${day} ${this.date.slice(8,10)}/${this.date.slice(5,7)}`
+}
+lessonSchema.methods.getDetailedTime = function () {
+    return (this.time.start_hour<10?'0':'') + this.time.start_hour + (this.time.start_minute<10?':0':':') + this.time.start_minute + (this.time.end_hour?' - ' + this.time.end_hour + (this.time.end_minute<10?':0':':') + this.time.end_minute:'')
+}
 const Lesson = mongoose.model('Lesson', lessonSchema);
 
 module.exports = Lesson;

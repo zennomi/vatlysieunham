@@ -67,8 +67,8 @@ app.get('/', pushMessage, async (req, res) => {
         numLessons: numLessons
     });
 });
-
-app.get(/\/edit\//, authMiddleware.authRequire);
+app.get(/\/view/, authMiddleware.authRequire);
+app.get(/\/edit/, authMiddleware.authRequire);
 app.get(/\/create/, authMiddleware.authRequire);
 app.get(/\/delete/, authMiddleware.authRequire);
 app.use('/students/delete', authMiddleware.adminRequire);
