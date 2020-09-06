@@ -74,6 +74,16 @@ module.exports.schedule = async (req, res) => {
     });
 }
 
+module.exports.check = (req, res) => {
+    Lesson.find({
+        $or: [{'time.end_hour': null},{'rating': null}]
+    }).populate('student_id').sort({date: -1}).exec((err, lessons) => {
+        res.render('lessons/check', {
+            lessons
+        })
+    })
+}
+
 module.exports.analyse = async (req, res) => {
     let nowTime = new Date();
     nowTime = nowTime.valueOf() + 252e5;
@@ -358,41 +368,39 @@ module.exports.postCreate = async (req, res) => {
 }
 
 module.exports.postRegister = async (req, res) => {
-    let monday = new Date();
-    monday = monday.valueOf() + 252e5 + 864e5;
-    monday = new Date(monday);
-    while (monday.getUTCDay() != 1) {
-        monday = monday.valueOf() - 864e5;
-        monday = new Date(monday);
-    }
+    let today = new Date();
+    today = today.valueOf() + 252e5;
+    today = new Date(today);
+
     let id = (await Student.findOne({ id: req.body.student_id }))._id;
     
     if (req.body.start_time_2) {
-        await registerDay(0, req.body.type_2, req.body.start_time_2, req.body.end_time_2, req.body.topic_2)
+        await registerDay(1, req.body.type_2, req.body.start_time_2, req.body.end_time_2, req.body.topic_2)
     }
     if (req.body.start_time_3) {
-        await registerDay(1, req.body.type_3, req.body.start_time_3, req.body.end_time_3, req.body.topic_3)
+        await registerDay(2, req.body.type_3, req.body.start_time_3, req.body.end_time_3, req.body.topic_3)
     }
     if (req.body.start_time_4) {
-        await registerDay(2, req.body.type_4, req.body.start_time_4, req.body.end_time_4, req.body.topic_4)
+        await registerDay(3, req.body.type_4, req.body.start_time_4, req.body.end_time_4, req.body.topic_4)
     }
     if (req.body.start_time_5) {
-        await registerDay(3, req.body.type_5, req.body.start_time_5, req.body.end_time_5, req.body.topic_5)
+        await registerDay(4, req.body.type_5, req.body.start_time_5, req.body.end_time_5, req.body.topic_5)
     }
     if (req.body.start_time_6) {
-        await registerDay(4, req.body.type_6, req.body.start_time_6, req.body.end_time_6, req.body.topic_6)
+        await registerDay(5, req.body.type_6, req.body.start_time_6, req.body.end_time_6, req.body.topic_6)
     }
     if (req.body.start_time_7) {
-        await registerDay(5, req.body.type_7, req.body.start_time_7, req.body.end_time_7, req.body.topic_7)
+        await registerDay(6, req.body.type_7, req.body.start_time_7, req.body.end_time_7, req.body.topic_7)
     }
     if (req.body.start_time_8) {
-        await registerDay(6, req.body.type_8, req.body.start_time_8, req.body.end_time_8, req.body.topic_8)
+        await registerDay(0, req.body.type_8, req.body.start_time_8, req.body.end_time_8, req.body.topic_8)
     }
     req.flash('success', 'Đăng ký trợ giảng thành công.');
     res.redirect('/lessons/registers');
 
     async function registerDay(value, type, start_time, end_time, topic) {
-        let date = monday.valueOf() + value*864e5;
+        let distance = (value <= today.getUTCDay()) ? value - today.getUTCDay() + 7 : value - today.getUTCDay();
+        let date = today.valueOf() + distance*864e5;
         date = new Date(date);
         let lesson = new Lesson({
             date: date.toISOString().slice(0,10),

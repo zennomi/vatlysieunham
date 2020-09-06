@@ -18,6 +18,8 @@ router.get('/registers', controller.viewRegisters);
 
 router.get('/schedule', controller.schedule);
 
+router.get('/check', controller.check);
+
 router.get('/analyse', authMiddleware.authRequire, controller.analyse);
 
 router.get('/:date', controller.viewByDate);

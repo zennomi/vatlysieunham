@@ -1,6 +1,6 @@
 extends ../layouts/common.pug
 block content
-    h3 Hẹn trợ giảng
+    h3 Những buổi trợ giảng chưa cập nhật đầy đủ
     if lessons.length > 0
         table.table.table-hover.text-center
             thead
@@ -16,8 +16,8 @@ block content
                 tr
                     td
                         a.text-dark(href="/lessons/view/" + lesson._id)= lesson.student_id.name
-                    td= lesson.date
-                    td= lesson.time.start_hour + (lesson.time.start_minute<10?':0':':') + lesson.time.start_minute + (lesson.time.end_hour?' - ' + lesson.time.end_hour + (lesson.time.end_minute<10?':0':':') + lesson.time.end_minute:'')
+                    td= lesson.getDetailedDate()
+                    td= lesson.getDetailedTime()
                     td.text-center
                         .row.row-cols-1.row-cols-md-3.no-gutters
                             .col.d-none.d-md-inline
