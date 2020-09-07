@@ -26,7 +26,12 @@ block content
         .col-12.col-md-4.mb-2
             .card.border-info
                 h6.card-header.bg-info.text-white Họ tên
-                b.card-body.text-info= student.name
+                .card-body.text-info
+                    b.mr-2= student.name
+                    if (student.tags)
+                        br.d-inline.d-md-none
+                        each tag in student.tags
+                            a.badge.badge-danger.mr-1(href='/students/search?tag='+tag)= tag
         .col.mb-2
             .card
                 h6.card-header Lớp

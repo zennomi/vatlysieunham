@@ -26,14 +26,13 @@ module.exports.search = async (req, res) => {
     let name = req.query.name;
     let id = req.query.id;
     let cla = req.query.class;
-
+    let tag = req.query.tag;
     let nameRegex = new RegExp(req.query.name, 'i');
     let students = await Student.find({ name: {$regex: nameRegex} }).populate('classroom');
     let classes = await Classroom.find();
     let matchedStudents = students.filter((student) => {
-        return (!id || student.id == id) && (!cla || student.classroom.name == cla)
+        return (!id || student.id == id) && (!cla || student.classroom.name == cla) && (!tag || student.tags.indexOf(tag) > -1)
     });
-    console.log(matchedStudents);
     res.render('students/index', {
         students: matchedStudents,
         name: name,
@@ -152,8 +151,6 @@ module.exports.deleteById = (req, res) => {
 }
 
 module.exports.postCreate = async (req, res) => {
-    let classroom = await Classroom.findOne({ name: req.body.class });
-
     let id = (await Student.aggregate([
         {
             $group: {
@@ -165,24 +162,33 @@ module.exports.postCreate = async (req, res) => {
     id = id.length>0 ? id[0].max+1 : 1;
     let student = new Student({
         name: req.body.name,
-        classroom: classroom._id,
-        id: id,
-        note: req.body.note
+        classroom: req.body.class,
+        id: id
     });
     if (req.body.dob) student.dob = new Date(req.body.dob);
+    if (req.body.tags) {
+        student.tags = req.body.tags.split(',').map(tag => tag.trim().toUpperCase());
+    };
+    if (req.body.note) student.note = req.body.note;
     await student.save();
     req.flash('success', `Đã thêm học sinh mới tên ${req.body.name} - ID ${id}.`)
     res.redirect('/students/'+student.id);
 };
 
 module.exports.postEdit = async (req, res) => {
-    let newClass = await Classroom.findOne({ name: req.body.class });
-    let student = await Student.findOneAndUpdate(
-        { id: req.body.id },
-        { $set: { name: req.body.name, dob: req.body.dob, classroom: newClass._id, note: req.body.note }}
-    );
-    req.flash('success', `Đã sửa học sinh tên ${req.body.name} - ID ${req.body.id}`);
-    res.redirect('/students/' + req.body.id);
+    Student.findOne({id: req.body.id}).exec((err, student) => {
+        student.name = req.body.name;
+        student.classroom = req.body.class;
+        if (req.body.dob) student.dob = new Date(req.body.dob);
+        if (req.body.tags) {
+            student.tags = req.body.tags.split(',').map(tag => tag.trim().toUpperCase());
+        };
+        if (req.body.note) student.note = req.body.note;
+        student.save(() => {
+            req.flash('success', `Đã sửa học sinh tên ${req.body.name} - ID ${req.body.id}`);
+            res.redirect('/students/' + req.body.id);
+        });
+    })
 }
 
 module.exports.postDelete = async (req, res) => {

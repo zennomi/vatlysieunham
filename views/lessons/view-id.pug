@@ -35,12 +35,16 @@ block content
             .card.border-info
                 h6.card-header.bg-info.text-white Thông tin học sinh
                 .card-body
-                    a(href="/students/"+lesson.student_id.id)= lesson.student_id.name
-                    a.ml-2(href="/classes/"+lesson.student_id.classroom.name, class="badge badge-info")= lesson.student_id.classroom.name
+                    a.mr-2(href="/students/"+lesson.student_id.id)= lesson.student_id.name
+                    a.mr-2(href="/classes/"+lesson.student_id.classroom.name, class="badge badge-info")= lesson.student_id.classroom.name
+                    if (lesson.student_id.tags)
+                        br.d-inline.d-md-none
+                        each tag in lesson.student_id.tags
+                            a.badge.badge-danger.mr-1(href='/students/search?tag='+tag)= tag
         .col-12.mb-2
             .card
                 h6.card-header
-                    span.mr-1 Thời gian
+                    span.mr-2 Thời gian
                     if lesson.time.end_hour
                         span.badge.badge-info= lesson.time.end_hour*60 + lesson.time.end_minute - lesson.time.start_hour*60 - lesson.time.start_minute
                             |  phút

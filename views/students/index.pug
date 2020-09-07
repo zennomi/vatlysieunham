@@ -38,7 +38,12 @@ block content
                 each student in students
                     tr
                         td= student.id
-                        td= student.name
+                        td
+                            a.text-dark.mr-2(href='/students/'+student.id)= student.name
+                            if (student.tags && user)
+                                br.d-inline.d-md-none
+                                each tag in student.tags
+                                    a.badge.badge-danger.mr-1(href='/students/search?tag='+tag)= tag
                         td.d-none.d-md-block
                             if student.dob
                                 span= student.dob.toISOString().slice(0,10)

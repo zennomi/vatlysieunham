@@ -3,19 +3,24 @@ extends ../layouts/common.pug
 block content
     h1 Thêm học sinh mới
     form(action="/students/create", method="POST")
-        .form-group
-            label(for="name") Tên
-            input#name.form-control(name="name", type="text", required)
         .form-row
-            .form-group.col-md-6.mb-3
+            .form-group.col-md-6.mb-2
+                label(for="name") Tên
+                input#name.form-control(name="name", type="text", required)
+            .form-group.col-md-6.mb-2
                 label Ngày sinh
                 input.form-control(name="dob", type="date")
-            .form-group.col-md-6.mb-3
+        .form-row
+            .form-group.col-6
                 label Lớp
                 select.form-control(name="class", required)
                     option(value="", hidden, selected) Chọn lớp
                     each cla in classes
-                        option= cla.name
+                        option(value=cla._id)= cla.name
+            .form-group.col-6
+                label Dán nhãn
+                input.form-control(name='tags', type='text', placeholder='mới, yếu,...')
+                small.text-muted Mỗi tag cách nhau một dấu ","
         .form-group
             label Ghi chú
             textarea.form-control(name="note")

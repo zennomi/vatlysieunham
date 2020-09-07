@@ -8,6 +8,7 @@ const studentSchema = new Schema({
     dob: {type: Date},
     classroom: { type: Schema.Types.ObjectId, ref: 'Classroom' },
     id: {type: Number, index: true, unique: true},
+    tags: [String],
     note: String
 })
 studentSchema.index({id: -1});
