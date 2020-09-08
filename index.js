@@ -79,6 +79,13 @@ app.use('/auth', pushMessage, authRoute);
 app.use('/homeworks', authMiddleware.authRequire, pushMessage, homeworkRoute);
 app.use('/user', authMiddleware.authRequire, pushMessage, userRoute);
 
+app.get('/api/students/search', (req, res) => {
+    let nameRegex = new RegExp(req.query.name, 'i');
+    Student.find({ name: { $regex: nameRegex } }).limit(5).populate('classroom').exec((err, students) => {
+        res.json(students);
+    });
+});
+
 app.get('/api/students/:id', (req, res) => {
     Student.findOne({id: req.params.id}, '_id name classroom')
         .populate('classroom')
@@ -86,6 +93,8 @@ app.get('/api/students/:id', (req, res) => {
             res.json(student);
         });
 })
+
+
 
 io.on('connection', (socket) => {
     socket.on('quick search', async function (name) {

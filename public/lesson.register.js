@@ -1,4 +1,10 @@
 $(document).ready(function () {
+    $('#search-card').focusin(function() {
+        $('#search-note').show();
+    });
+    $('#search-card').focusout(function() {
+            $('#search-note').hide();
+    });
     $('#id-card').focusin(function() {
         $('#matched-student').html('');
         $('#id-note').show();
