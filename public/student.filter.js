@@ -5,8 +5,10 @@ $(document).ready(function () {
     if (value.length > 0) {
       $("#student-table tbody tr").filter(function () {
         $(this).toggle($(this).children("td:first").text() == value || $(this).children("td:nth-child(2)").text().toLowerCase().indexOf(value) > -1)
+        $(this).toggleClass('matchedElement', $(this).children("td:first").text() == value || $(this).children("td:nth-child(2)").text().toLowerCase().indexOf(value) > -1)
       });
     } else {
+      $("#student-table tbody tr").addClass('matchedElement');
       $("#student-table tbody tr").show();
     }
   });

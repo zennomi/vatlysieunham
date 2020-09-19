@@ -28,6 +28,8 @@ mixin card-rating(rating, text_header='Đánh giá')
         .card
             h6.card-header= text_header
             block
+block header
+    title Chi tiết buổi trợ giảng
 block content
     h3 Thông tin buổi trợ giảng
     .row.row-cols-2.row-cols-md-3.text-center
@@ -49,9 +51,10 @@ block content
                         span.badge.badge-info= lesson.time.end_hour*60 + lesson.time.end_minute - lesson.time.start_hour*60 - lesson.time.start_minute
                             |  phút
                 .card-body
-                    b= lesson.getDetailedDate()
-                    span : 
-                    span= lesson.getDetailedTime()
+                    a.text-dark(href="/lessons/"+lesson.date)
+                        b= lesson.getDetailedDate()
+                        span : 
+                        span= lesson.getDetailedTime()
         if (lesson.type)
             .col.mb-2
                 .card
@@ -86,11 +89,11 @@ block content
                     .card-body
                         a.text-dark.mr-2(href='/user/'+lesson.last_update.user.username)= lesson.last_update.user.name
                         span.badge.badge-success= lesson.last_update.user.role.toUpperCase()
-    .row.row-cols-3.text-center
-        .col.mb-2
+    .row.row-cols-3.text-center#navbar-bottom
+        .col
             a.btn.btn-success.w-100(href='/lessons/edit/'+lesson._id) Sửa
-        .col.mb-2
-            a.btn.btn-primary.w-100(href='/lessons/'+lesson.date) Trở lại
-        .col.mb-2
+        .col
+            button.btn.btn-primary.w-100(onclick="window.history.back()") Quay lại
+        .col
             a.btn.btn-danger.w-100(href='/lessons/delete/'+lesson._id) Xóa
                     

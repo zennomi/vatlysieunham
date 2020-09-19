@@ -7,7 +7,7 @@ module.exports.login = (req, res) => {
 
 module.exports.logout = (req, res) => {
     res.clearCookie('user');
-    req.flash('info', 'Đăng xuất thành công.');
+    req.flash('messages', [['info', 'Đăng xuất thành công.']]);
     res.redirect('/');
 }
 
@@ -25,11 +25,12 @@ module.exports.postLogin = async (req, res) => {
         });
         return;
     }
-    delete user.password;
+    user.password = undefined;
+    user.note = undefined;
     res.cookie('user', user, {
         signed: true,
         maxAge: 24 * 3600 * 1000
     });
-    req.flash('success', 'Đăng nhập thành công.');
-    res.redirect('/user/'+user.username);
+    req.flash('messages', [['success', 'Đăng nhập thành công.']]);
+    res.redirect(req.flash('history')[0] || '/user/'+user.username);
 }

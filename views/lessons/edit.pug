@@ -1,4 +1,6 @@
 extends ../layouts/common.pug
+block header
+    title Sửa buổi trợ giảng
 block content
     h4 Sửa buổi trợ giảng
     if errors
@@ -7,48 +9,48 @@ block content
 
     form(action="/lessons/edit", method="POST")
         .form-group
-            label(for="id") ID buổi trợ giảng
-            input#id.form-control(name="id", type="text", value= lesson._id, readonly)
+            label(for="id_lesson") ID buổi trợ giảng
+            input#id_lesson.form-control(name="id", type="text", value= lesson._id, readonly)
         .form-row
             .form-group.col-md-6.mb-2
                 label(for="id") ID học sinh
                 input#id.form-control(name="student_id", type="number", value= lesson.student_id.id, readonly)
             .form-group.col-md-6.mb-2
-                label Ngày
-                input.form-control(name="date", type="date", value= lesson.date, required)
+                label(for="date") Ngày
+                input#date.form-control(name="date", type="date", value= lesson.date, required)
             .form-group.col-md-6.mb-2
-                label Loại
-                select.form-control(name="type")
+                label(for="type") Loại
+                select#type.form-control(name="type")
                     option(value=lesson.type, hidden, selected)= lesson.type || Loại
                     option Lý thuyết
                     option Bài tập
             .form-group.col-md-6.mb-2
-                label Số bài tập
-                input.form-control(name="total_problems", type="number" value= lesson.total_problems)
+                label(for="total_problems") Số bài tập
+                input#total_problems.form-control(name="total_problems", type="number", inputmode='decimal', value= lesson.total_problems)
         .form-row.row-cols-2
             .form-group.col-md-6.mb-2
-                label Bắt đầu
-                input.form-control(name="start_time", type="time", value= (lesson.time.start_hour<10?'0':'') + lesson.time.start_hour + ':' + (lesson.time.start_minute<10?'0':'') + lesson.time.start_minute)
+                label(for="start_time") Bắt đầu
+                input#start_time.form-control(name="start_time", type="time", value= (lesson.time.start_hour<10?'0':'') + lesson.time.start_hour + ':' + (lesson.time.start_minute<10?'0':'') + lesson.time.start_minute)
             .form-group.col-md-6.mb-2
-                label Kết thúc
-                input.form-control(name="end_time", type="time", value= lesson.time.end_hour ? (lesson.time.end_hour<10?'0':'') + lesson.time.end_hour + ':' + (lesson.time.end_minute<10?'0':'') + lesson.time.end_minute : '')
+                label(for="end_time") Kết thúc
+                input#end_time.form-control(name="end_time", type="time", value= lesson.time.end_hour ? (lesson.time.end_hour<10?'0':'') + lesson.time.end_hour + ':' + (lesson.time.end_minute<10?'0':'') + lesson.time.end_minute : '')
         .form-group
             label(for="topic") Chủ đề
-            input#input.form-control(name="topic", type="text", value= lesson.topic)
+            input#topic.form-control(name="topic", type="text", value= lesson.topic)
         .form-row.row-cols-1.row-cols-md-2
             .col.form-group.mb-2
                 label Đánh giá
-                input.form-control-range#rating.slider(type='range', min=0, max=10, value= lesson.rating)
+                input.form-control-range#rating.slider(type='range', min=0, max=10, step=0.5, value= lesson.rating)
             .col.form-group.mb-2
-                label Điểm
-                input.form-control(name="rating", type='number', min=0, max=10, value= lesson.rating)
+                label(for="rating") Điểm
+                input#rating.form-control(name="rating", type='number', min=0, max=10, value= lesson.rating, inputmode='decimal', step=0.01)
         .form-group
-            label Nhận xét của trợ giảng
-            textarea.form-control(name="comment_of_tutor")= lesson.comment_of_tutor
+            label(for="comment_of_tutor") Nhận xét của trợ giảng
+            textarea#comment_of_tutor.form-control(name="comment_of_tutor")= lesson.comment_of_tutor
         .form-group
-            label Góp ý của học sinh
-            textarea.form-control(name="comment_of_student")= lesson.comment_of_student
-        .row.row-cols-2
+            label(for="comment_of_student") Góp ý của học sinh
+            textarea#comment_of_student.form-control(name="comment_of_student")= lesson.comment_of_student
+        .row.row-cols-2#navbar-bottom
             .col
                 button.btn.btn-primary.w-100(type='submit') Lưu
             .col

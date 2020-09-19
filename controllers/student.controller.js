@@ -56,6 +56,29 @@ module.exports.getById = async (req, res) => {
         });
         return;
     }
+
+    let homeworks = await Homework.aggregate([
+        {
+            $unwind: "$student"
+        },
+        {
+            $match: {
+                'student.student_id': student._id,
+                'student.finish_count': {$ne: null}
+            }
+        },
+        {
+            $project: {
+                point: '$student.finish_count',
+                total: '$total',
+                name: '$name',
+                note: '$student.note',
+                type: '$type',
+                date: '$date'
+            }
+        }
+    ]);
+    console.log(homeworks);
     
     let data = {
         total: 0,
@@ -69,30 +92,8 @@ module.exports.getById = async (req, res) => {
         totalExercisesLW: 0,
         totalProblemsLW: 0
     };
-/*     let lessons = (await Lesson.aggregate([
-        {
-            $match: {
-                'student_id': student._id,
-                'time.end_hour': { $ne: null },
-                'rating': { $ne: undefined }
-            }
-        },
-        {
-            $group: {
-                _id: null,
-                total: {$sum: 1},
-                avgRating: {$avg: '$rating'},
-                totalProblems: {$sum: '$total_problems'},
-                totalTime: {
-                    $sum: {
-                        $subtract: [{ $sum: [{ $multiply: ['$time.end_hour', 60] }, '$time.end_minute'] },
-                        { $sum: [{ $multiply: ['$time.start_hour', 60] }, '$time.start_minute'] }]
-                    }
-                }
-            }
-        }
-    ]))[0]; */
-     let lessonArr = await Lesson.find({ student_id: student._id }).sort({ date: -1 });
+
+    let lessonArr = await Lesson.find({ student_id: student._id }).sort({ date: -1 });
     lessonArr.forEach( lesson => {
         if (lesson.rating) {
             data.total++;
@@ -127,7 +128,8 @@ module.exports.getById = async (req, res) => {
     res.render('students/view', {
         student: student,
         lessons: lessonArr,
-        data: data
+        data: data,
+        homeworks: homeworks
     })
 };
 
@@ -171,7 +173,15 @@ module.exports.postCreate = async (req, res) => {
     };
     if (req.body.note) student.note = req.body.note;
     await student.save();
-    req.flash('success', `Đã thêm học sinh mới tên ${req.body.name} - ID ${id}.`)
+
+    Homework.find({class: req.body.class}).exec((err, homeworks) => {
+        homeworks.forEach((homework) => {
+            homework.student.every(student => student.student_id != student._id);
+            homework.student.push({student_id: student._id});
+            homework.save();
+        })
+    })
+    req.flash('messages', [['success', `Đã thêm học sinh mới tên ${req.body.name} - ID ${id}.`]]);
     res.redirect('/students/'+student.id);
 };
 
@@ -180,12 +190,23 @@ module.exports.postEdit = async (req, res) => {
         student.name = req.body.name;
         student.classroom = req.body.class;
         if (req.body.dob) student.dob = new Date(req.body.dob);
+        else student.dob = undefined;
         if (req.body.tags) {
             student.tags = req.body.tags.split(',').map(tag => tag.trim().toUpperCase());
         };
         if (req.body.note) student.note = req.body.note;
+        else student.note = undefined;
+
+        Homework.find({class: req.body.class}).exec((err, homeworks) => {
+            homeworks.forEach((homework) => {
+                if (homework.student.every(studentInArray => studentInArray.student_id.toString() != student._id.toString())) {
+                    homework.student.push({student_id: student._id});
+                    homework.save();
+                }
+            })
+        })
         student.save(() => {
-            req.flash('success', `Đã sửa học sinh tên ${req.body.name} - ID ${req.body.id}`);
+            req.flash('messages', [['success', `Đã sửa học sinh tên ${req.body.name} - ID ${req.body.id}`]]); 
             res.redirect('/students/' + req.body.id);
         });
     })
@@ -194,10 +215,10 @@ module.exports.postEdit = async (req, res) => {
 module.exports.postDelete = async (req, res) => {
     let student = await Student.findOne({ id: req.body.id });
     await Lesson.deleteMany({ student_id: student._id });
-    await Student.deleteOne({ id: req.body.id });
     await Homework.updateMany({}, {
         $pull: {student: {student_id: student._id}}
     });
-    req.flash('danger', `Bạn vừa xóa học sinh tên ${student.name} - ID ${student.id}`);
+    await Student.deleteOne({ id: req.body.id });
+    req.flash('messages', [['danger', `Mọi thông tin (BTVN, buổi trợ giảng,...) của học sinh ${student.name} - ID ${student.id} đã bị xóa.`]]); 
     res.redirect('/students');
 }

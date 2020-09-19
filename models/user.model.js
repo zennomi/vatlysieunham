@@ -6,7 +6,7 @@ const userSchema = new Schema({
     password: String,
     role: {
         type: String,
-        enum: ['admin', 'mod']
+        enum: ['admin', 'mod', 'teacher', 'tutor']
     },
     name: String,
     last_login: Date,

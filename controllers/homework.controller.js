@@ -46,13 +46,14 @@ module.exports.postCreate = (req, res) => {
         let homework = new Homework({
             name: req.body.name,
             date: new Date(req.body.date),
+            type: req.body.type,
             note: req.body.note,
             class: req.body.class,
-            total: req.body.total || 100,
+            total: req.body.total || 10,
             student: students.map(student => {return {student_id: student._id}})
-        })
+        });
         homework.save((err, homework) => {
-            req.flash('success', 'Thêm BTVN thành công.');
+            req.flash('messages', [['success', 'Thêm Bài tập thành công.']]);
             res.redirect('/homeworks/view/'+homework._id);
         });
     })
@@ -64,14 +65,16 @@ module.exports.postEdit = (req, res) => {
             name: req.body.name,
             date: new Date(req.body.date),
             total: req.body.total || 100,
+            type: req.body.type,
+            note: req.body.note
         }
     }).exec((err, homework) => {
-        req.flash('success', 'Cập nhật BTVN thành công.');
+        req.flash('messages', [['success', 'Cập nhật Bài tập thành công.']]);
         res.redirect('/homeworks/view/'+req.body.id);
     })
 }
 
 module.exports.postDelete = (req, res) => {
+    req.flash('messages', [['danger', 'Bạn vừa xóa Bài tập.']]);
     Homework.findByIdAndDelete(req.body.id).exec((err, result) => {res.redirect('/homeworks')});
-    req.flash('danger', 'Bạn vừa xóa BTVN.');
 }

@@ -64,11 +64,10 @@ module.exports.schedule = async (req, res) => {
     nowTime = nowTime.valueOf() + 252e5;
     nowTime = new Date(nowTime);
     nowTime = nowTime.toISOString();
-
+    console.log(nowTime)
     let nowHour = parseInt(nowTime.slice(11, 13));
     let nowMinute = parseInt(nowTime.slice(14, 16));
-    let lessons = await Lesson.find({ date: { $gte: nowTime.slice(0, 10) } }).populate('student_id');
-    lessons = lessons.filter(lesson => lesson.time.start_hour >= nowHour).filter(lesson => lesson.time.start_hour);
+    let lessons = await Lesson.find({ date: { $gt: nowTime.slice(0, 10) } }).populate('student_id');
     res.render('lessons/schedule', {
         lessons: lessons
     });
@@ -85,6 +84,7 @@ module.exports.check = (req, res) => {
 }
 
 module.exports.analyse = async (req, res) => {
+    console.log(req.query.start_date, req.query.end_date);
     let nowTime = new Date();
     nowTime = nowTime.valueOf() + 252e5;
     nowTime = new Date(nowTime);
@@ -93,8 +93,7 @@ module.exports.analyse = async (req, res) => {
         {
             $match: {
                 'time.end_hour': { $ne: null },
-                'date': { $gte: req.query.start_date || '2019-06' },
-                'date': { $lte: req.query.end_date || nowTime.slice(0, 10) }
+                'date': { $gte: req.query.start_date || '2019-06', $lte: req.query.end_date || nowTime.slice(0, 10) }
             }
         },
         {
@@ -130,8 +129,7 @@ module.exports.analyse = async (req, res) => {
         {
             $match: {
                 'time.end_hour': { $ne: null },
-                'date': { $gte: req.query.start_date || '2019-06' },
-                'date': { $lte: req.query.end_date || nowTime.slice(0, 10) },
+                'date': { $gte: req.query.start_date || '2019-06', $lte: req.query.end_date || nowTime.slice(0, 10) },
                 'total_problems': { $ne: null }
             }
         },
@@ -173,9 +171,8 @@ module.exports.analyse = async (req, res) => {
     let topDates = await Lesson.aggregate([
         {
             $match: {
-                'date': { $gte: req.query.start_date || '2019-06' },
-                'time.end_hour': { $ne: null },
-                'date': { $lte: req.query.end_date || nowTime.slice(0, 10) }
+                'date': { $gte: req.query.start_date || '2019-06', $lte: req.query.end_date || nowTime.slice(0, 10) },
+                'time.end_hour': { $ne: null }
             }
         },
         {
@@ -200,9 +197,8 @@ module.exports.analyse = async (req, res) => {
     let topDays = await Lesson.aggregate([
         {
             $match: {
-                'date': { $gte: req.query.start_date || '2019-06' },
-                'time.end_hour': { $ne: null },
-                'date': { $lte: req.query.end_date || nowTime.slice(0, 10) }
+                'date': { $gte: req.query.start_date || '2019-06', $lte: req.query.end_date || nowTime.slice(0, 10) },
+                'time.end_hour': { $ne: null }
             }
         },
         {
@@ -235,9 +231,8 @@ module.exports.analyse = async (req, res) => {
     let dataHours = await Lesson.aggregate([
         {
             $match: {
-                'date': { $gte: req.query.start_date || '2019-06' },
-                'time.end_hour': { $ne: null },
-                'date': { $lte: req.query.end_date || nowTime.slice(0, 10) }
+                'date': { $gte: req.query.start_date || '2019-06', $lte: req.query.end_date || nowTime.slice(0, 10) },
+                'time.end_hour': { $ne: null }
             }
         },
         {
@@ -363,7 +358,7 @@ module.exports.postCreate = async (req, res) => {
         }
     })
     await lesson.save();
-    req.flash('success', 'Thêm buổi trợ giảng thành công.');
+    req.flash('messages', [['success', 'Thêm buổi trợ giảng thành công.']]);
     res.redirect('/lessons/' + req.body.date);
 }
 
@@ -395,7 +390,7 @@ module.exports.postRegister = async (req, res) => {
     if (req.body.start_time_8) {
         await registerDay(0, req.body.type_8, req.body.start_time_8, req.body.end_time_8, req.body.topic_8)
     }
-    req.flash('success', 'Đăng ký trợ giảng thành công.');
+    req.flash('messages', [['success', 'Đăng ký trợ giảng thành công.']]);
     res.redirect('/lessons/registers');
 
     async function registerDay(value, type, start_time, end_time, topic) {
@@ -447,8 +442,12 @@ module.exports.postEdit =(req, res) => {
             }
         }
     }).exec((err, lesson) => {
-        if (err) res.send(err);
-        req.flash('success', 'Sửa buổi trợ giảng thành công.');
+        req.flash('messages', [['success', 'Sửa buổi trợ giảng thành công.']]);
+        if (!req.body.topic) req.flash('messages', [['warning', 'Chưa cập nhật chủ đề.', `/lessons/edit/${lesson._id}#topic`]]);
+        if (!req.body.type) req.flash('messages', [['warning', 'Chưa cập nhật loại buổi trợ giảng.', `/lessons/edit/${lesson._id}#type`]]);
+        if (req.body.type == 'Bài tập' && !req.body.total_problems) req.flash('messages', [['warning', 'Chưa cập nhật số bài tập.', `/lessons/edit/${lesson._id}#total_problems`]]);
+        if (!req.body.rating) req.flash('messages', [['warning', 'Chưa cập nhật đánh giá.', `/lessons/edit/${lesson._id}#rating`]]);
+        if (!req.body.comment_of_tutor) req.flash('messages', [['warning', 'Chưa cập nhật nhận xét.', `/lessons/edit/${lesson._id}#comment_of_tutor`]]);
         res.redirect('/lessons/view/' + lesson._id);
     })
 }
@@ -462,7 +461,8 @@ module.exports.postDelete = (req, res) => {
             });
             return;
         }
-        req.flash('danger', 'Vừa xóa một buổi trợ giảng.');
+        req.flash('messages', [['danger', 'Vừa xóa một buổi trợ giảng.']]);
+        req.flash('danger', '');
         res.redirect('/lessons');
     })
 }

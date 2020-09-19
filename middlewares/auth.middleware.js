@@ -3,7 +3,7 @@ const User = require("../models/user.model");
 module.exports.getAuth = (req, res, next) => {
     if (req.path != '/auth/login') {
         if (req.signedCookies.user == false) {
-            req.flash('danger', 'Mời đồng chí đăng nhập lại.');
+            req.flash('messages', [['danger', 'Mời đồng chí đăng nhập lại.']]);
             res.redirect('/auth/login');
             return;
         }
@@ -12,9 +12,10 @@ module.exports.getAuth = (req, res, next) => {
     next();
 }
 
-module.exports.authRequire = async (req, res, next) => {
+module.exports.authRequire = (req, res, next) => {
     if (!req.signedCookies.user) {
-        req.flash('danger', 'Đăng nhập cái đã bạn ôi.');
+        req.flash('messages', [['danger', 'Đăng nhập cái đã bạn ôi']]);
+        req.flash('history', req.path);
         res.redirect('/auth/login');
         return;
     }

@@ -51,6 +51,7 @@ lessonSchema.methods.getDetailedDate = function () {
     return `${day} ${this.date.slice(8,10)}/${this.date.slice(5,7)}`
 }
 lessonSchema.methods.getDetailedTime = function () {
+    if (this.time.start_hour == undefined) return '';
     return (this.time.start_hour<10?'0':'') + this.time.start_hour + (this.time.start_minute<10?':0':':') + this.time.start_minute + (this.time.end_hour?' - ' + this.time.end_hour + (this.time.end_minute<10?':0':':') + this.time.end_minute:'')
 }
 const Lesson = mongoose.model('Lesson', lessonSchema);

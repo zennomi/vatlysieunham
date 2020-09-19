@@ -5,15 +5,30 @@ block content
         .form-group
             label Tên
             input.form-control(name='name', type='text', required)
+        .form-row.row-cols-2
+            .col.form-group
+                label Ngày
+                input.form-control(name='date', type='date', required)
+            .col.form-group
+                label Lớp
+                select.form-control(name="class", required)
+                    each cla in classes
+                        option(value=cla._id)= cla.name
+        .form-row.row-cols-2
+            .col.form-group
+                label Tổng số
+                input.form-control(name='total', type='number', inputmode='decimal')
+            .col.form-group
+                label Loại
+                select.form-control(name="type", required)
+                    option BTVN
+                    option KT15P
+                    option KT50P
         .form-group
-            label Ngày
-            input.form-control(name='date', type='date', required)
-        .form-group
-            label Lớp
-            select.form-control(name="class", required)
-                each cla in classes
-                    option(value=cla._id)= cla.name
-        .form-group
-            label Số câu
-            input.form-control(name='total', type='number')
-        button.btn.btn-primary Thêm
+            label Ghi chú
+            textarea.form-control(name="note")
+        .row.row-cols-2#navbar-bottom
+            .col
+                button.btn.btn-primary.w-100(type='submit') Thêm
+            .col
+                button.btn.btn-success.w-100(onclick="window.history.back()") Quay lại

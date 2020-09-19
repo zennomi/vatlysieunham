@@ -133,7 +133,7 @@ app.get('/flash', function (req, res) {
     res.redirect('/');
 });
 function pushMessage(req, res, next) {
-    res.locals.messages = req.flash();
+    res.locals.messages = req.flash('messages');
     next();
 }
 // end test

@@ -1,4 +1,20 @@
 extends ../layouts/common.pug
+mixin tr-rating(rating)
+    if rating > 8
+        tr.table-success
+            block
+    else if rating > 6
+        tr.table-info    
+            block
+    else if rating > 4
+        tr.table-warning    
+            block
+    else if rating > 0
+        tr.table-danger
+            block
+    else
+        tr
+            block
 mixin card-rating(rating, text_header)
     if rating > 8
         .card.border-success.text-success
@@ -12,7 +28,7 @@ mixin card-rating(rating, text_header)
         .card.border-warning.text-warning
             h6.card-header.bg-warning.text-white= text_header
             block
-    else if rating > 0
+    else if rating >= 0
         .card.border-danger.text-danger
             h6.card-header.bg-danger.text-white= text_header
             block
@@ -54,14 +70,36 @@ block content
                         hr
                         span= student.note
 
-    .row.row-cols-2.row-cols-md-3.mb-2
+    .row.row-cols-2.row-cols-md-3#navbar-bottom
         .col.mb-2
             a.btn.btn-success.w-100(href="/students/edit/"+student.id) Sửa
         .col.mb-2
             a.btn.btn-danger.w-100(href="/students/delete/"+student.id) Xóa
         .col-12
             a.btn.btn-secondary.w-100(href="/lessons/create/?id="+student.id) Đăng ký trợ giảng
-    hr
+    hr.mt-2
+    if (homeworks.length>0)
+        h3 BTVN/Kiểm tra 15p
+        table.table.table-hover.table-light.mt-2#table-sort
+            thead.text-center
+                tr
+                    th Loại
+                    th Ngày
+                    th.d-none.d-sm-block Chủ đề
+                    th Điểm
+                    th.d-none.d-sm-block Ghi chú
+            tbody
+                each homework in homeworks
+                    +tr-rating(homework.point/homework.total*10)
+                        td.text-center= homework.type
+                        td.text-center
+                            a.text-dark(href='/homeworks/view/'+homework._id)= homework.date.toISOString().slice(5,10)
+                        td.d-none.d-sm-block
+                            a.text-dark(href='/homeworks/view/'+homework._id)= homework.name
+                        td.text-center= homework.point != undefined ? Math.round(homework.point/homework.total*100)/10 : ''
+                        td.d-none.d-sm-inline-block= homework.note
+
+    hr.mt-2
     if (lessons.length>0)
         h3 Tình hình học trợ giảng
         .row.row-cols-1.row-cols-md-2.text-center
@@ -81,18 +119,42 @@ block content
                             if (data.totalExercises)
                                 |  - TB #{Math.round(data.totalProblems/data.totalExercises)} CÂU/BUỔI
                         .progress(style="height: 2rem; background-image: linear-gradient(to right, #60d394 "+Math.round(data.totalRatingLW/data.totalLW*10)+"%, #ee6055 100%);")
-        .row.row-cols-2.row-cols-md-6.text-center
-            each lesson in lessons
-                .col.mb-2(data-toggle="tooltip", title=lesson.comment_of_tutor)
-                    +card-rating(lesson.rating, lesson.getDetailedDate() + ': ' + lesson.getDetailedTime())
-                        .card-body
-                            if (lesson.type)
-                                h6= lesson.type
-                            if (lesson.topic)
-                                h6 Chủ đề 
-                                span= lesson.topic
-                        .card-footer.p-0
-                            a.text-muted(href="/lessons/view/"+lesson._id)
-                                svg.bi.bi-grip-vertical(width='2em', height='2em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                                    path(d='M2 8a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-3a1 1 0 1 1 0 2 1 1 0 0 1 0-2z')
+        table.table.table-hover.table-light.mt-2#table-sort
+            thead
+                tr
+                    th.text-center
+                        .d-none.d-md-block Loại
+                    th.text-center
+                        svg.bi.bi-clock(width='1.5em', height='1.5em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+                            path(fill-rule='evenodd', d='M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm8-7A8 8 0 1 1 0 8a8 8 0 0 1 16 0z')
+                            path(fill-rule='evenodd', d='M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z')
+                        span.d-none.d-md-inline.ml-2 Thời gian
 
+                    th
+                        svg.bi.bi-three-dots(width='1.5em', height='1.5em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+                            path(fill-rule='evenodd', d='M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z')
+                        span.d-none.d-md-inline.ml-2 Chủ đề
+                    th.text-center Điểm
+            tbody
+                each lesson in lessons
+                    +tr-rating(lesson.rating)
+                        td.text-center
+                            if (lesson.type=='Lý thuyết')
+                                svg.bi.bi-file-text.mr-1(width='1.5em', height='1.5em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+                                    path(fill-rule='evenodd', d='M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z')
+                                    path(fill-rule='evenodd', d='M4.5 10.5A.5.5 0 0 1 5 10h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z')
+                            else if (lesson.type=='Bài tập')
+                                svg.bi.bi-calculator-fill.mr-2(width='1.5em', height='1.5em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+                                    path(fill-rule='evenodd', d='M12 1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z')
+                                    path(d='M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-2zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-4z')
+                        td.text-center
+                            a.text-dark(href="/lessons/view/" + lesson._id)
+                                b= lesson.getDetailedDate()
+                                span.d-none.d-md-inline= ': ' + lesson.getDetailedTime()
+                        td= lesson.topic
+                        if lesson.comment_of_tutor
+                            td.font-italic.text-center(style="cursor: help;", title=lesson.comment_of_tutor)= lesson.rating
+                        else
+                            td.text-center= lesson.rating
+block script
+    script(type='text/javascript', src='/table.sort.js')

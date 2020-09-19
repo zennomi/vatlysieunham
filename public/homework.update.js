@@ -1,5 +1,10 @@
 $(document).ready(function () {
     var socket = io();
+    // Click when enter
+    $('#student-filter').on('search', function() {
+        console.log('aahaha');
+        $('#student-table tbody tr.matchedElement')[0].click();
+    })
     // Update
     let id;
     let updateInfo = { homeworkId: window.location.pathname.split('/')[3] };
