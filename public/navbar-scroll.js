@@ -3,7 +3,7 @@ var navBarBottom = document.getElementById("navbar-bottom");
 if (navBarBottom) {
   window.onscroll = function() {
   var currentScrollPos = window.pageYOffset;
-    if (prevScrollpos > currentScrollPos) {
+    if (prevScrollpos < currentScrollPos) {
       navBarBottom.style.bottom = "0";
     } else {
       navBarBottom.style.bottom = "-50px";
@@ -16,6 +16,9 @@ if (navBarBottom) {
     prevScrollpos = currentScrollPos;
   }
   window.onclick = function() {
+    navBarBottom.style.bottom = "0";
+  }
+  window.ontouchstart = function() {
     navBarBottom.style.bottom = "0";
   }
 }

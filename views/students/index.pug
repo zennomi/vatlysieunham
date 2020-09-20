@@ -1,5 +1,6 @@
 extends ../layouts/common.pug
-
+block header
+    title Danh sách học sinh
 block content
     h3 Danh sách học sinh
     form(action="/students/search", method="GET")

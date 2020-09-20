@@ -36,6 +36,8 @@ mixin card-rating(rating, text_header)
         .card
             h6.card-header= text_header
             block
+block header
+    title #{student.name} | Thông tin học sinh
 block content
     h3 Thông tin học sinh
     .row.row-cols-2.row-cols-md-6.text-center
@@ -97,7 +99,10 @@ block content
                         td.d-none.d-sm-block
                             a.text-dark(href='/homeworks/view/'+homework._id)= homework.name
                         td.text-center= homework.point != undefined ? Math.round(homework.point/homework.total*100)/10 : ''
-                        td.d-none.d-sm-inline-block= homework.note
+                        td.d-none.d-sm-inline-block.w-100= homework.note
+                    tr.d-sm-none
+                        td.p-1(colspan="2")= homework.name
+                        td.p-1.text-right= homework.note
 
     hr.mt-2
     if (lessons.length>0)
@@ -152,9 +157,13 @@ block content
                                 b= lesson.getDetailedDate()
                                 span.d-none.d-md-inline= ': ' + lesson.getDetailedTime()
                         td= lesson.topic
-                        if lesson.comment_of_tutor
-                            td.font-italic.text-center(style="cursor: help;", title=lesson.comment_of_tutor)= lesson.rating
-                        else
-                            td.text-center= lesson.rating
+                        td.text-center= lesson.rating
+                    if lesson.comment_of_tutor
+                        tr
+                            td(colspan="4").text-center
+                                svg.mr-2.bi.bi-chat-right-text(width='1.2em', height='1.2em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+                                    path(fill-rule='evenodd', d='M2 1h12a1 1 0 0 1 1 1v11.586l-2-2A2 2 0 0 0 11.586 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z')
+                                    path(fill-rule='evenodd', d='M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z')
+                                span= lesson.comment_of_tutor
 block script
     script(type='text/javascript', src='/table.sort.js')

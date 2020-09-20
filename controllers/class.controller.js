@@ -66,16 +66,18 @@ module.exports.getByName = async (req, res) => {
             }
         }
     ]);
-    homeworksOfStudents.forEach((homework) => {
-        homework.arrayOfRecords = [];
-        homework.records.forEach(record => {
+    homeworksOfStudents.forEach((student) => {
+        student.arrayOfRecords = [];
+        student.records.forEach(record => {
             let index = idOfHomeworks.indexOf(record.homework_id.toString());
-            homework.arrayOfRecords[index] = {
+            student.arrayOfRecords[index] = {
                 point: record.point == null ?  null : Math.round(record.point*100)/10,
                 note: record.note
             }
         });
+        console.log(student);
     });
+
     res.render('classes/view', {
         students: await Student.find({ classroom: id }),
         className: req.params.name,

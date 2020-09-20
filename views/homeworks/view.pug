@@ -1,4 +1,6 @@
 extends ../layouts/common.pug
+block header
+    title Thông tin bài tập
 block content
     h3 [#{homework.type}] #{homework.name}
     p Thời gian: #{homework.date.toISOString().slice(0,10)}

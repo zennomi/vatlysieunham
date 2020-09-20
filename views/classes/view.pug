@@ -53,9 +53,10 @@ block content
                             td
                                 a.text-dark(href='/students/'+student.student[0].id)= student.student[0].name
                             each record in student.arrayOfRecords
-                                if (record.note)
-                                    td.font-italic.text-center(style="cursor: help;", title=record.note)= record.point
-                                else
-                                    td.text-center= record.point
+                                if record
+                                    if (record.note)
+                                        td.font-italic.text-center(style="cursor: help;", title=record.note)= record.point
+                                    else
+                                        td.text-center= record.point
 block script
     script(type='text/javascript', src='/student.filter.js')

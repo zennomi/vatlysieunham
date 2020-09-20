@@ -1,4 +1,7 @@
 extends ../layouts/common.pug
+
+block header
+    title Sửa thông tin bài tập
 block content
     h3 Sửa thông tin
     form(action="/homeworks/edit", method="POST")
@@ -35,6 +38,11 @@ block content
                 a.btn.btn-light.w-100(href='/homeworks/view/'+homework._id) Trở về
     
     h3 Nhập BTVN
+
+    .input-group.mb-3
+        .input-group-prepend
+            span#basic-addon1.input-group-text Lọc
+        input.form-control#student-filter(type='search', placeholder='Tên, ID,...', aria-label='Username', aria-describedby='basic-addon1')
     .modal.fade#update-modal(tabindex='-1', role='dialog')
         .modal-dialog(role='document')
             .modal-content
@@ -57,11 +65,6 @@ block content
                             .invalid-feedback#validate(style='display: none')
                         button.btn.btn-primary#submit-update.mr-2(type='submit') Lưu
                         button.btn.btn-secondary(type='button', data-dismiss='modal') Hủy
-
-    .input-group.mb-3
-        .input-group-prepend
-            span#basic-addon1.input-group-text Lọc
-        input.form-control#student-filter(type='search', placeholder='Tên, ID,...', aria-label='Username', aria-describedby='basic-addon1')
 
     table.table.table-hover#student-table
         thead

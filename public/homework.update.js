@@ -2,9 +2,13 @@ $(document).ready(function () {
     var socket = io();
     // Click when enter
     $('#student-filter').on('search', function() {
-        console.log('aahaha');
         $('#student-table tbody tr.matchedElement')[0].click();
-    })
+        $(this).val('');
+        $('html, body').animate({
+            scrollTop: $("#update-modal").offset().top
+        }, 2000);
+    });
+
     // Update
     let id;
     let updateInfo = { homeworkId: window.location.pathname.split('/')[3] };
@@ -41,7 +45,7 @@ $(document).ready(function () {
                 $('#finish_count').addClass('is-valid')
             }
         });
-        //  Click and submit
+    //  Click and submit
     })
     $('#form-update').on('submit', function (e) {
         e.preventDefault();
