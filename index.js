@@ -13,7 +13,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb+srv://new-user_01:25112001@cluster0.nxm48.mongodb.net/vlsn_2020?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,

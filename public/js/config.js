@@ -5,7 +5,7 @@
 const msalConfig = {
   auth: {
     clientId: 'e9ab8708-8df0-458f-a649-35975ba3fb84',
-    redirectUri: 'http://localhost:3000'
+    redirectUri: 'https://vatlysieunham.herokuapp.com'
   }
 };
 
