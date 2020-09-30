@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const Student = require('./student.model');
-
 const classroomSchema = new Schema({
-    name: {type: String, index: true, unique: true}
+    name: {type: String, index: true, unique: true},
+    type: {
+        type: String,
+        enum: ['LEARN', 'TEST']
+    }
 })
 
 classroomSchema.index({ name: 1 });

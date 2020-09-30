@@ -4,40 +4,59 @@ block header
     title Sửa thông tin bài tập
 block content
     h3 Sửa thông tin
-    form(action="/homeworks/edit", method="POST")
+    form(action="/records/edit", method="POST")
         .form-group
             label ID
-            input.form-control(name='id', type='text', value= homework._id, readonly, required)
+            input.form-control(name='id', type='text', value= record._id, readonly, required)
         .form-row.row-cols-1.row-cols-md-2
             .col.form-group
                 label Tên
-                input.form-control(name='name', type='text', value=homework.name, required)
+                input.form-control(name='name', type='text', value=record.name, required)
             .col.form-group
                 label Ngày
-                input.form-control(name='date', type='date', value=homework.date.toISOString().slice(0,10), required)
+                input.form-control(name='date', type='date', value=record.date.toISOString().slice(0,10), required)
         .form-row.row-cols-2
             .col.form-group 
                 label Tổng số
-                input.form-control#total(name='total', type='number', value=homework.total, inputmode='decimal')
+                input.form-control#total(name='total', type='number', value=record.total, inputmode='decimal')
             .col.form-group
                 label Loại
                 select.form-control(name="type", required)
-                    option(hidden, selected)= homework.type
+                    option(hidden, selected)= record.type
                     option BTVN
                     option KT15P
                     option KT50P
         .form-group
             label Ghi chú
-            textarea.form-control(name="note")= homework.note
+            textarea.form-control(name="note")= record.note
         .row.row-cols-3#navbar-bottom
             .col
                 button.btn.btn-success.w-100 Lưu
             .col
-                a.btn.btn-danger.w-100(href='/homeworks/delete/'+homework._id) Xóa
+                a.btn.btn-danger.w-100(href='/records/delete/'+record._id) Xóa
             .col
-                a.btn.btn-light.w-100(href='/homeworks/view/'+homework._id) Trở về
+                a.btn.btn-light.w-100(href='/records/view/'+record._id) Trở về
     
-    h3 Nhập BTVN
+    h3 Cập nhật bài tập
+    .card
+        .card-body
+            h4.card-title Thêm học sinh
+            input#n.form-control(type='text', autocomplete='off', placeholder="Tìm ID bằng tên...")
+            #list-students.list-group
+                .alert.alert-danger.mt-1(style='display: none') Hông thấy kết quả. 
+                    a.alert-link(href='/students/create', target='_blank') Thêm học sinh mới.
+            form#form-add-student(action="", method="POST")
+                .form-row.row-cols-2.row-cols-md-3
+                    .col.form-group
+                        label ID
+                        input#id.form-control(name="student_id", type="number", required, inputmode='decimal')
+                    .col.form-group
+                        label Điểm
+                        input#finish_count-add.form-control(name="mark", type="number", inputmode='decimal', step=0.01)
+                    .col-12.form-group
+                        label Ghi chú
+                        input#note-add.form-control(name="note", type="text")
+                button.btn.btn-success(type="submit") Thêm
 
     .input-group.mb-3
         .input-group-prepend
@@ -55,7 +74,7 @@ block content
                     form#form-update(action="")
                         .input-group.mb-3
                             .input-group-prepend
-                                span#basic-addon1.input-group-text BTVN
+                                span#basic-addon1.input-group-text Điểm
                             input.form-control.rounded-right#finish_count(type='number', step='0.01', placeholder='Không nhập gì là xóa', aria-describedby='basic-addon1', inputmode="decimal")
                             .invalid-feedback#validate(style='display: none')
                         .input-group.mb-3
@@ -74,7 +93,7 @@ block content
                 th Điểm
                 th Ghi chú
         tbody
-            each student in homework.student
+            each student in record.student
                 tr
                     td= student.student_id.id
                     td= student.student_id.name
@@ -83,4 +102,4 @@ block content
 block script
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
     script(type='text/javascript', src='/student.filter.js')
-    script(type='text/javascript', src='/homework.update.js')
+    script(type='text/javascript', src='/record.update.js')

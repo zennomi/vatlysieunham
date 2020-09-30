@@ -21,9 +21,24 @@ block content
                     each cla in classes
                         option(value=cla._id)= cla.name
             .form-group.col-6
-                label Dán nhãn
-                input.form-control(name='tags', type='text', value= student.tags ? student.tags.join(', ') : '', placeholder='mới, yếu,...')
-                small.text-muted Mỗi tag cách nhau một dấu ","
+                label Lớp luyện đề
+                select.form-control(name="test_class")
+                    if(student.test_class)
+                        option(selected, hidden, value=student.test_class._id)= student.test_class._id
+                    option(value="") Trống
+                    each cla in testClasses
+                        option(value=cla._id)= cla.name
+        .form-group
+            label Dán nhãn
+            input.form-control(name='tags', type='text', value= student.tags ? student.tags.join(', ') : '', placeholder='mới, yếu,...')
+            small.text-muted Mỗi tag cách nhau một dấu ","
+        .form-group
+            label.container-checkbox Còn học
+                if (student.is_active)
+                    input(name="is_active", type="checkbox", checked="checked")
+                else
+                    input(name="is_active", type="checkbox")
+                span.checkmark
         .form-group
             label Ghi chú
             textarea.form-control(name="note")= student.note

@@ -11,7 +11,7 @@ $(document).ready(function () {
 
     // Update
     let id;
-    let updateInfo = { homeworkId: window.location.pathname.split('/')[3] };
+    let updateInfo = { recordId: window.location.pathname.split('/')[3] };
     $("#student-table tbody tr").on('click', function () {
         $('#update-modal').modal('show');
         id = $(this).children('td:first').text();
@@ -36,7 +36,7 @@ $(document).ready(function () {
             }
             if (parseInt($('#finish_count').val()) > $('#total').val()) {
                 $('#validate').show();
-                $('#validate').text('Vượt quá tổng số BTVN.');
+                $('#validate').text(`Vượt quá tổng số ${$('#total').val()}.`);
                 $('#submit-update').prop('disabled', true);
                 $('#finish_count').removeClass('is-valid');
             } else {
@@ -60,6 +60,6 @@ $(document).ready(function () {
             .text($('#note').val());
         updateInfo.finishCount = $('#finish_count').val();
         updateInfo.note = $('#note').val();
-        socket.emit('update-homework', updateInfo);
+        socket.emit('update-record', updateInfo);
     })
 });

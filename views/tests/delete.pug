@@ -1,0 +1,14 @@
+extends ../layouts/common.pug
+block header
+    title Xóa buổi luyện đề #{test.name}
+block content
+    h1 Xóa buổi luyện đề
+    .card.card-body.text-center
+        form(action="/tests/delete", method="POST")
+            h5.mb-2 Xác nhận xóa buổi luyện đề
+            .input-group.mb-3
+                .input-group-prepend
+                    span#inputGroup-sizing-default.input-group-text ID
+                input.form-control(name="id", type='text', value= test._id, readonly)
+            button.btn.btn-danger Xác nhận
+            a.btn.btn-light.ml-2(href="/tests/view/"+test._id) Hủy

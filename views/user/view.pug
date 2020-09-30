@@ -1,4 +1,6 @@
 extends ../layouts/common.pug
+block header
+    title Tài khoản #{matchedUser.name}
 block content
     p Tên: #{matchedUser.name}
     p Role: #{matchedUser.role}
@@ -10,3 +12,11 @@ block content
                 a.btn.btn-success.w-100(href='/user/edit') Sửa thông tin
             .col
                 a.btn.btn-danger.w-100(href='/auth/logout') Đăng xuất
+    h3 Lịch sử hoạt động
+    each action in matchedUser.action
+        .card
+            .card-body
+                h6.card-title= action.method
+                pre.pre-scrollable(height='50px')= action.content
+                small.text-muted= action.time
+        

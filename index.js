@@ -28,15 +28,19 @@ const Student = require('./models/student.model');
 const Classroom = require('./models/class.model');
 const Lesson = require('./models/lesson.model');
 const User = require('./models/user.model');
+const Test = require('./models/test.model');
+const Record = require('./models/record.model');
 
 const studentRoute = require('./routers/student.route');
 const classRoute = require('./routers/class.route');
 const lessonRoute = require('./routers/lesson.route');
 const authRoute = require('./routers/auth.route');
 const userRoute = require('./routers/user.route');
-const homeworkRoute = require('./routers/homework.route');
+const recordRoute = require('./routers/record.route');
+const periodRoute = require('./routers/period.route');
+const testRoute = require('./routers/test.route');
 const authMiddleware = require('./middlewares/auth.middleware');
-const Homework = require('./models/homework.model');
+const { update } = require('./models/class.model');
 
 app.set('views', './views');
 app.set('view engine', 'pug');
@@ -58,8 +62,8 @@ app.use(flash());
 app.use(authMiddleware.getAuth);
 
 app.get('/', pushMessage, async (req, res) => {
-    let numStudents = await Student.countDocuments();
-    let numClasses = await Classroom.countDocuments();
+    let numStudents = await Student.countDocuments({is_active: true});
+    let numClasses = await Classroom.countDocuments({type: 'LEARN'});
     let numLessons = await Lesson.countDocuments();
     res.render('index', {
         numStudents: numStudents,
@@ -76,7 +80,9 @@ app.use('/students', pushMessage, studentRoute);
 app.use('/classes', pushMessage, classRoute);
 app.use('/lessons', pushMessage, lessonRoute);
 app.use('/auth', pushMessage, authRoute);
-app.use('/homeworks', authMiddleware.authRequire, pushMessage, homeworkRoute);
+app.use('/records', authMiddleware.authRequire, pushMessage, recordRoute);
+app.use('/periods', authMiddleware.authRequire, pushMessage, periodRoute);
+app.use('/tests', authMiddleware.authRequire, pushMessage, testRoute);
 app.use('/user', authMiddleware.authRequire, pushMessage, userRoute);
 
 app.get('/api/students/search', (req, res) => {
@@ -94,39 +100,86 @@ app.get('/api/students/:id', (req, res) => {
         });
 })
 
-
-
 io.on('connection', (socket) => {
     socket.on('quick search', async function (name) {
         let nameRegex = new RegExp(name, 'i');
         let matchedStudents = await Student.find({ name: { $regex: nameRegex } }).limit(5).populate('classroom');
         io.emit('quick search', matchedStudents);
     });
-    socket.on('update-homework', async function (updateInfo) {
+
+    socket.on('update-test', async function (updateInfo) {
+        let student = await Student.findOne({ id: updateInfo.studentId });
+        if (!student) return;
+        
+        updateInfo.studentId = student._id;
+        
+        if (updateInfo.method == 'add') {
+            await Test.findById(updateInfo.testId).exec((err, test) => {
+                test.student.push({
+                    student_id: updateInfo.studentId,
+                    mark: updateInfo.mark ? Number(updateInfo.mark) : undefined,
+                    note: updateInfo.note ? updateInfo.note : undefined
+                });
+                test.save();
+            });     
+            return;
+        }
+
+        if (updateInfo.method == 'update'){
+            if (updateInfo.mark) {
+                await Test.findOneAndUpdate({ _id: updateInfo.testId, 'student.student_id': updateInfo.studentId }, {
+                    $set: {
+                        'student.$.mark': updateInfo.mark,
+                        'student.$.note': updateInfo.note
+                    }
+                })
+            } else {
+                await Test.findOneAndUpdate({ _id: updateInfo.testId, 'student.student_id': updateInfo.studentId }, {
+                    $unset: {
+                        'student.$.finish_count': ''
+                    },
+                    $set: {
+                        'student.$.note': updateInfo.note
+                    }
+                })
+            };
+            return;
+        }
+
+        if (updateInfo.method = 'remove') {
+            await Test.findByIdAndUpdate(updateInfo.testId, {
+                $pull: {student: {student_id: updateInfo.studentId}}
+            });
+            return;
+        }
+    });
+    socket.on('update-record', async function (updateInfo) {
         updateInfo.studentId = (await Student.findOne({ id: updateInfo.studentId }))._id;
-        console.log(updateInfo);
+        if (!updateInfo.note) updateInfo.note = undefined;
         if (updateInfo.finishCount) {
-            await Homework.findOneAndUpdate({ _id: updateInfo.homeworkId, 'student.student_id': updateInfo.studentId }, {
+            await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
                 $set: {
                     'student.$.finish_count': updateInfo.finishCount,
                     'student.$.note': updateInfo.note
                 }
-            }).exec((err, result) => { console.log(result) })
+            })
         } else {
-            await Homework.findOneAndUpdate({ _id: updateInfo.homeworkId, 'student.student_id': updateInfo.studentId }, {
+            await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
                 $unset: {
                     'student.$.finish_count': ''
                 },
                 $set: {
                     'student.$.note': updateInfo.note
                 }
-            }).exec((err, result) => { console.log(result) })
+            })
         }
     });
 });
 
 //test
-
+app.get('/graph', (req, res) => {
+    res.render('graph');
+})
 app.get('/flash', function (req, res) {
     // Set a flash message by passing the key, followed by the value, to req.flash().
     req.flash('info', 'Flash is back!')

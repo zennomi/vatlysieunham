@@ -3,9 +3,6 @@ block header
     title Thêm học sinh đi trợ giảng
 block content
     h4 Thêm học sinh đi trợ giảng
-    if errors
-        each error in errors
-            .alert.alert-danger= error        
     if (!student_id)
         input#n.form-control(type='text', autocomplete='off', placeholder="Nhập tên...")
         #list-students.list-group
@@ -58,7 +55,6 @@ block content
             .col
                 a.btn.btn-light.w-100(href="/lessons") Hủy
 block script
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
     script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
     script(type='text/javascript', src='/student.search.js')
     script(type='text/javascript', src='/lesson.rating.js')

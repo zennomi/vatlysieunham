@@ -27,6 +27,7 @@ module.exports.postLogin = async (req, res) => {
     }
     user.password = undefined;
     user.note = undefined;
+    user.action = undefined;
     res.cookie('user', user, {
         signed: true,
         maxAge: 24 * 3600 * 1000

@@ -3,7 +3,6 @@ html
         link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css", integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z", crossorigin="anonymous")
         link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
         meta(name='viewport', content='width=device-width, initial-scale=1')
-        block header
         style(type='text/css').
             body {
                 background: rgb(234,255,222);
@@ -161,6 +160,7 @@ html
                     padding: 0 5px;
                 }
             }
+        block header
     body
         nav.navbar.navbar-expand-lg.navbar-light.bg-nav
             if (user)
@@ -190,8 +190,14 @@ html
                     li.nav-item.dropdown
                         a.nav-link.dropdown-toggle(href="#", id="navbarDropdown", role="button", data-toggle="dropdown") Bài tập
                         .dropdown-menu
-                            a.dropdown-item(href='/homeworks') Danh sách
-                            a.dropdown-item(href='/homeworks/create') Thêm mới
+                            a.dropdown-item(href='/records') Danh sách
+                            a.dropdown-item(href='/records/create') Thêm mới
+                    li.nav-item.dropdown
+                        a.nav-link.dropdown-toggle(href="#", id="navbarDropdown", role="button", data-toggle="dropdown") Buổi học
+                        .dropdown-menu
+                            a.dropdown-item(href='/periods') Danh sách
+                            a.dropdown-item(href='/periods/create') Thêm mới
+ 
                     li.nav-item
                         a.nav-link(href='/user/') Tài khoản
         .container.pt-1.pt-md-5
@@ -208,6 +214,7 @@ html
                         button.close(type='button', data-dismiss='alert', aria-label='Close')
                             span(aria-hidden='true') &times;
             block content
+            
         .p-1.footer
             | © 2020 - Nguyen Dang Tuan Anh
         script(src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')

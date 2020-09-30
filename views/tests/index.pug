@@ -1,0 +1,21 @@
+extends ../layouts/common.pug
+
+block header
+    title Danh sách luyện đề
+block content
+    h3 Danh sách đề kiểm tra
+        .badge.badge-success= tests.length
+    if tests.length > 0
+        table.table.table-hover
+            thead
+                tr
+                    th Ngày
+                    th Tên
+                    th Số HS làm
+            tbody
+                each test in tests
+                    tr
+                        td= test.date
+                        td
+                            a(href='/tests/view/'+test._id)= test.name
+                        td= test.student.length

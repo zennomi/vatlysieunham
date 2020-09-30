@@ -3,6 +3,7 @@ const Lesson = require('../models/lesson.model');
 const Student = require('../models/student.model');
 const authMiddleware = require('../middlewares/auth.middleware');
 const router = require('../routers/lesson.route');
+const User = require('../models/user.model');
 
 module.exports.index = async (req, res) => {
     let nowTime = new Date();
@@ -454,13 +455,21 @@ module.exports.postEdit =(req, res) => {
 
 module.exports.postDelete = (req, res) => {
     
-    Lesson.findByIdAndDelete(req.body.id).exec((err) => {
+    Lesson.findByIdAndDelete(req.body.id).exec((err, lesson) => {
         if (err) {
             res.send('error', {
                 errors: [err]
             });
             return;
         }
+        User.findById(res.locals.user._id).exec((err, user) => {
+            user.action.push({
+                method: 'delete',
+                content: lesson.toString(),
+                time: Date.now()
+            });
+            user.save();
+        })
         req.flash('messages', [['danger', 'Vừa xóa một buổi trợ giảng.']]);
         req.flash('danger', '');
         res.redirect('/lessons');

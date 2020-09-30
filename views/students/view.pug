@@ -1,30 +1,30 @@
 extends ../layouts/common.pug
-mixin tr-rating(rating)
-    if rating > 8
-        tr.table-success
+mixin tr-rating(rating, date)
+    if rating >= 8
+        tr(data-date=date).table-success
             block
-    else if rating > 6
-        tr.table-info    
+    else if rating >= 6
+        tr(data-date=date).table-info    
             block
-    else if rating > 4
-        tr.table-warning    
+    else if rating >= 4
+        tr(data-date=date).table-warning    
             block
-    else if rating > 0
-        tr.table-danger
+    else if rating >= 0
+        tr(data-date=date).table-danger
             block
     else
-        tr
+        tr(data-date=date)
             block
 mixin card-rating(rating, text_header)
-    if rating > 8
+    if rating >= 8
         .card.border-success.text-success
             h6.card-header.bg-success.text-white= text_header
             block
-    else if rating > 6
+    else if rating >= 6
         .card.border-info.text-info
             h6.card-header.bg-info.text-white= text_header
             block
-    else if rating > 4
+    else if rating >= 4
         .card.border-warning.text-warning
             h6.card-header.bg-warning.text-white= text_header
             block
@@ -42,9 +42,8 @@ block content
     h3 Thông tin học sinh
     .row.row-cols-2.row-cols-md-6.text-center
         .col-12.col-md-4.mb-2
-            .card.border-info
-                h6.card-header.bg-info.text-white Họ tên
-                .card-body.text-info
+            +card-rating(student.is_active ? 7 : 0, 'Họ tên')
+                .card-body
                     b.mr-2= student.name
                     if (student.tags)
                         br.d-inline.d-md-none
@@ -79,9 +78,17 @@ block content
             a.btn.btn-danger.w-100(href="/students/delete/"+student.id) Xóa
         .col-12
             a.btn.btn-secondary.w-100(href="/lessons/create/?id="+student.id) Đăng ký trợ giảng
+    form(action="", method="")
+        .form-row.row-cols-2.mb-2
+            .col
+                label Bắt đầu
+                input#start-time.form-control(type='date')
+            .col
+                label Kết thúc
+                input#end-time.form-control(type='date')
     hr.mt-2
-    if (homeworks.length>0)
-        h3 BTVN/Kiểm tra 15p
+    if (records.length>0)
+        h3 Tình hình BTVN/Kiểm tra
         table.table.table-hover.table-light.mt-2#table-sort
             thead.text-center
                 tr
@@ -91,18 +98,22 @@ block content
                     th Điểm
                     th.d-none.d-sm-block Ghi chú
             tbody
-                each homework in homeworks
-                    +tr-rating(homework.point/homework.total*10)
-                        td.text-center= homework.type
+                each record in records
+                    +tr-rating(record.mark != null ? record.mark : -1, record.date.toISOString().slice(0,10))
+                        td.text-center= record.type
                         td.text-center
-                            a.text-dark(href='/homeworks/view/'+homework._id)= homework.date.toISOString().slice(5,10)
+                            a.text-dark#simpleDate(href='/'+record.record_type+'/view/'+record._id)= record.date.toISOString().slice(0,10)
                         td.d-none.d-sm-block
-                            a.text-dark(href='/homeworks/view/'+homework._id)= homework.name
-                        td.text-center= homework.point != undefined ? Math.round(homework.point/homework.total*100)/10 : ''
-                        td.d-none.d-sm-inline-block.w-100= homework.note
-                    tr.d-sm-none
-                        td.p-1(colspan="2")= homework.name
-                        td.p-1.text-right= homework.note
+                            a.text-dark(href='/'+record.record_type+'/view/'+record._id)= record.name
+                        td.text-center= record.mark != null ? Math.round(record.mark*100)/100 : ''
+                        td.d-none.d-sm-inline-block.w-100= record.note
+                    if record.note
+                        tr(data-date=record.date.toISOString().slice(0,10)).d-sm-none
+                            td(colspan="4").text-center
+                                svg.mr-2.bi.bi-chat-right-text(width='1.2em', height='1.2em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+                                    path(fill-rule='evenodd', d='M2 1h12a1 1 0 0 1 1 1v11.586l-2-2A2 2 0 0 0 11.586 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z')
+                                    path(fill-rule='evenodd', d='M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z')
+                                span= record.note
 
     hr.mt-2
     if (lessons.length>0)
@@ -142,7 +153,7 @@ block content
                     th.text-center Điểm
             tbody
                 each lesson in lessons
-                    +tr-rating(lesson.rating)
+                    +tr-rating(lesson.rating != null ? lesson.rating : -1, lesson.date)
                         td.text-center
                             if (lesson.type=='Lý thuyết')
                                 svg.bi.bi-file-text.mr-1(width='1.5em', height='1.5em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
@@ -159,7 +170,7 @@ block content
                         td= lesson.topic
                         td.text-center= lesson.rating
                     if lesson.comment_of_tutor
-                        tr
+                        tr(data-date=lesson.date)
                             td(colspan="4").text-center
                                 svg.mr-2.bi.bi-chat-right-text(width='1.2em', height='1.2em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
                                     path(fill-rule='evenodd', d='M2 1h12a1 1 0 0 1 1 1v11.586l-2-2A2 2 0 0 0 11.586 11H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z')
@@ -167,3 +178,5 @@ block content
                                 span= lesson.comment_of_tutor
 block script
     script(type='text/javascript', src='/table.sort.js')
+    script(type='text/javascript', src='/time.convert.js')
+    script(type='text/javascript', src='/table.filter.js')

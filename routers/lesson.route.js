@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-var controller = require('../controllers/lesson.controller');
+const controller = require('../controllers/lesson.controller');
 
 const validate = require('../validate/lesson.validate');
 const Lesson = require('../models/lesson.model');

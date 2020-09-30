@@ -21,6 +21,9 @@ block content
                     tr
                         td.text-center= student.id
                         td= student.name
+                            if student.tags
+                                each tag in student.tags
+                                    a.ml-1.badge.badge-danger(href="/students/search?tag="+tag)= tag
                         td.d-none.d-md-block
                             if (student.dob)
                                 student.dob.toLocaleDateString()
@@ -31,7 +34,7 @@ block content
                                     a.dropdown-item(href="/students/" + student.id) Xem
                                     a.dropdown-item(href="/students/edit/" + student.id) Sửa
                                     a.dropdown-item(href='/students/delete/' + student.id) Xóa
-    if (homeworks.length == 0)
+    if (records.length == 0)
         .alert.alert-warning Danh sách BTVN của lớp này trống.
     else
         h3 Danh sách Bài tập lớp #{className}
@@ -42,13 +45,13 @@ block content
                         th Tên HS
                             svg.ml-1.bi.bi-arrow-down-up(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
                                 path(fill-rule='evenodd', d='M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z')
-                        each homework in homeworks
+                        each record in records
                             th.text-center
-                                a.text-dark(href='/homeworks/view/'+homework._id, title=homework.type + ': ' +homework.name)= homework.date.toISOString().slice(5,10)
+                                a.text-dark(href='/records/view/'+record._id, title=record.type + ': ' +record.name)= record.date.toISOString().slice(5,10)
                                 svg.ml-1.bi.bi-arrow-down-up(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
                                     path(fill-rule='evenodd', d='M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z')
                 tbody
-                    each student in homeworksOfStudents
+                    each student in recordsOfStudents
                         tr
                             td
                                 a.text-dark(href='/students/'+student.student[0].id)= student.student[0].name

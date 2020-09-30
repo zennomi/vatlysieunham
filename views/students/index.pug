@@ -26,7 +26,11 @@ block content
     if students.length == 0
         .alert.alert-warning Không có kết quả
     else
-        table.table.table-hover.table-light
+        .input-group.mb-3
+            .input-group-prepend
+                span#basic-addon1.input-group-text Lọc
+            input.form-control#student-filter(type='text', placeholder='Tên, ID,...', aria-label='Username', aria-describedby='basic-addon1')
+        table.table.table-hover.table-light#student-table
             thead
                 tr
                     th ID
@@ -69,3 +73,6 @@ block content
                 li.page-item
                     a.page-link(href='/students/?page='+(page+1), aria-label='Next')
                         span(aria-hidden='true') &raquo;
+block script
+    script(type='text/javascript', src='/student.filter.js')
+

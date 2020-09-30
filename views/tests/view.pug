@@ -1,0 +1,37 @@
+extends ../layouts/common.pug
+
+block header
+    title Đề #{test.name}
+block content
+    .row.row-cols-1.row-cols-md-2
+        .col
+            h4 Thông tin đề kiểm tra
+            p= 'Tên: ' + test.name
+            p= 'Ghi chú: ' + test.note
+            p= 'Thang điểm: ' + test.total
+            if (test.student.length > 0)
+                h4 Bảng điểm
+                table.table.table-hover
+                    thead
+                        tr
+                            th ID
+                            th Tên
+                            th Điểm
+                            th Ghi chú
+                    tbody
+                        each student in test.student
+                            tr
+                                td= student.student_id.id
+                                td
+                                    a(href="/students/"+student.student_id.id)= student.student_id.name
+                                td= student.mark
+                                td= student.note
+        .col
+            .row.row-cols-2#navbar-bottom
+                .col
+                    a.btn.btn-success.w-100(href='/tests/edit/'+test._id) Sửa
+                .col
+                    a.btn.btn-danger.w-100(href='/tests/delete/'+test._id) Xóa
+            if test.link
+                h4 Đề
+                iframe.w-100.h-100(src=test.link)

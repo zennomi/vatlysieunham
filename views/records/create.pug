@@ -1,7 +1,7 @@
 extends ../layouts/common.pug
 block content
     h3 Thêm bài tập
-    form(action="/homeworks/create", method="POST")
+    form(action="/records/create", method="POST")
         .form-group
             label Tên
             input.form-control(name='name', type='text', required)

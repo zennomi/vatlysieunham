@@ -1,6 +1,6 @@
 const Student = require('../models/student.model');
 const Classroom = require('../models/class.model');
-const Homework = require('../models/homework.model');
+const Record = require('../models/record.model');
 
 module.exports.index = (req, res) => {
     Student.aggregate([
@@ -36,9 +36,9 @@ module.exports.index = (req, res) => {
 
 module.exports.getByName = async (req, res) => {
     let id = (await Classroom.findOne({ name: req.params.name }))._id;
-    let homeworks = await Homework.find({ class: id });
-    let idOfHomeworks = homeworks.map((homework) => homework._id.toString());
-    let homeworksOfStudents = await Homework.aggregate([
+    let records = await Record.find({ class: id }).sort({date: -1});
+    let idOfRecords = records.map((record) => record._id.toString());
+    let recordsOfStudents = await Record.aggregate([
         {
             $match: {
                 'class': id
@@ -51,7 +51,7 @@ module.exports.getByName = async (req, res) => {
             $group: {
                 _id: '$student.student_id',
                 records: {$addToSet: {
-                    homework_id: '$_id',
+                    record_id: '$_id',
                     point:  {$divide: ['$student.finish_count', '$total']},
                     note: '$student.note'
                 }}
@@ -66,22 +66,21 @@ module.exports.getByName = async (req, res) => {
             }
         }
     ]);
-    homeworksOfStudents.forEach((student) => {
+    recordsOfStudents.forEach((student) => {
         student.arrayOfRecords = [];
         student.records.forEach(record => {
-            let index = idOfHomeworks.indexOf(record.homework_id.toString());
+            let index = idOfRecords.indexOf(record.record_id.toString());
             student.arrayOfRecords[index] = {
                 point: record.point == null ?  null : Math.round(record.point*100)/10,
                 note: record.note
             }
         });
-        console.log(student);
     });
 
     res.render('classes/view', {
-        students: await Student.find({ classroom: id }),
+        students: await Student.find({ classroom: id, is_active: true }),
         className: req.params.name,
-        homeworks: homeworks,
-        homeworksOfStudents: homeworksOfStudents,
+        records: records,
+        recordsOfStudents: recordsOfStudents,
     })
 };
