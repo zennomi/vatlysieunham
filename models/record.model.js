@@ -21,6 +21,7 @@ const recordSchema = new Schema({
     class: {type: Schema.Types.ObjectId, ref: 'Classroom'},
     total: {type: Number, default: 10},
     student: [studentSchema],
+    link: String,
     note: String
 });
 

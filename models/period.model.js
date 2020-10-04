@@ -16,10 +16,19 @@ const periodSchema = new Schema({
     },
     name: String,
     note: String,
-    class: [{type: Schema.Types.ObjectId, ref: 'Classroom'}],
+    class: {type: Schema.Types.ObjectId, ref: 'Classroom'},
     link: String
 });
-
+periodSchema.methods.getDetailedDate = function () {
+    let date = this.date;
+    let day = date.getUTCDay();
+    if (date.getUTCDay() != 0) {
+        day = 'Thứ ' + (day+1)
+    } else {
+        day = 'Chủ nhật'
+    }
+    return `${date.toISOString().slice(5,7)}/${date.toISOString().slice(8,10)} ${day}`
+}
 const Period = mongoose.model('Period', periodSchema);
 
 module.exports = Period;

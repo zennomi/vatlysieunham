@@ -1,6 +1,6 @@
 extends ../layouts/common.pug
 block content
-    h3 Thêm bài tập
+    h3 Thêm bản ghi
     form(action="/records/create", method="POST")
         .form-group
             label Tên
@@ -24,6 +24,11 @@ block content
                     option BTVN
                     option KT15P
                     option KT50P
+                    option TESTOFF
+                    option TESTON
+        .form-group
+            label Link
+            input.form-control(name='link', type='url', placeholder="https://drive.google.com/file/d/TEN-FILE/view?usp=sharing", pattern="https://drive.google.com/file/d/.*")
         .form-group
             label Ghi chú
             textarea.form-control(name="note")

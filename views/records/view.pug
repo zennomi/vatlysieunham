@@ -39,11 +39,11 @@ mixin tr-rating(rating)
 block header
     title [#{record.type}] #{record.name}
 block content
-    h3 Thông tin chi tiết bài tập
+    h3 Thông tin chi tiết bản ghi
     .row.row-cols-2.row-cols-md-6.text-center
         .col-12.col-md-4.mb-2
             .card.border-info
-                h6.card-header.bg-info.text-white Thông tin bài tập
+                h6.card-header.bg-info.text-white Thông tin bản ghi
                 .card-body= record.name
                     span.ml-1.badge.badge-info= record.type
         .col.mb-2
@@ -100,5 +100,10 @@ block content
                         a.text-dark(href='/students/'+student.student_id.id)= student.student_id.name
                     td.text-center= (student.finish_count != undefined) ? Math.round(student.finish_count/record.total*100)/10 : ''
                     td.d-none.d-sm-block= student.note
+    if record.link
+        .col.mb-2
+            .card
+                h6.card-header Đề
+                iframe.w-100(height='600', src=record.link)
 block script
     script(type='text/javascript', src='/student.filter.js')

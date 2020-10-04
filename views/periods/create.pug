@@ -13,11 +13,9 @@ block content
             input.form-control(name='date', type='date', required)
         .form-group
             label Lớp
-                .row.row-cols-4.row-cols-md-6
+            select.form-control(name="class", required)
                     each cla in classes
-                        .col
-                            input.mr-2(type='checkbox', name='class[]', value=cla._id)
-                            label= cla.name
+                        option(value=cla._id)= cla.name
         .form-group
             label Link
             input.form-control(name='link', type='url', placeholder="https://drive.google.com/file/d/TEN-FILE/view?usp=sharing", pattern="https://drive.google.com/file/d/.*")

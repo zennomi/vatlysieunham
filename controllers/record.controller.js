@@ -43,6 +43,11 @@ module.exports.deleteById = (req, res) => {
 }
 
 module.exports.postCreate = (req, res) => {
+    if (req.body.link) {
+        let linkArr = req.body.link.split('/');
+        linkArr[linkArr.length-1] = 'preview';
+        req.body.link = linkArr.join('/');
+    }
     Student.find({classroom: req.body.class, is_active: true}).select({_id: 1}).exec(async (err, students) => {
         let record = new Record({
             name: req.body.name,
@@ -51,6 +56,7 @@ module.exports.postCreate = (req, res) => {
             note: req.body.note || undefined,
             class: req.body.class,
             total: req.body.total || 10,
+            link: req.body.link || undefined,
             student: students.map(student => {return {student_id: student._id}})
         });
         await record.save((err, record) => {
@@ -61,6 +67,11 @@ module.exports.postCreate = (req, res) => {
 }
 
 module.exports.postEdit = (req, res) => {
+    if (req.body.link) {
+        let linkArr = req.body.link.split('/');
+        linkArr[linkArr.length-1] = 'preview';
+        req.body.link = linkArr.join('/');
+    }
     Record.findByIdAndUpdate(req.body.id, {
         $set: {
             name: req.body.name,
@@ -68,6 +79,7 @@ module.exports.postEdit = (req, res) => {
             total: req.body.total || 100,
             type: req.body.type,
             period_id: req.body.period_id || undefined,
+            link: req.body.link || undefined,
             note: req.body.note || undefined
         }
     }).exec((err, record) => {

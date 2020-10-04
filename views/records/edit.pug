@@ -1,7 +1,7 @@
 extends ../layouts/common.pug
 
 block header
-    title Sửa thông tin bài tập
+    title Sửa thông tin bản ghi
 block content
     h3 Sửa thông tin
     form(action="/records/edit", method="POST")
@@ -26,6 +26,11 @@ block content
                     option BTVN
                     option KT15P
                     option KT50P
+                    option TESTOFF
+                    option TESTON
+        .form-group
+            label Link
+            input.form-control(name='link', type='url', placeholder="https://drive.google.com/file/d/TEN-FILE/view?usp=sharing", pattern="https://drive.google.com/file/d/.*", value=record.link)
         .form-group
             label Ghi chú
             textarea.form-control(name="note")= record.note
@@ -37,7 +42,7 @@ block content
             .col
                 a.btn.btn-light.w-100(href='/records/view/'+record._id) Trở về
     
-    h3 Cập nhật bài tập
+    h3 Cập nhật bản ghi
     .card
         .card-body
             h4.card-title Thêm học sinh
@@ -52,7 +57,7 @@ block content
                         input#id.form-control(name="student_id", type="number", required, inputmode='decimal')
                     .col.form-group
                         label Điểm
-                        input#finish_count-add.form-control(name="mark", type="number", inputmode='decimal', step=0.01)
+                        input#finish_count-add.form-control(name="finish_count", type="number", inputmode='decimal', step=0.01)
                     .col-12.form-group
                         label Ghi chú
                         input#note-add.form-control(name="note", type="text")
@@ -83,7 +88,8 @@ block content
                             input.form-control.rounded-right#note(type='text', placeholder='Không nhập gì là xóa', aria-describedby='basic-addon1')
                             .invalid-feedback#validate(style='display: none')
                         button.btn.btn-primary#submit-update.mr-2(type='submit') Lưu
-                        button.btn.btn-secondary(type='button', data-dismiss='modal') Hủy
+                        button.btn.btn-danger.mr-2#remove Xóa
+                        button.btn.btn-secondary.mr-2(type='button', data-dismiss='modal') Hủy
 
     table.table.table-hover#student-table
         thead
@@ -101,5 +107,6 @@ block content
                     td= student.note
 block script
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
+    script(type='text/javascript', src='/student.search.js')
     script(type='text/javascript', src='/student.filter.js')
     script(type='text/javascript', src='/record.update.js')

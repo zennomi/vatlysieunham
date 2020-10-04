@@ -107,34 +107,34 @@ io.on('connection', (socket) => {
         io.emit('quick search', matchedStudents);
     });
 
-    socket.on('update-test', async function (updateInfo) {
+    socket.on('update-record', async function (updateInfo) {
         let student = await Student.findOne({ id: updateInfo.studentId });
         if (!student) return;
         
         updateInfo.studentId = student._id;
         
         if (updateInfo.method == 'add') {
-            await Test.findById(updateInfo.testId).exec((err, test) => {
-                test.student.push({
+            await Record.findById(updateInfo.recordId).exec((err, record) => {
+                record.student.push({
                     student_id: updateInfo.studentId,
-                    mark: updateInfo.mark ? Number(updateInfo.mark) : undefined,
+                    finish_count: updateInfo.finish_count ? Number(updateInfo.finish_count) : undefined,
                     note: updateInfo.note ? updateInfo.note : undefined
                 });
-                test.save();
+                record.save();
             });     
             return;
         }
 
         if (updateInfo.method == 'update'){
-            if (updateInfo.mark) {
-                await Test.findOneAndUpdate({ _id: updateInfo.testId, 'student.student_id': updateInfo.studentId }, {
+            if (updateInfo.finish_count) {
+                await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
                     $set: {
-                        'student.$.mark': updateInfo.mark,
+                        'student.$.finish_count': updateInfo.finish_count,
                         'student.$.note': updateInfo.note
                     }
                 })
             } else {
-                await Test.findOneAndUpdate({ _id: updateInfo.testId, 'student.student_id': updateInfo.studentId }, {
+                await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
                     $unset: {
                         'student.$.finish_count': ''
                     },
@@ -147,33 +147,34 @@ io.on('connection', (socket) => {
         }
 
         if (updateInfo.method = 'remove') {
-            await Test.findByIdAndUpdate(updateInfo.testId, {
+            console.log(updateInfo)
+            await Record.findByIdAndUpdate(updateInfo.recordId, {
                 $pull: {student: {student_id: updateInfo.studentId}}
             });
             return;
         }
     });
-    socket.on('update-record', async function (updateInfo) {
-        updateInfo.studentId = (await Student.findOne({ id: updateInfo.studentId }))._id;
-        if (!updateInfo.note) updateInfo.note = undefined;
-        if (updateInfo.finishCount) {
-            await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
-                $set: {
-                    'student.$.finish_count': updateInfo.finishCount,
-                    'student.$.note': updateInfo.note
-                }
-            })
-        } else {
-            await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
-                $unset: {
-                    'student.$.finish_count': ''
-                },
-                $set: {
-                    'student.$.note': updateInfo.note
-                }
-            })
-        }
-    });
+//     socket.on('update-record', async function (updateInfo) {
+//         updateInfo.studentId = (await Student.findOne({ id: updateInfo.studentId }))._id;
+//         if (!updateInfo.note) updateInfo.note = undefined;
+//         if (updateInfo.finishCount) {
+//             await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
+//                 $set: {
+//                     'student.$.finish_count': updateInfo.finishCount,
+//                     'student.$.note': updateInfo.note
+//                 }
+//             })
+//         } else {
+//             await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
+//                 $unset: {
+//                     'student.$.finish_count': ''
+//                 },
+//                 $set: {
+//                     'student.$.note': updateInfo.note
+//                 }
+//             })
+//         }
+//     });
 });
 
 //test

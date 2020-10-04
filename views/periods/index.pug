@@ -19,8 +19,24 @@ block content
                     path(fill-rule='evenodd', d='M11.5 8a.5.5 0 0 0-.5-.5H6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5z')
                 | Trở lại
     if periods.length > 0
-        each period in periods
-            a(href='/periods/view/'+period._id)= period.name
-            br
+        table.table.table-hover#table-sort
+            thead
+                tr
+                    th Loại
+                    th Ngày
+                    th(style="max-width:50%;") Tên
+                        svg.ml-1.bi.bi-arrow-down-up(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
+                            path(fill-rule='evenodd', d='M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z')
+                    th Lớp
+            tbody
+                each period in periods
+                    tr
+                        td= period.type
+                        td= period.getDetailedDate()
+                        td
+                            a(href='/periods/view/'+period._id)= period.name
+                        td
+                            a(href='/classes/'+period.class.name)= period.class.name
+
 block script
     script(type='text/javascript', src='/table.sort.js')

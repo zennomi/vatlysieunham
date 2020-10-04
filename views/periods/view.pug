@@ -2,9 +2,9 @@ extends ../layouts/common.pug
 block header
     title Buổi học #{period.name}
 block content
-    .row.row-cols-1.row-cols-md-2.text-center
+    .row.text-center
         .col
-            .row.row-cols-2
+            .row
                 .col-12.mb-2
                     .card.border-info
                         h6.card-header.bg-info.text-white Buổi #{period.type}
@@ -13,8 +13,7 @@ block content
                     .card
                         h6.card-header Lớp
                         .card-body
-                            each cla in period.class
-                                a.mr-1.badge.badge-info(href="/classes/"+cla.name)= cla.name
+                            a.mr-1.badge.badge-info(href="/classes/"+period.class.name)= period.class.name
                 .col.mb-2
                     .card
                         h6.card-header Ngày
@@ -28,23 +27,19 @@ block content
                         .card
                             h6.card-header Ghi chú
                             .card-body= period.note
-        if period.link
-            .col.mb-2
-                .card
-                    h6.card-header Đề
-                    iframe.w-100(height='600', src=period.link)
-    .modal#add-record-modal(tabindex='-1', role='dialog')
-        .modal-dialog(role='document')
-            .modal-content
-                .modal-header
-                    h5.modal-title Thêm bản ghi
-                    button.close(type='button', data-dismiss='modal', aria-label='Close')
-                    span(aria-hidden='true') &times;
-                .modal-body
-                    each cla in period.class
-                        a.mr-1.badge.badge-info(href="/classes/"+cla.name)= cla.name
-                .modal-footer
-                    button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+        
+    //- .modal#add-record-modal(tabindex='-1', role='dialog')
+    //-     .modal-dialog(role='document')
+    //-         .modal-content
+    //-             .modal-header
+    //-                 h5.modal-title Thêm bản ghi
+    //-                 button.close(type='button', data-dismiss='modal', aria-label='Close')
+    //-                 span(aria-hidden='true') &times;
+    //-             .modal-body
+    //-                 each cla in period.class
+    //-                     a.mr-1.badge.badge-info(href="/classes/"+cla.name)= cla.name
+    //-             .modal-footer
+    //-                 button.btn.btn-secondary(type='button', data-dismiss='modal') Close
     .row.row-cols-2#navbar-bottom
         .col
             a.btn.btn-danger.w-100(href='/periods/delete/'+period._id) Xóa

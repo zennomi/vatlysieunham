@@ -34,14 +34,10 @@ module.exports.postCreate = (req, res) => {
         date: new Date(req.body.date),
         type: req.body.type,
         instructor: req.body.instructor,
-        class: [...req.body.class],
+        class: req.body.class,
         note: req.body.note || undefined
     });
-    if (req.body.link) {
-        let linkArr = req.body.link.split('/');
-        linkArr[linkArr.length-1] = 'preview';
-        period.link = linkArr.join('/');
-    }
+    
     period.save(() => {
         res.redirect('/periods/view/'+period._id);
     })
