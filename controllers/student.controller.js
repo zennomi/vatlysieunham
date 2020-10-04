@@ -50,7 +50,7 @@ module.exports.create = async (req, res) => {
 };
 
 module.exports.getById = async (req, res) => {
-    let student = await Student.findOne({ id: req.params.id }).populate('classroom');
+    let student = await Student.findOne({ id: req.params.id }).populate('classroom').populate('test_class');
     if (!student) {
         res.render('error', {
             errors: ['Không tìm thấy HS này.']

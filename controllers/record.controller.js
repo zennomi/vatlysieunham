@@ -45,31 +45,51 @@ module.exports.deleteById = (req, res) => {
 module.exports.postCreate = (req, res) => {
     if (req.body.link) {
         let linkArr = req.body.link.split('/');
-        linkArr[linkArr.length-1] = 'preview';
+        linkArr[linkArr.length - 1] = 'preview';
         req.body.link = linkArr.join('/');
     }
-    Student.find({classroom: req.body.class, is_active: true}).select({_id: 1}).exec(async (err, students) => {
-        let record = new Record({
-            name: req.body.name,
-            date: new Date(req.body.date),
-            type: req.body.type,
-            note: req.body.note || undefined,
-            class: req.body.class,
-            total: req.body.total || 10,
-            link: req.body.link || undefined,
-            student: students.map(student => {return {student_id: student._id}})
+    if (req.body.type == "TESTON" || req.body.type == "TESTOFF") {
+        Student.find({ test_class: req.body.class, is_active: true }).select({ _id: 1 }).exec(async (err, students) => {
+            let record = new Record({
+                name: req.body.name,
+                date: new Date(req.body.date),
+                type: req.body.type,
+                note: req.body.note || undefined,
+                class: req.body.class,
+                total: req.body.total || 10,
+                link: req.body.link || undefined,
+                student: students.map(student => { return { student_id: student._id } })
+            });
+            await record.save((err, record) => {
+                req.flash('messages', [['success', 'Thêm Bài tập thành công.']]);
+                res.redirect('/records/view/' + record._id);
+            });
         });
-        await record.save((err, record) => {
-            req.flash('messages', [['success', 'Thêm Bài tập thành công.']]);
-            res.redirect('/records/view/'+record._id);
+    } else {
+        Student.find({ classroom: req.body.class, is_active: true }).select({ _id: 1 }).exec(async (err, students) => {
+            let record = new Record({
+                name: req.body.name,
+                date: new Date(req.body.date),
+                type: req.body.type,
+                note: req.body.note || undefined,
+                class: req.body.class,
+                total: req.body.total || 10,
+                link: req.body.link || undefined,
+                student: students.map(student => { return { student_id: student._id } })
+            });
+            await record.save((err, record) => {
+                req.flash('messages', [['success', 'Thêm Bài tập thành công.']]);
+                res.redirect('/records/view/' + record._id);
+            });
         });
-    })
+    }
+
 }
 
 module.exports.postEdit = (req, res) => {
     if (req.body.link) {
         let linkArr = req.body.link.split('/');
-        linkArr[linkArr.length-1] = 'preview';
+        linkArr[linkArr.length - 1] = 'preview';
         req.body.link = linkArr.join('/');
     }
     Record.findByIdAndUpdate(req.body.id, {
@@ -84,7 +104,7 @@ module.exports.postEdit = (req, res) => {
         }
     }).exec((err, record) => {
         req.flash('messages', [['success', 'Cập nhật Bài tập thành công.']]);
-        res.redirect('/records/view/'+req.body.id);
+        res.redirect('/records/view/' + req.body.id);
     })
 }
 

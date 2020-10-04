@@ -35,7 +35,8 @@ module.exports.index = (req, res) => {
 };
 
 module.exports.getByName = async (req, res) => {
-    let id = (await Classroom.findOne({ name: req.params.name }))._id;
+    let classroom = await Classroom.findOne({ name: req.params.name })
+    let id = classroom._id;
     let records = await Record.find({ class: id }).sort({date: -1});
     let idOfRecords = records.map((record) => record._id.toString());
     let recordsOfStudents = await Record.aggregate([
@@ -76,11 +77,19 @@ module.exports.getByName = async (req, res) => {
             }
         });
     });
-
-    res.render('classes/view', {
-        students: await Student.find({ classroom: id, is_active: true }),
-        className: req.params.name,
-        records: records,
-        recordsOfStudents: recordsOfStudents,
-    })
+    if (classroom.type == 'LEARN') {
+        res.render('classes/view', {
+            students: await Student.find({ classroom: id, is_active: true }),
+            className: req.params.name,
+            records: records,
+            recordsOfStudents: recordsOfStudents,
+        })
+    } else {
+        res.render('classes/view', {
+            students: await Student.find({ test_class: id, is_active: true }),
+            className: req.params.name,
+            records: records,
+            recordsOfStudents: recordsOfStudents,
+        })
+    }
 };

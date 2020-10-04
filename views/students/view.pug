@@ -53,7 +53,9 @@ block content
             .card
                 h6.card-header Lớp
                 .card-body
-                    a.text-dark(href="/classes/"+student.classroom.name)= student.classroom.name
+                    a.badge.badge-info(href="/classes/"+student.classroom.name)= student.classroom.name
+                    if student.test_class
+                        a.ml-1.badge.badge-info(href="/classes/"+student.test_class.name)= student.test_class.name
         .col.mb-2
             .card
                 h6.card-header ID

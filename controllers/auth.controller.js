@@ -30,7 +30,7 @@ module.exports.postLogin = async (req, res) => {
     user.action = undefined;
     res.cookie('user', user, {
         signed: true,
-        maxAge: 24 * 3600 * 1000
+        maxAge: 7 * 24 * 3600 * 1000
     });
     req.flash('messages', [['success', 'Đăng nhập thành công.']]);
     res.redirect(req.flash('history')[0] || '/user/'+user.username);
