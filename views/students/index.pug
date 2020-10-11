@@ -2,7 +2,8 @@ extends ../layouts/common.pug
 block header
     title Danh sách học sinh
 block content
-    h3 Danh sách học sinh
+    h1.h3.text-gray-800 Danh sách học sinh
+    p.mb-3 Danh sách học sinh ở đây bao gồm cả học sinh đã nghỉ học.
     form(action="/students/search", method="GET")
         .form-row
             .input-group.col-md-6.mb-3
@@ -23,6 +24,7 @@ block content
                 button.btn.btn-primary.w-100(type='submit') Tìm kiếm
             .col
                 a.btn.btn-primary.w-100(href='/students/create') Thêm HS
+    
     if students.length == 0
         .alert.alert-warning Không có kết quả
     else

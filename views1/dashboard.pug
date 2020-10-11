@@ -1,0 +1,36 @@
+extends ./layouts/common.pug
+mixin card-row(text, data, icon, link)
+    .col-xl-3.col-md-6.mb-4
+        .card.shadow.border-left-primary.h-100.py-2
+            .card-body
+                .row.no-gutters.align-items-center
+                    .col.mr-2
+                        .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1= text
+                        .h5.mb-0.font-weight-bold.text-gray-800= data
+                    .col-auto
+                        a(href=link)
+                            i(class=`fad fa-${icon} fa-2x text-gray-300`)
+block content
+    h3.mb-2.text-gray-800 Thống kê
+    .row
+        +card-row('Học sinh', numStudents, 'users', '/students')
+        +card-row('Lớp học', numClasses, 'users-class', '/classes')
+        +card-row('Bản ghi', numRecords, 'clipboard', '/records')
+        +card-row('Buổi trợ giảng', numLessons, 'chalkboard-teacher', '/lessons')
+    .card.shadow.mb-4
+        .card-header.py-3
+            h6.m-0.font-weight-bold.text-primary
+                i.fas.fa-chalkboard-teacher
+                |   Tình hình học sinh đi học trợ giảng
+        .card-body
+            .row.d-flex.justify-content-end
+                .col-6.col-md-2.my-1
+                    input.form-control#start-time(type="date")
+                .col-6.col-md-2.my-1
+                    input.form-control#end-time(type="date")
+            .chart-area
+                canvas#topDatesAreaChart
+block script
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js")
+    script(src="/js/charts/dashboard.js")
+

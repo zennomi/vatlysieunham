@@ -13,6 +13,6 @@ const Classroom = require('./models/class.model');
 const Student = require('./models/student.model');
 const Lesson = require('./models/lesson.model');
 
-Student.updateMany({}, {
-    $set: {is_active: true}
+Student.updateMany({id: {$gt: 370}}, {
+    $set: {created_at: new Date('2020-10-01')}
 }).exec((err, result) => {console.log(result)});

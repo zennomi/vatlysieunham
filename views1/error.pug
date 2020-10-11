@@ -1,0 +1,7 @@
+extends ./layouts/common.pug
+block content
+    h1 Lỗi!!!
+    if errors
+        each error in errors
+            .alert.alert-danger= error
+    button.btn.btn-success(onclick="window.history.back()") Quay lại

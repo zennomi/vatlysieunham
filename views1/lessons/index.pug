@@ -1,0 +1,60 @@
+extends ../layouts/common.pug
+block header
+    title Sổ trợ giảng
+block stylesheet
+    link(href='/vendor/datatables/dataTables.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css', rel='stylesheet')
+
+block content
+    //h1.h3.text-gray-800 Sổ trợ giảng
+    .text-right
+        a.mx-1.my-1.btn.btn-success.btn-icon-split(href='/lessons/create')
+            span.icon.text-white-50
+                i.fas.fa-plus-square
+            span.text Thêm
+        a.mx-1.my-1.btn.btn-success.btn-icon-split(href='/lessons/check')
+            span.icon.text-white-50
+                i.fas.fa-check-square
+            span.text Kiểm tra
+        br.d-block.d-md-none
+        a.mx-1.my-1.btn.btn-info.btn-icon-split(href='/lessons/register')
+            span.icon.text-white-50
+                i.fas.fa-calendar
+            span.text Đăng ký
+        a.mx-1.my-1.btn.btn-info.btn-icon-split(href='/lessons/schedule')
+            span.icon.text-white-50
+                i.fas.fa-calendar-check
+            span.text Lịch hẹn   
+    if lessons
+        .card.shadow.mb-2
+            .card-header.py-3
+                h6.m-0.font-weight-bold.text-primary Sổ trợ giảng
+            .card-body    
+                table.table.responsive.w-100.database-table.text-center
+                    thead
+                        tr
+                            th Số HS
+                            th Ngày
+                            th
+                    tbody
+                        each lesson in lessons
+                                tr
+                                    td= lesson.totalStudents
+                                    td(data-order=lesson._id)
+                                        a.text-dark(href="/lessons/" + lesson._id)
+                                            if (lesson._id==today)
+                                                b#simpleDate= lesson._id
+                                            else
+                                                span#simpleDate= lesson._id
+                                    td
+
+    else
+        .alert.alert-warning Danh sách trống.
+block script
+    script(type='text/javascript', src='/time.convert.js')
+    script(src="/vendor/datatables/jquery.dataTables.min.js")
+    script(src="/vendor/datatables/dataTables.bootstrap4.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/responsive.bootstrap4.min.js")
+    script(src="/js/datatables/locale.sorting.js")
+    script(type='text/javascript', src='/js/datatables/common.js')

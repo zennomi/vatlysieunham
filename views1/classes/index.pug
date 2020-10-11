@@ -1,0 +1,27 @@
+extends ../layouts/common.pug
+block stylesheet
+    link(href='/vendor/datatables/dataTables.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css', rel='stylesheet')
+
+block content
+    h1.h3.text-gray-800
+        span.mr-2 Danh sách lớp học
+        span.badge.badge-primary= classes.length
+    if classes.length == 0
+        .alert.alert-warning Không có data
+    else
+        table.table.table-hover.text-center
+            thead
+                tr
+                    th Loại
+                    th Tên lớp
+                    th Số học sinh
+                    th
+            tbody
+                each cla in classes
+                    tr
+                        td= cla.type
+                        td
+                            a.text-dark(href="/classes/" + cla.name)= cla.name
+                        td= cla.totalStudents
+                        td

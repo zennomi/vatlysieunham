@@ -1,0 +1,112 @@
+extends ../layouts/common.pug
+
+block header
+    title Sửa thông tin bản ghi
+block content
+    h3 Sửa thông tin
+    form(action="/records/edit", method="POST")
+        .form-group
+            label ID
+            input.form-control(name='id', type='text', value= record._id, readonly, required)
+        .form-row.row-cols-1.row-cols-md-2
+            .col.form-group
+                label Tên
+                input.form-control(name='name', type='text', value=record.name, required)
+            .col.form-group
+                label Ngày
+                input.form-control(name='date', type='date', value=record.date.toISOString().slice(0,10), required)
+        .form-row.row-cols-2
+            .col.form-group 
+                label Tổng số
+                input.form-control#total(name='total', type='number', value=record.total, inputmode='decimal')
+            .col.form-group
+                label Loại
+                select.form-control(name="type", required)
+                    option(hidden, selected)= record.type
+                    option BTVN
+                    option KT15P
+                    option KT50P
+                    option TESTOFF
+                    option TESTON
+        .form-group
+            label Link
+            input.form-control(name='link', type='url', placeholder="https://drive.google.com/file/d/TEN-FILE/view?usp=sharing", pattern="https://drive.google.com/file/d/.*", value=record.link)
+        .form-group
+            label Ghi chú
+            textarea.form-control(name="note")= record.note
+        .row.row-cols-3#navbar-bottom
+            .col
+                button.btn.btn-success.w-100 Lưu
+            .col
+                a.btn.btn-danger.w-100(href='/records/delete/'+record._id) Xóa
+            .col
+                a.btn.btn-light.w-100(href='/records/view/'+record._id) Trở về
+    
+    h3 Cập nhật bản ghi
+    .card
+        .card-body
+            h4.card-title Thêm học sinh
+            input#n.form-control(type='text', autocomplete='off', placeholder="Tìm ID bằng tên...")
+            #list-students.list-group
+                .alert.alert-danger.mt-1(style='display: none') Hông thấy kết quả. 
+                    a.alert-link(href='/students/create', target='_blank') Thêm học sinh mới.
+            form#form-add-student(action="", method="POST")
+                .form-row.row-cols-2.row-cols-md-3
+                    .col.form-group
+                        label ID
+                        input#id.form-control(name="student_id", type="number", required, inputmode='decimal')
+                    .col.form-group
+                        label Điểm
+                        input#finish_count-add.form-control(name="finish_count", type="number", inputmode='decimal', step=0.01)
+                    .col-12.form-group
+                        label Ghi chú
+                        input#note-add.form-control(name="note", type="text")
+                button.btn.btn-success(type="submit") Thêm
+
+    .input-group.mb-3
+        .input-group-prepend
+            span#basic-addon1.input-group-text Lọc
+        input.form-control#student-filter(type='search', placeholder='Tên, ID,...', aria-label='Username', aria-describedby='basic-addon1')
+    .modal.fade#update-modal(tabindex='-1', role='dialog')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    p
+                    form#form-update(action="")
+                        .input-group.mb-3
+                            .input-group-prepend
+                                span#basic-addon1.input-group-text Điểm
+                            input.form-control.rounded-right#finish_count(type='number', step='0.01', placeholder='Không nhập gì là xóa', aria-describedby='basic-addon1', inputmode="decimal")
+                            .invalid-feedback#validate(style='display: none')
+                        .input-group.mb-3
+                            .input-group-prepend
+                                span#basic-addon1.input-group-text Ghi chú
+                            input.form-control.rounded-right#note(type='text', placeholder='Không nhập gì là xóa', aria-describedby='basic-addon1')
+                            .invalid-feedback#validate(style='display: none')
+                        button.btn.btn-primary#submit-update.mr-2(type='submit') Lưu
+                        button.btn.btn-danger.mr-2#remove Xóa
+                        button.btn.btn-secondary.mr-2(type='button', data-dismiss='modal') Hủy
+
+    table.table.table-hover#student-table
+        thead
+            tr
+                th ID
+                th Tên
+                th Điểm
+                th Ghi chú
+        tbody
+            each student in record.student
+                tr
+                    td= student.student_id.id
+                    td= student.student_id.name
+                    td= student.finish_count
+                    td= student.note
+block script
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
+    script(type='text/javascript', src='/student.search.js')
+    script(type='text/javascript', src='/student.filter.js')
+    script(type='text/javascript', src='/record.update.js')

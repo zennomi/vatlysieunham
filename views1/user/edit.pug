@@ -1,0 +1,24 @@
+extends ../layouts/common.pug
+block content
+    form(action="/user/edit", method="POST")
+        .form-group
+            label Tên
+            input.form-control(name='name', type='text', value= user.name, required)
+        .form-group
+            label Tên đăng nhập
+            input.form-control(name='username', type='text', value= user.username, readonly)
+        .form-group
+            label Mật khẩu mới
+            input.form-control(name='password', type='password', required)
+        .form-group
+            label Nhập lại mật khẩu trên
+            input.form-control(name='rePassword', type='password', required)
+        .form-group
+            label Ghi chú
+            textarea.form-control(name="note")= user.note
+        .row.row-cols-2
+            .col
+                button.btn.btn-primary.w-100 Lưu
+            .col
+                a.btn.btn-primary.w-100(href='/user') Hủy
+    .alert.alert-warning Để đỡ lằng nhằng thì lưu lại thông tin hệ thống sẽ tự đăng xuất, ok?

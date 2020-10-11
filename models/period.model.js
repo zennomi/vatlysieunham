@@ -27,7 +27,7 @@ periodSchema.methods.getDetailedDate = function () {
     } else {
         day = 'Chủ nhật'
     }
-    return `${date.toISOString().slice(5,7)}/${date.toISOString().slice(8,10)} ${day}`
+    return `${day} ${date.toISOString().slice(8, 10)}/${date.toISOString().slice(5, 7)}`
 }
 const Period = mongoose.model('Period', periodSchema);
 

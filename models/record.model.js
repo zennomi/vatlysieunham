@@ -33,7 +33,7 @@ recordSchema.methods.getDetailedDate = function () {
     } else {
         day = 'Chủ nhật'
     }
-    return `${date.toISOString().slice(5,7)}/${date.toISOString().slice(8,10)} ${day}`
+    return `${day} ${date.toISOString().slice(8, 10)}/${date.toISOString().slice(5, 7)}`
 }
 recordSchema.methods.getNumberOfFilledStudent = function() {
     return this.student.filter(student => student.finish_count != null).length;
@@ -41,8 +41,20 @@ recordSchema.methods.getNumberOfFilledStudent = function() {
 recordSchema.methods.getAverageMark = function() {
     let arrayOfMarks = this.student
         .filter(student => student.finish_count != null)
-        .map(student => student.finish_count);
+        .map(student => student.finish_count/this.total*10);
     return arrayOfMarks.reduce((a, b) => a+b, 0)/arrayOfMarks.length;
+}
+recordSchema.methods.getPieChartData = function() {
+    let arrayOfMarks = this.student
+        .filter(student => student.finish_count != null)
+        .map(student => student.finish_count/this.total*10);
+    return [
+        arrayOfMarks.filter(mark => mark >=8).length,
+        arrayOfMarks.filter(mark => (mark >=6 && mark <8)).length,
+        arrayOfMarks.filter(mark => (mark >=4 && mark <6)).length,
+        arrayOfMarks.filter(mark => (mark <4)).length,
+        this.student.length - this.getNumberOfFilledStudent()
+    ]
 }
 recordSchema.index({date: -1});
 

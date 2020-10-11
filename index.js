@@ -28,7 +28,6 @@ const Student = require('./models/student.model');
 const Classroom = require('./models/class.model');
 const Lesson = require('./models/lesson.model');
 const User = require('./models/user.model');
-const Test = require('./models/test.model');
 const Record = require('./models/record.model');
 
 const studentRoute = require('./routers/student.route');
@@ -38,11 +37,14 @@ const authRoute = require('./routers/auth.route');
 const userRoute = require('./routers/user.route');
 const recordRoute = require('./routers/record.route');
 const periodRoute = require('./routers/period.route');
-const testRoute = require('./routers/test.route');
-const authMiddleware = require('./middlewares/auth.middleware');
-const { update } = require('./models/class.model');
 
-app.set('views', './views');
+const apiStudentRoute = require('./api/routers/student.route');
+const apiLessonRoute = require('./api/routers/lesson.route');
+
+const authMiddleware = require('./middlewares/auth.middleware');
+const viewMiddleware = require('./middlewares/view.middleware');
+
+app.set('views', './views1');
 app.set('view engine', 'pug');
 
 app.use(bodyParser.json())
@@ -61,44 +63,40 @@ app.use(flash());
 
 app.use(authMiddleware.getAuth);
 
-app.get('/', pushMessage, async (req, res) => {
-    let numStudents = await Student.countDocuments({is_active: true});
-    let numClasses = await Classroom.countDocuments({type: 'LEARN'});
-    let numLessons = await Lesson.countDocuments();
-    res.render('index', {
-        numStudents: numStudents,
-        numClasses: numClasses,
-        numLessons: numLessons
-    });
-});
 app.get(/\/view/, authMiddleware.authRequire);
 app.get(/\/edit/, authMiddleware.authRequire);
 app.get(/\/create/, authMiddleware.authRequire);
 app.get(/\/delete/, authMiddleware.authRequire);
 app.use('/students/delete', authMiddleware.adminRequire);
-app.use('/students', pushMessage, studentRoute);
-app.use('/classes', pushMessage, classRoute);
-app.use('/lessons', pushMessage, lessonRoute);
-app.use('/auth', pushMessage, authRoute);
-app.use('/records', authMiddleware.authRequire, pushMessage, recordRoute);
-app.use('/periods', authMiddleware.authRequire, pushMessage, periodRoute);
-app.use('/tests', authMiddleware.authRequire, pushMessage, testRoute);
-app.use('/user', authMiddleware.authRequire, pushMessage, userRoute);
 
-app.get('/api/students/search', (req, res) => {
-    let nameRegex = new RegExp(req.query.name, 'i');
-    Student.find({ name: { $regex: nameRegex } }).limit(5).populate('classroom').exec((err, students) => {
-        res.json(students);
+app.use(pushMessage);
+app.use(viewMiddleware.getBreadcrumb);
+app.get('/', (req, res) => {
+    res.render('index');
+});
+app.get('/dashboard', pushMessage, async (req, res) => {
+    let numStudents = await Student.countDocuments({ is_active: true });
+    let numClasses = await Classroom.countDocuments({ type: 'LEARN' });
+    let numLessons = await Lesson.countDocuments();
+    let numRecords = await Record.countDocuments();
+    res.render('dashboard', {
+        title: 'TỔNG KẾT - VLSN',
+        numStudents: numStudents,
+        numClasses: numClasses,
+        numRecords: numRecords,
+        numLessons: numLessons
     });
 });
 
-app.get('/api/students/:id', (req, res) => {
-    Student.findOne({id: req.params.id}, '_id name classroom')
-        .populate('classroom')
-        .exec((err, student) => {
-            res.json(student);
-        });
-})
+app.use('/students', studentRoute);
+app.use('/classes', classRoute);
+app.use('/lessons', lessonRoute);
+app.use('/auth', authRoute);
+app.use('/records', authMiddleware.authRequire, recordRoute);
+app.use('/periods', authMiddleware.authRequire, periodRoute);
+app.use('/user', authMiddleware.authRequire, userRoute);
+app.use('/api/students', apiStudentRoute);
+app.use('/api/lessons', apiLessonRoute);
 
 io.on('connection', (socket) => {
     socket.on('quick search', async function (name) {
@@ -110,9 +108,9 @@ io.on('connection', (socket) => {
     socket.on('update-record', async function (updateInfo) {
         let student = await Student.findOne({ id: updateInfo.studentId });
         if (!student) return;
-        
+
         updateInfo.studentId = student._id;
-        
+
         if (updateInfo.method == 'add') {
             await Record.findById(updateInfo.recordId).exec((err, record) => {
                 record.student.push({
@@ -121,11 +119,11 @@ io.on('connection', (socket) => {
                     note: updateInfo.note ? updateInfo.note : undefined
                 });
                 record.save();
-            });     
+            });
             return;
         }
 
-        if (updateInfo.method == 'update'){
+        if (updateInfo.method == 'update') {
             if (updateInfo.finish_count) {
                 await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
                     $set: {
@@ -149,32 +147,32 @@ io.on('connection', (socket) => {
         if (updateInfo.method = 'remove') {
             console.log(updateInfo)
             await Record.findByIdAndUpdate(updateInfo.recordId, {
-                $pull: {student: {student_id: updateInfo.studentId}}
+                $pull: { student: { student_id: updateInfo.studentId } }
             });
             return;
         }
     });
-//     socket.on('update-record', async function (updateInfo) {
-//         updateInfo.studentId = (await Student.findOne({ id: updateInfo.studentId }))._id;
-//         if (!updateInfo.note) updateInfo.note = undefined;
-//         if (updateInfo.finishCount) {
-//             await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
-//                 $set: {
-//                     'student.$.finish_count': updateInfo.finishCount,
-//                     'student.$.note': updateInfo.note
-//                 }
-//             })
-//         } else {
-//             await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
-//                 $unset: {
-//                     'student.$.finish_count': ''
-//                 },
-//                 $set: {
-//                     'student.$.note': updateInfo.note
-//                 }
-//             })
-//         }
-//     });
+    //     socket.on('update-record', async function (updateInfo) {
+    //         updateInfo.studentId = (await Student.findOne({ id: updateInfo.studentId }))._id;
+    //         if (!updateInfo.note) updateInfo.note = undefined;
+    //         if (updateInfo.finishCount) {
+    //             await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
+    //                 $set: {
+    //                     'student.$.finish_count': updateInfo.finishCount,
+    //                     'student.$.note': updateInfo.note
+    //                 }
+    //             })
+    //         } else {
+    //             await Record.findOneAndUpdate({ _id: updateInfo.recordId, 'student.student_id': updateInfo.studentId }, {
+    //                 $unset: {
+    //                     'student.$.finish_count': ''
+    //                 },
+    //                 $set: {
+    //                     'student.$.note': updateInfo.note
+    //                 }
+    //             })
+    //         }
+    //     });
 });
 
 //test

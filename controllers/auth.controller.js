@@ -33,5 +33,5 @@ module.exports.postLogin = async (req, res) => {
         maxAge: 7 * 24 * 3600 * 1000
     });
     req.flash('messages', [['success', 'Đăng nhập thành công.']]);
-    res.redirect(req.flash('history')[0] || '/user/'+user.username);
+    res.redirect(req.flash('history')[0] || '/dashboard');
 }

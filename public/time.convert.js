@@ -9,6 +9,6 @@ function getDetailedDate(date) {
     } else {
         day = 'Chủ nhật'
     }
-    return `${date.slice(5,7)}/${date.slice(8,10)} ${day}`
+    return `${day} ${date.slice(8, 10)}/${date.slice(5, 7)}`
     
 }

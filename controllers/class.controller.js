@@ -2,8 +2,12 @@ const Student = require('../models/student.model');
 const Classroom = require('../models/class.model');
 const Record = require('../models/record.model');
 
-module.exports.index = (req, res) => {
-    Student.aggregate([
+module.exports.index = async (req, res) => {
+    let classes = [];
+    classes = await Student.aggregate([
+        {
+            $match: {is_active: true}
+        },
         {
             $group: {
                 _id: '$classroom',
@@ -24,14 +28,34 @@ module.exports.index = (req, res) => {
         {
             $sort: {name: 1}
         }
-    ]).exec((err, classrooms) => {
-        if (err) res.render('errors', {
-            errors: [err]
-        })
-        res.render('classes/index', {
-            classes: classrooms
-        })
-    })
+    ]);
+    classes.push(...Array.from(await Student.aggregate([
+        {
+            $match: {
+                test_class: {$ne: null},
+                is_active: true
+            }
+        },
+        {
+            $group: {
+                _id: '$test_class',
+                totalStudents: {$sum: 1}
+            }
+        },
+        {
+            $lookup: {
+                from: 'classrooms',
+                localField: '_id',
+                foreignField: '_id',
+                as: 'nameArr'
+            }
+        },
+        {
+            $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$nameArr", 0 ] }, "$$ROOT" ] } }
+        }
+    ])));
+    console.log(classes);
+    res.render('classes/index', {classes})
 };
 
 module.exports.getByName = async (req, res) => {

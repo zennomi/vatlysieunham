@@ -62,7 +62,7 @@ module.exports.postCreate = (req, res) => {
             });
             await record.save((err, record) => {
                 req.flash('messages', [['success', 'Thêm Bài tập thành công.']]);
-                res.redirect('/records/view/' + record._id);
+                res.redirect('/records/' + record._id);
             });
         });
     } else {
@@ -79,7 +79,7 @@ module.exports.postCreate = (req, res) => {
             });
             await record.save((err, record) => {
                 req.flash('messages', [['success', 'Thêm Bài tập thành công.']]);
-                res.redirect('/records/view/' + record._id);
+                res.redirect('/records/' + record._id);
             });
         });
     }
@@ -104,7 +104,7 @@ module.exports.postEdit = (req, res) => {
         }
     }).exec((err, record) => {
         req.flash('messages', [['success', 'Cập nhật Bài tập thành công.']]);
-        res.redirect('/records/view/' + req.body.id);
+        res.redirect('/records/' + req.body.id);
     })
 }
 

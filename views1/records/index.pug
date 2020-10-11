@@ -1,0 +1,42 @@
+extends ../layouts/common.pug
+block stylesheet
+    link(href='/vendor/datatables/dataTables.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css', rel='stylesheet')
+
+block content
+    .d-flex.justify-content-between.align-items-center
+        h1.h3.text-gray-800 Danh sách bản ghi
+        a.d-inline-block.btn.btn-success.shadow(href="/records/create")
+            i.fas.fa-plus-square.fa-sm.text-white-50
+            |  Thêm
+    p.mb-2 Bản ghi bao gồm BTVN, KT15P, KT50P (Lớp thường) và TESTON, TESTOFF (Lớp luyện đề)
+    if records.length > 0
+        .card.shadow.mb-2
+            .card-header.py-3
+                    h6.text-primary.m-0.font-weight-bold Danh sách bản ghi
+            .card-body
+                table.table.w-100.responsive.database-table
+                    thead
+                        tr
+                            th Loại
+                            th Ngày
+                            th(data-priority="-1") Tên
+                            th(data-priority="-1") Lớp
+                            th
+                    tbody
+                        each record in records
+                            tr
+                                td= record.type
+                                td(data-order=record.date)= record.getDetailedDate()
+                                td
+                                    a(href='/records/'+record._id)= record.name
+                                td
+                                    a(href='/classes/'+record.class.name)= record.class.name
+                                td
+block script
+    script(src="/vendor/datatables/jquery.dataTables.min.js")
+    script(src="/vendor/datatables/dataTables.bootstrap4.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/responsive.bootstrap4.min.js")
+    script(src="/js/datatables/locale.sorting.js")
+    script(type='text/javascript', src='/js/datatables/common.js')

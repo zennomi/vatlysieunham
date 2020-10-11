@@ -85,7 +85,6 @@ module.exports.check = (req, res) => {
 }
 
 module.exports.analyse = async (req, res) => {
-    console.log(req.query.start_date, req.query.end_date);
     let nowTime = new Date();
     nowTime = nowTime.valueOf() + 252e5;
     nowTime = new Date(nowTime);
@@ -444,12 +443,12 @@ module.exports.postEdit =(req, res) => {
         }
     }).exec((err, lesson) => {
         req.flash('messages', [['success', 'Sửa buổi trợ giảng thành công.']]);
-        if (!req.body.topic) req.flash('messages', [['warning', 'Chưa cập nhật chủ đề.', `/lessons/edit/${lesson._id}#topic`]]);
-        if (!req.body.type) req.flash('messages', [['warning', 'Chưa cập nhật loại buổi trợ giảng.', `/lessons/edit/${lesson._id}#type`]]);
-        if (req.body.type == 'Bài tập' && !req.body.total_problems) req.flash('messages', [['warning', 'Chưa cập nhật số bài tập.', `/lessons/edit/${lesson._id}#total_problems`]]);
-        if (!req.body.rating) req.flash('messages', [['warning', 'Chưa cập nhật đánh giá.', `/lessons/edit/${lesson._id}#rating`]]);
-        if (!req.body.comment_of_tutor) req.flash('messages', [['warning', 'Chưa cập nhật nhận xét.', `/lessons/edit/${lesson._id}#comment_of_tutor`]]);
-        res.redirect('/lessons/view/' + lesson._id);
+        if (!req.body.topic) req.flash('messages', [['warning', 'Chưa cập nhật chủ đề.', `/lessons/${lesson.date}/${lesson._id}/edit#topic`]]);
+        if (!req.body.type) req.flash('messages', [['warning', 'Chưa cập nhật loại buổi trợ giảng.', `/lessons/${lesson.date}/${lesson._id}/edit#type`]]);
+        if (req.body.type == 'Bài tập' && !req.body.total_problems) req.flash('messages', [['warning', 'Chưa cập nhật số bài tập.', `/lessons/${lesson.date}/${lesson._id}/edit#total_problems`]]);
+        if (!req.body.rating) req.flash('messages', [['warning', 'Chưa cập nhật đánh giá.', `/lessons/${lesson.date}/${lesson._id}/edit#rating`]]);
+        if (!req.body.comment_of_tutor) req.flash('messages', [['warning', 'Chưa cập nhật nhận xét.', `/lessons/${lesson.date}/${lesson._id}/edit#comment_of_tutor`]]);
+        res.redirect('/lessons/' + lesson.date + + '/' + lesson._id);
     })
 }
 

@@ -2,25 +2,22 @@ const Student = require('../models/student.model');
 const Classroom = require('../models/class.model');
 const Lesson = require('../models/lesson.model');
 const Record = require('../models/record.model');
-const Test = require('../models/test.model');
 
 module.exports.index = async (req, res) => {
-    let page = parseInt(req.query.page) || 1;
-    let maxPage = Math.floor((await Student.countDocuments()) / 40) + 1;
-    if (page > maxPage) {
-        res.render('error', {
-            errors: ['Đi đâu đấy bạn ôi!']
-        });
-    } else {
-        let students = await Student.find().populate('classroom').skip(40 * (page - 1)).limit(40);
-        let classes = await Classroom.find();
-        res.render('students/index', {
-            students: students,
-            classes: classes,
-            page: page,
-            maxPage: maxPage
-        });
-    }
+    // let page = parseInt(req.query.page) || 1;
+    // let maxPage = Math.floor((await Student.countDocuments()) / 40) + 1;
+    // if (page > maxPage) {
+    //     res.render('error', {
+    //         errors: ['Đi đâu đấy bạn ôi!']
+    //     });
+    // } else {
+    // }
+    let students = await Student.find().populate('classroom');
+    let classes = await Classroom.find();
+    res.render('students/index', {
+        students: students,
+        classes: classes
+    });
 };
 
 module.exports.search = async (req, res) => {
@@ -134,11 +131,12 @@ module.exports.getById = async (req, res) => {
 };
 
 module.exports.editById = async (req, res) => {
-    let student = await Student.findOne({ id: req.params.id }).populate('classroom');
+    let student = await Student.findOne({ id: req.params.id }).populate('classroom').populate('test_class').populate('updated_by');
+    let classes = await Classroom.find();
     res.render('students/edit', {
         student: student,
-        classes: await Classroom.find({ type: 'LEARN' }),
-        testClasses: await Classroom.find({ type: 'TEST' })
+        classes: classes.filter(cla => cla.type=="LEARN"),
+        testClasses: classes.filter(cla => cla.type=="TEST")
     })
 }
 
@@ -167,7 +165,9 @@ module.exports.postCreate = async (req, res) => {
         name: req.body.name,
         classroom: req.body.class,
         id: id,
-        is_active: true
+        is_active: true,
+        created_at: Date.now(),
+        updated_by: res.locals.user._id
     });
     if (req.body.dob) student.dob = new Date(req.body.dob);
     if (req.body.tags) {
@@ -260,7 +260,8 @@ module.exports.postEdit = async (req, res) => {
     if (req.body.note) student.note = req.body.note;
     else student.note = undefined;
     student.is_active = req.body.is_active ? true : false;
-
+    student.updated_by = res.locals.user._id;
+    student.updated_at = Date.now();
     await student.save();
     req.flash('messages', [['success', `Đã sửa học sinh tên ${req.body.name} - ID ${req.body.id}`]]);
     res.redirect('/students/' + req.body.id);

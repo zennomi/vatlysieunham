@@ -24,11 +24,13 @@ router.get('/analyse', authMiddleware.authRequire, controller.analyse);
 
 router.get('/:date', controller.viewByDate);
 
-router.get('/view/:id', controller.viewById);
+router.get('/:date/:id', controller.viewById);
 
-router.get('/edit/:id', controller.editById);
+router.get('/:date/:id/view', controller.viewById);
 
-router.get('/delete/:id', controller.deleteById);
+router.get('/:date/:id/edit', controller.editById);
+
+router.get('/:date/:id/delete', controller.deleteById);
 
 router.post('/create', validate.postCreate, controller.postCreate);
 

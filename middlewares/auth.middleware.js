@@ -8,6 +8,8 @@ module.exports.getAuth = (req, res, next) => {
             return;
         }
         res.locals.user = req.signedCookies.user;
+    } else {
+        res.locals.user = undefined;
     }
     next();
 }

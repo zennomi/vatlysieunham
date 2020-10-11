@@ -48,7 +48,7 @@ lessonSchema.methods.getDetailedDate = function () {
     } else {
         day = 'Chủ nhật'
     }
-    return `${this.date.slice(5,7)}/${this.date.slice(8,10)} ${day}`
+    return `${day} ${this.date.slice(8,10)}/${this.date.slice(5, 7)} `
 }
 lessonSchema.methods.getDetailedTime = function () {
     if (this.time.start_hour == undefined) return '';

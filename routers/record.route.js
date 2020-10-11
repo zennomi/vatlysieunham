@@ -5,13 +5,15 @@ const controller = require('../controllers/record.controller');
 
 router.get('/', controller.index);
 
-router.get('/view/:id', controller.viewById);
+router.get('/:id/view', controller.viewById);
 
-router.get('/edit/:id', controller.editById);
+router.get('/:id/edit', controller.editById);
 
-router.get('/delete/:id', controller.deleteById);
+router.get('/:id/delete/', controller.deleteById);
 
 router.get('/create', controller.create);
+
+router.get('/:id', controller.viewById);
 
 router.post('/create', controller.postCreate);
 
