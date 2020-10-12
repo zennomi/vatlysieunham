@@ -1,6 +1,10 @@
 extends ../layouts/common.pug
+block stylesheet
+    link(href='/vendor/datatables/dataTables.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css', rel='stylesheet')
+
 block content
-    h3
+    h1.h3.text-gray-800
         span.mr-2 Danh sách lớp học
         span.badge.badge-primary= classes.length
     if classes.length == 0
@@ -9,15 +13,13 @@ block content
         table.table.table-hover.text-center
             thead
                 tr
+                    th Loại
                     th Tên lớp
                     th Số học sinh
             tbody
                 each cla in classes
                     tr
+                        td= cla.type
                         td
                             a.text-dark(href="/classes/" + cla.name)= cla.name
                         td= cla.totalStudents
-    .alert.alert-warning.alert-dismissible.fade.show(role='alert')
-        |  Lớp không có học sinh sẽ không hiện ở đây.
-        button.close(type='button', data-dismiss='alert', aria-label='Close')
-            span(aria-hidden='true') &times;

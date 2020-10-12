@@ -4,21 +4,24 @@ block header
     title Xóa học sinh #{student.name}
 
 block content
-    h1 Delete Student
-    .card.card-body.text-center(style="width: 18rem; margin: auto")
-        form(action="/students/delete", method="POST")
-            h5.mb-2 Xác nhận xóa học sinh
-            .input-group.mb-3
-                .input-group-prepend
-                    span#inputGroup-sizing-default.input-group-text ID
-                input.form-control(name="id", type='text', value= student.id, readonly)
-            .input-group.mb-3
-                .input-group-prepend
-                    span#inputGroup-sizing-default.input-group-text Tên
-                input.form-control(type='text', value= student.name, readonly)
-            .input-group.mb-3    
-                .input-group-prepend
-                    span#inputGroup-sizing-default.input-group-text Lớp
-                input.form-control(type='text', value= student.classroom.name, readonly)
-            button.btn.btn-danger Xác nhận
-            a.btn.btn-light.ml-2(href="/students/"+student.id) Hủy
+    h1.h3.text-gray-800 Xóa học sinh
+    p.mb-2 Nếu xóa học sinh, tất cả dữ liệu học sinh đều bị xóa.
+    .card.shadow.mb-2(style="width: 18rem; margin: auto")
+        .card-header.py-3.text-primary
+            h6.m-0.font-weight-bold.text-primary Xác nhận xóa học sinh
+        .card-body.text-center
+            form(action="/students/delete", method="POST")
+                .input-group.mb-3
+                    .input-group-prepend
+                        span#inputGroup-sizing-default.input-group-text ID
+                    input.form-control(name="id", type='text', value= student.id, readonly)
+                .input-group.mb-3
+                    .input-group-prepend
+                        span#inputGroup-sizing-default.input-group-text Tên
+                    input.form-control(type='text', value= student.name, readonly)
+                .input-group.mb-3    
+                    .input-group-prepend
+                        span#inputGroup-sizing-default.input-group-text Lớp
+                    input.form-control(type='text', value= student.classroom.name, readonly)
+                button.btn.btn-danger Xác nhận
+                a.btn.btn-light.ml-2(href="/students/"+student.id) Hủy

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var socket = io();
     let id;
-    let updateInfo = { recordId: window.location.pathname.split('/')[3] };
+    let updateInfo = { recordId: $('#_id').val() };
     // Click when enter
     $('#student-filter').on('search', function() {
         $('#student-table tbody tr.matchedElement')[0].click();

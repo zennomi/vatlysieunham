@@ -1,54 +1,60 @@
 extends ../layouts/common.pug
 block header
     title Sổ trợ giảng
-block content
-    h3.text-shadow Sổ trợ giảng
-    .row.row-cols-2#navbar-bottom
-        .col
-            a.btn.btn-success.mb-2.w-100(href='/lessons/create') 
-                svg.bi.bi-plus-square.mr-2(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                    path(fill-rule='evenodd', d='M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z')
-                    path(fill-rule='evenodd', d='M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z')
-                    path(fill-rule='evenodd', d='M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z')
+block stylesheet
+    link(href='/vendor/datatables/dataTables.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css', rel='stylesheet')
 
-                | Thêm
-        .col
-            a.btn.btn-success.mb-2.w-100(href='/lessons/check')
-                svg.bi.bi-check-square.mr-2(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                    path(fill-rule='evenodd', d='M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z')
-                    path(fill-rule='evenodd', d='M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z')
-                | Kiểm tra
-        .col
-            a.btn.btn-success.w-100(href='/lessons/register')
-                svg.bi.bi-calendar-plus.mr-2(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                    path(fill-rule='evenodd', d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z')
-                    path(fill-rule='evenodd', d='M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7z')
-                | Lên lịch
-        .col
-            a.btn.btn-success.w-100(href='/lessons/schedule')
-                svg.bi.bi-calendar-check.mr-2(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                    path(fill-rule='evenodd', d='M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z')
-                    path(fill-rule='evenodd', d='M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1zm1-3a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2z')
-                    path(fill-rule='evenodd', d='M3.5 0a.5.5 0 0 1 .5.5V1a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5zm9 0a.5.5 0 0 1 .5.5V1a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 .5-.5z')
-                | Lịch hẹn
+block content
+    //h1.h3.text-gray-800 Sổ trợ giảng
+    .text-right
+        a.mx-1.my-1.btn.btn-success.btn-icon-split(href='/lessons/create')
+            span.icon.text-white-50
+                i.fas.fa-plus-square
+            span.text Thêm
+        a.mx-1.my-1.btn.btn-success.btn-icon-split(href='/lessons/check')
+            span.icon.text-white-50
+                i.fas.fa-check-square
+            span.text Kiểm tra
+        br.d-block.d-md-none
+        a.mx-1.my-1.btn.btn-info.btn-icon-split(href='/lessons/register')
+            span.icon.text-white-50
+                i.fas.fa-calendar
+            span.text Đăng ký
+        a.mx-1.my-1.btn.btn-info.btn-icon-split(href='/lessons/schedule')
+            span.icon.text-white-50
+                i.fas.fa-calendar-check
+            span.text Lịch hẹn   
     if lessons
-        table.table.table-hover.text-center.mt-2
-            thead
-                tr
-                    th Ngày
-                    th Số HS
-            tbody
-                each lesson in lessons
+        .card.shadow.mb-2
+            .card-header.py-3
+                h6.m-0.font-weight-bold.text-primary Sổ trợ giảng
+            .card-body    
+                table.table.responsive.w-100.database-table.text-center
+                    thead
                         tr
-                            td
-                                a.text-dark(href='/lessons/'+lesson._id)
-                                    if (lesson._id==today)
-                                        b#simpleDate= lesson._id
-                                    else
-                                        span#simpleDate= lesson._id
-                            td= lesson.totalStudents
+                            th Số HS
+                            th Ngày
+                            th
+                    tbody
+                        each lesson in lessons
+                                tr
+                                    td= lesson.totalStudents
+                                    td(data-order=lesson._id)
+                                        a.text-dark(href="/lessons/" + lesson._id)
+                                            if (lesson._id==today)
+                                                b#simpleDate= lesson._id
+                                            else
+                                                span#simpleDate= lesson._id
+                                    td
 
     else
         .alert.alert-warning Danh sách trống.
 block script
     script(type='text/javascript', src='/time.convert.js')
+    script(src="/vendor/datatables/jquery.dataTables.min.js")
+    script(src="/vendor/datatables/dataTables.bootstrap4.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/responsive.bootstrap4.min.js")
+    script(src="/js/datatables/locale.sorting.js")
+    script(type='text/javascript', src='/js/datatables/common.js')

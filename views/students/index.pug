@@ -1,80 +1,105 @@
 extends ../layouts/common.pug
-block header
+block title
     title Danh sách học sinh
+block stylesheet
+    link(href='/vendor/datatables/dataTables.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css', rel='stylesheet')
+
 block content
     h1.h3.text-gray-800 Danh sách học sinh
-    p.mb-3 Danh sách học sinh ở đây bao gồm cả học sinh đã nghỉ học.
-    form(action="/students/search", method="GET")
-        .form-row
-            .input-group.col-md-6.mb-3
-                .input-group-prepend
-                    span#inputGroup-sizing-default.input-group-text Tên
-                input.form-control(name="name", type='text', value= name ? name : '', placeholder="Tìm bằng tên...")
-            .input-group.col-md-3.mb-3
-                .input-group-prepend
-                    span#inputGroup-sizing-default.input-group-text ID
-                input.form-control(name="id", type='number', value= id ? id : '', placeholder="Tìm bằng ID...")
-            .col-md-3.mb-3
-                select.form-control(name="class")
-                    option(value=cla?cla:'', selected, hidden)= cla?cla:'Lớp'
-                    each cla in classes
-                        option= cla.name
-        .row.row-cols-2
-            .col
-                button.btn.btn-primary.w-100(type='submit') Tìm kiếm
-            .col
-                a.btn.btn-primary.w-100(href='/students/create') Thêm HS
-    
+    p.mb-2 Danh sách học sinh ở đây bao gồm cả học sinh đã nghỉ học.
+    .card.shadow.mb-2
+        a.d-block.card-header.py-3.collapsed(href="#searchForm" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="searchForm")
+            h6.m-0.font-weight-bold.text-primary
+                i.fas.fa-search-plus
+                |   Tìm kiếm nâng cao
+        .collapse#searchForm
+            .card-body
+                form(action="/students/search", method="GET")
+                    .form-row
+                        .input-group.col-md-5.mb-2
+                            .input-group-prepend
+                                span#inputGroup-sizing-default.input-group-text Tên
+                            input.form-control(name="name", type='text', value= name ? name : '')
+                        .input-group.col-6.col-md-3.mb-2
+                            .input-group-prepend
+                                span#inputGroup-sizing-default.input-group-text ID
+                            input.form-control(name="id", type='number', value= id ? id : '')
+                        .col-6.col-md-2.mb-2
+                            select.form-control(name="class")
+                                option(value=cla?cla:'', selected, hidden)= cla?cla:'Lớp'
+                                each cla in classes
+                                    option= cla.name
+                        .col-md-2    
+                            button.btn.btn-primary.w-100(type='submit')
+                                fa.fas.fa-search
     if students.length == 0
         .alert.alert-warning Không có kết quả
     else
-        .input-group.mb-3
-            .input-group-prepend
-                span#basic-addon1.input-group-text Lọc
-            input.form-control#student-filter(type='text', placeholder='Tên, ID,...', aria-label='Username', aria-describedby='basic-addon1')
-        table.table.table-hover.table-light#student-table
-            thead
-                tr
-                    th ID
-                    th Tên
-                    th.d-none.d-md-block Ngày sinh
-                    th Lớp
-                    th.text-center
-                        span.d-none.d-md-inline Thao tác
-            tbody
-                each student in students
-                    tr
-                        td= student.id
-                        td
-                            a.text-dark.mr-2(href='/students/'+student.id)= student.name
-                            if (student.tags && user)
-                                br.d-inline.d-md-none
-                                each tag in student.tags
-                                    a.badge.badge-danger.mr-1(href='/students/search?tag='+tag)= tag
-                        td.d-none.d-md-block
-                            if student.dob
-                                span= student.dob.toISOString().slice(0,10)
-                        td= student.classroom.name
-                        td.text-center
-                            .dropdown
-                                button#dropdownMenuButton.btn.btn-light.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-                                .dropdown-menu(aria-labelledby='dropdownMenuButton')
-                                    a.dropdown-item(href="/students/" + student.id) Xem
-                                    a.dropdown-item(href="/students/edit/" + student.id) Sửa
-                                    a.dropdown-item(href='/students/delete/' + student.id) Xóa
-    nav
-        ul.pagination.justify-content-center
-            if page > 1
-                li.page-item
-                    a.page-link(href='/students/?page='+(page-1), aria-label='Previous')
-                        span(aria-hidden='true') &laquo;
-            - for (var x = 1; x <= maxPage; x++)
-                li.page-item(class=x==page?'active':'')
-                    a.page-link(href='/students/?page='+x)= x
-            if page < maxPage    
-                li.page-item
-                    a.page-link(href='/students/?page='+(page+1), aria-label='Next')
-                        span(aria-hidden='true') &raquo;
-block script
-    script(type='text/javascript', src='/student.filter.js')
+        .card.shadow.mb-2
+            .card-header.py-3.d-flex.flex-row.align-items-center.justify-content-between
+                h6.m-0.font-weight-bold.text-primary
+                    i.fas.fa-users
+                    |   Danh sách học sinh
+                .dropdown.no-arrow
+                    a#dropdownMenuLink.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                        i.fas.fa-ellipsis-v.fa-sm.fa-fw.text-gray-400
+                        .dropdown-menu.dropdown-menu-right.shadow.animated--fade-in(aria-labelledby='dropdownMenuLink')
+                            .dropdown-header Thao tác:
+                            a.dropdown-item(href='/students/create') Thêm HS mới
+                            a.dropdown-item(href="#searchForm" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="searchForm") Tìm kiếm nâng cao
 
+            .card-body
+                table.table.table-striped.dt-responsive.w-100#database-table
+                    thead
+                        tr
+                            th(data-priority="-1") ID
+                            th(data-type="vn-str" data-priority="-1") Tên
+                            th Ngày sinh
+                            th(data-priority="-1") Lớp
+                            th(data-priority="1").text-center Thao tác
+                            th
+                    tbody
+                        each student in students
+                            tr
+                                td.align-middle= student.id
+                                td.align-middle(data-order=student.name.trim().split(" ").reverse().join(" ") data-type="vn-str")
+                                    a.mr-2(href='/students/'+student.id class=(!student.is_active)?"text-danger":"")= student.name
+                                    if (student.tags && user)
+                                        br.d-inline.d-md-none
+                                        each tag in student.tags
+                                            a.badge.badge-danger.mr-1(href='/students/search?tag='+tag)= tag
+                                td.align-middle.mobile-l
+                                    if student.dob
+                                        span= student.dob.toISOString().slice(0,10)
+                                td.align-middle= student.classroom.name
+                                td.align-middle.text-center
+                                    a.btn.btn-success.btn-circle.mx-1(href="/students/" + student.id)
+                                        i.fas.fa-eye
+                                    a.btn.btn-info.btn-circle.mx-1(href="/students/edit/" + student.id)
+                                        i.fas.fa-edit
+                                    a.btn.btn-danger.btn-circle.mx-1(href='/students/delete/' + student.id)
+                                        i.fas.fa-trash-alt
+                                td
+    //- nav
+    //-     ul.pagination.justify-content-center
+    //-         if page > 1
+    //-             li.page-item
+    //-                 a.page-link(href='/students/?page='+(page-1), aria-label='Previous')
+    //-                     span(aria-hidden='true') &laquo;
+    //-         - for (var x = 1; x <= maxPage; x++)
+    //-             li.page-item(class=x==page?'active':'')
+    //-                 a.page-link(href='/students/?page='+x)= x
+    //-         if page < maxPage    
+    //-             li.page-item
+    //-                 a.page-link(href='/students/?page='+(page+1), aria-label='Next')
+    //-                     span(aria-hidden='true') &raquo;
+block script
+    //script(type='text/javascript', src='/student.filter.js')
+    // For table
+    script(src="/vendor/datatables/jquery.dataTables.min.js")
+    script(src="/vendor/datatables/dataTables.bootstrap4.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/responsive.bootstrap4.min.js")
+    script(src="/js/datatables/locale.sorting.js")
+    script(src="/js/demo/datatables-demo.js")

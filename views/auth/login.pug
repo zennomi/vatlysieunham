@@ -1,13 +1,46 @@
-extends ../layouts/common.pug
-block content
-    h3 Đăng nhập
-    .card.p-3
-        form(action="/auth/login", method="POST")
-            .form-row
-                .from-group.col-md-6
-                    label Tên tài khoản
-                    input.form-control(name='username', type='text', required, autocomplete)
-                .form-group.col-md-6
-                    label Mật khẩu
-                    input.form-control(name='password', type='password', required, autocomplete)
-            button.btn.btn-primary Đăng nhập
+doctype html
+head
+	meta(charset='utf-8')
+	meta(http-equiv='X-UA-Compatible', content='IE=edge')
+	meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+	meta(name='description', content='')
+	meta(name='author', content='')
+	title Đăng nhập
+	// Custom fonts for this template
+	link(href='/vendor/fontawesome-free/css/all.min.css', rel='stylesheet', type='text/css')
+	link(href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i', rel='stylesheet')
+	// Custom styles for this template
+	link(href='/css/sb-admin-2.min.css', rel='stylesheet')
+.container
+	// Outer Row
+	.row.justify-content-center
+		.col-xl-10.col-lg-12.col-md-9
+			.card.o-hidden.border-0.shadow-lg.my-5
+				.card-body.p-0
+					// Nested Row within Card Body
+					.row
+						.col-lg-6.d-none.d-lg-block
+							img.w-100(src="/img/logo.png", alt="Logo thương hiệu")
+						.col-lg-6
+							.p-5
+								.text-center
+									h1.h4.text-gray-900.mb-4 Welcum back!
+								form.user(action="/auth/login", method="POST")
+									.form-group
+										input#exampleInputEmail.form-control.form-control-user(name='username' type='text' placeholder='Tên đăng nhập...' required autocomplete)
+									.form-group
+										input#exampleInputPassword.form-control.form-control-user(name='password' type='password' placeholder='Mật khẩu' required autocomplete)
+									button.btn.btn-primary.btn-user.btn-block
+										| Đăng nhập
+								hr
+								.text-center
+									a.small(href='/') Quên mật khẩu?
+								.text-center
+									a.small(href='/') Chưa có tài khoản?
+// Bootstrap core JavaScript
+script(src='/vendor/jquery/jquery.min.js')
+script(src='/vendor/bootstrap/js/bootstrap.bundle.min.js')
+// Core plugin JavaScript
+script(src='/vendor/jquery-easing/jquery.easing.min.js')
+// Custom scripts for all pages
+script(src='/js/sb-admin-2.min.js')

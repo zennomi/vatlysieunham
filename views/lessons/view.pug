@@ -1,4 +1,21 @@
 extends ../layouts/common.pug
+mixin icon-rating(rating, icon)
+    - var rating = rating != undefined ? rating  : -1
+    if rating >= 8
+        a.btn.btn-success.btn-circle.text-white
+            i.fas.fa-lg(class="fa-"+icon)
+    else if rating >= 6
+        a.btn.btn-info.btn-circle.text-white
+            i.fas.fa-lg(class="fa-"+icon)
+    else if rating >= 4
+        a.btn.btn-warning.btn-circle.text-white
+            i.fas.fa-lg(class="fa-"+icon)
+    else if rating >= 0
+        a.btn.btn-danger.btn-circle.text-white
+            i.fas.fa-lg(class="fa-"+icon)
+    else
+        a.btn.btn-light.btn-circle.text-white
+            i.fas.fa-lg(class="fa-"+icon)
 mixin tr-rating(rating)
     if rating > 8
         tr.table-success
@@ -17,85 +34,84 @@ mixin tr-rating(rating)
             block
 block header
     title Danh sách trong ngày
+block stylesheet
+    link(href='/vendor/datatables/dataTables.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css', rel='stylesheet')
+
 block content
-    h3
-        span.mr-2 Danh sách học sinh đi trợ giảng 
-            span#simpleDate= date
-        span.badge.badge-success= lessons.length
-    .input-group.mb-3
-        .input-group-prepend
-            span#basic-addon1.input-group-text Lọc
-        input.form-control#lesson-filter(type='text', placeholder='Tên, giờ,...', aria-label='Username', aria-describedby='basic-addon1')
+    .text-right
+        a.mx-1.my-1.btn.btn-success.btn-icon-split(href="/lessons/create?date="+date)
+            span.icon.text-white-50
+                i.fas.fa-plus-square
+            span.text Thêm mới
+    .card.shadow.mb-4
+        a.d-block.card-header.py-3.collapsed(href="#chartLesson" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="searchForm")
+                h6.m-0.font-weight-bold.text-primary
+                    i.fas.fa-chart-pie-alt
+                    |   Biểu đồ
+        .collapse#chartLesson
+            .card-body
+                .row
+                    .col-md-6
+                        .chart-pie
+                            canvas#ratingChart(data-date=date)
+                    .col-md-6
+                        .chart-pie
+                            canvas#typeChart(data-date=date)
+    .card.shadow.mb-2
+        .card-header.py-3
+            h6.text-primary.m-0.font-weight-bold
+                i.fas.fa-list
+                |   Danh sách ngày 
+                span#simpleDate= date
+                span.ml-1.badge.badge-success= lessons.length
 
-    .row.row-cols-2#navbar-bottom
-        .col
-            a.btn.btn-success.w-100(href="/lessons/create?date="+date)
-                svg.bi.bi-plus-square.mr-2(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                    path(fill-rule='evenodd', d='M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z')
-                    path(fill-rule='evenodd', d='M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z')
-                    path(fill-rule='evenodd', d='M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z')
-                | Thêm
-        .col
-            button.btn.btn-light.w-100(onclick="window.history.back()")
-                svg.bi.bi-arrow-left-square.mr-2(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                    path(fill-rule='evenodd', d='M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z')
-                    path(fill-rule='evenodd', d='M8.354 11.354a.5.5 0 0 0 0-.708L5.707 8l2.647-2.646a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708 0z')
-                    path(fill-rule='evenodd', d='M11.5 8a.5.5 0 0 0-.5-.5H6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5z')
-                | Trở lại
-    if lessons
-        table.table.table-hover.table-light.mt-2#lesson-table
-            thead.text-center
-                tr
-                    th
-                        .d-none.d-md-block Loại
-                    th Tên
-                    th
-                        svg.bi.bi-clock(width='1.5em', height='1.5em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                            path(fill-rule='evenodd', d='M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm8-7A8 8 0 1 1 0 8a8 8 0 0 1 16 0z')
-                            path(fill-rule='evenodd', d='M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z')
-                        span.d-none.d-md-inline.ml-2 Thời gian
+        .card-body
+            if lessons
+                table.table.w-100.responsive.database-table
+                    thead.text-center
+                        tr
+                            th
+                                .d-none.d-md-block Loại
+                            th Tên
+                            th
+                                span.d-none.d-md-inline.ml-2 Thời gian
 
-                    th
-                        svg.bi.bi-three-dots(width='1.5em', height='1.5em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                            path(fill-rule='evenodd', d='M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z')
-                        span.d-none.d-md-inline.ml-2 Thao tác
-            tbody
-                each lesson in lessons
-                    +tr-rating(lesson.rating)
-                        td.text-center
-                            if (lesson.type=='Lý thuyết')
-                                svg.bi.bi-file-text.mr-1(width='1.5em', height='1.5em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                                    path(fill-rule='evenodd', d='M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z')
-                                    path(fill-rule='evenodd', d='M4.5 10.5A.5.5 0 0 1 5 10h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z')
-                            else if (lesson.type=='Bài tập')
-                                svg.bi.bi-calculator-fill.mr-2(width='1.5em', height='1.5em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                                    path(fill-rule='evenodd', d='M12 1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z')
-                                    path(d='M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-2zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-4z')
-                        td
-                            a.mr-2.mb-2.text-dark(href="/lessons/view/" + lesson._id)= lesson.student_id.name
-                            if (lesson.student_id.tags)
-                                br.d-inline.d-md-none
-                                each tag in lesson.student_id.tags
-                                    .badge.badge-danger.mr-1= tag
-                        td.text-center
-                            a.text-dark(href="/lessons/view/" + lesson._id)= lesson.getDetailedTime()
-                        td.text-center
-                            .row.row-cols-1.row-cols-md-3.no-gutters
-                                .col.d-none.d-md-inline
-                                    a.btn.btn-primary.btn-sm.md-auto.w-100(href="/lessons/view/" + lesson._id)
-                                        svg.bi.bi-eye-fill(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                                            path(d='M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z')
-                                            path(fill-rule='evenodd', d='M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z')
-                                .col
-                                    a.btn.btn-success.btn-sm.w-100(href="/lessons/edit/" + lesson._id)
-                                        svg.bi.bi-pencil-square(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                                            path(d='M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z')
-                                            path(fill-rule='evenodd', d='M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z')
-                                .col
-                                    a.btn.btn-danger.btn-sm.w-100(href='/lessons/delete/' + lesson._id)
-                                        svg.bi.bi-trash-fill(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                                            path(fill-rule='evenodd', d='M2.5 1a1 1 0 0 0-1 1 v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z')
+                            th
+                                span.d-none.d-md-inline.ml-2 Thao tác
+                            th
+                    tbody
+                        each lesson in lessons
+                            tr
+                                td(data-order=lesson.type).align-middle.text-center
+                                    if (lesson.type=='Lý thuyết')
+                                        +icon-rating(lesson.rating, 'book')
+                                    else if (lesson.type=='Bài tập')
+                                        +icon-rating(lesson.rating, 'calculator')
+                                    else
+                                        +icon-rating(lesson.rating, 'question-circle')
+                                td.align-middle
+                                    a.mr-2.mb-2.text-dark(href="/lessons/" + lesson.date + '/' + lesson._id)= lesson.student_id.name
+                                    if (lesson.student_id.tags)
+                                        br.d-inline.d-md-none
+                                        each tag in lesson.student_id.tags
+                                            .badge.badge-danger.mr-1= tag
+                                td.align-middle.text-center= lesson.getDetailedTime()
+                                td.align-middle.text-center
+                                    a.btn.btn-success.btn-circle.btn-sm.mx-1(href="/lessons/" + lesson.date + '/' + lesson._id)
+                                        i.fas.fa-eye
+                                    a.btn.btn-info.btn-circle.btn-sm.mx-1(href="/lessons/" + lesson.date + '/' + lesson._id + "/edit")
+                                        i.fas.fa-edit
+                                    a.btn.btn-danger.btn-circle.btn-sm.mx-1(href="/lessons/" + lesson.date + '/' + lesson._id + "/delete")
+                                        i.fas.fa-trash-alt
+                                td
 block script
-    script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
-    script(type='text/javascript', src='/lesson.filter.js')
     script(type='text/javascript', src='/time.convert.js')
+    script(src="/vendor/datatables/jquery.dataTables.min.js")
+    script(src="/vendor/datatables/dataTables.bootstrap4.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/responsive.bootstrap4.min.js")
+    script(src="/js/datatables/locale.sorting.js")
+    script(type='text/javascript', src='/js/datatables/common.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js")
+    script(src="/js/charts/lesson-id.js")

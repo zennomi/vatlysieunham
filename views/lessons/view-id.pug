@@ -1,4 +1,16 @@
 extends ../layouts/common.pug
+mixin btn-rating(rating)
+    - var rating = rating != null ? Math.round(rating*10)/10 : -1
+    if rating >= 8
+        button.btn.btn-success.btn-circle.font-weight-bold= rating
+    else if rating >= 6
+        button.btn.btn-info.btn-circle.font-weight-bold= rating  
+    else if rating >= 4
+        button.btn.btn-warning.btn-circle.font-weight-bold= rating
+    else if rating >= 0
+        button.btn.btn-danger.btn-circl.font-weight-bolde= rating
+    else
+        button.btn.btn-light.btn-circle.font-weight-bold
 mixin card-rating(rating, text_header='Đánh giá')
     if rating > 8
         .card.border-success.text-success
@@ -30,70 +42,102 @@ mixin card-rating(rating, text_header='Đánh giá')
             block
 block header
     title Chi tiết buổi trợ giảng
+block stylesheet
+    link(rel="stylesheet", href="/css/style.css")
 block content
-    h3 Thông tin buổi trợ giảng
-    .row.row-cols-2.row-cols-md-3.text-center
-        .col-12.mb-2
-            .card.border-info
-                h6.card-header.bg-info.text-white Thông tin học sinh
-                .card-body
-                    a.mr-2(href="/students/"+lesson.student_id.id)= lesson.student_id.name
-                    a.mr-2(href="/classes/"+lesson.student_id.classroom.name, class="badge badge-info")= lesson.student_id.classroom.name
-                    if (lesson.student_id.tags)
-                        br.d-inline.d-md-none
+    h1.h3.text-gray-800 Thông tin chi tiết buổi trợ giảng
+
+    .text-right
+        a.mx-1.my-1.btn.btn-success.btn-icon-split(href="/lessons/" + lesson.date + '/' + lesson._id + "/edit")
+            span.icon.text-white-50
+                i.fas.fa-edit
+            span.text Sửa
+        a.mx-1.my-1.btn.btn-danger.btn-icon-split(href="/lessons/" + lesson.date + '/' + lesson._id + "/delete")
+            span.icon.text-white-50
+                i.fas.fa-trash
+            span.text Xóa
+
+    .row
+        .col-md-4
+            .card.shadow.mb-2.border-bottom-primary
+                .card-header.py-3.d-flex.flex-row.align-items-center.justify-content-between
+                    h6.m-0.font-weight-bold.text-primary
+                        i.fas.fa-user
+                        |   Thông tin học sinh
+                    .dropdown.no-arrow
+                        a#dropdownMenuLink.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                            i.fas.fa-ellipsis-v.fa-sm.fa-fw.text-gray-400
+                            .dropdown-menu.dropdown-menu-right.shadow.animated--fade-in(aria-labelledby='dropdownMenuLink')
+                                .dropdown-header Thao tác:
+                                a.dropdown-item(href='/students/'+lesson.student_id.id) Xem
+                                a.dropdown-item(href="/students/edit/"+lesson.student_id.id) Sửa
+                                a.dropdown-item(href="/students/delete/"+lesson.student_id.id) Xóa
+                .card-body.p-0.text-center.mb-2
+                    .bg-gradient-primary.pt-4.pb-2.mb-2.text-center
+                        .rounded-border.pt-4.mx-auto
+                            span= lesson.student_id.id
+                    h5.text-gray-900.font-weight-bold.mb-1= lesson.student_id.name
+                    if (lesson.student_id.tags.length>0)
                         each tag in lesson.student_id.tags
                             a.badge.badge-danger.mr-1(href='/students/search?tag='+tag)= tag
-        .col-12.mb-2
-            .card
-                h6.card-header
-                    span.mr-2 Thời gian
-                    if lesson.time.end_hour
-                        span.badge.badge-info= lesson.time.end_hour*60 + lesson.time.end_minute - lesson.time.start_hour*60 - lesson.time.start_minute
-                            |  phút
-                .card-body
-                    a.text-dark(href="/lessons/"+lesson.date)
-                        b= lesson.getDetailedDate()
-                        span : 
-                        span= lesson.getDetailedTime()
-        if (lesson.type)
-            .col.mb-2
-                .card
-                    h6.card-header Loại
-                    .card-body= lesson.type
-                        if lesson.total_problems
-                            span : #{lesson.total_problems} câu
-        if (lesson.topic)
-            .col.mb-2
-                .card
-                    h6.card-header Chủ đề
-                    .card-body= lesson.topic
-        if (lesson.rating)
-            .col-12.mb-2
-                +card-rating(lesson.rating)
-                    .card-body
-                        if (lesson.comment_of_tutor)
-                            span= lesson.comment_of_tutor
-                        else
-                            b= lesson.rating
-        if (lesson.comment_of_student)
-            .col-12.mb-2
-                .card
-                    h6.card-header Góp ý của học sinh
-                    .card-body= lesson.comment_of_student
-        .col-12.mb-2
-            .card
-                h6.card-header
-                    span.mr-1 Lần cuối cập nhật
-                    span.badge.badge-info= lastUpdateTime + ' trước'
-                if (lesson.last_update.user) 
-                    .card-body
-                        a.text-dark.mr-2(href='/user/'+lesson.last_update.user.username)= lesson.last_update.user.name
-                        span.badge.badge-success= lesson.last_update.user.role.toUpperCase()
-    .row.row-cols-3.text-center#navbar-bottom
-        .col
-            a.btn.btn-success.w-100(href='/lessons/edit/'+lesson._id) Sửa
-        .col
-            button.btn.btn-primary.w-100(onclick="window.history.back()") Quay lại
-        .col
-            a.btn.btn-danger.w-100(href='/lessons/delete/'+lesson._id) Xóa
-                    
+                    a.badge.badge-info(href="/classes/"+lesson.student_id.classroom.name)= lesson.student_id.classroom.name
+                    if lesson.student_id.test_class
+                        a.ml-1.badge.badge-info(href="/classes/"+lesson.student_id.test_class.name)= lesson.student_id.test_class.name
+        .col-md-8
+            .row
+                .col-lg-6
+                    .card.shadow.border-left-primary.mb-2
+                        .card-body
+                            .row.no-gutters.align-items-center
+                                .col.mr-2
+                                    .text-primary.text-uppercase.mb-1
+                                        .d-inline.text-xs.font-weight-bold.mr-1 Thời gian
+                                        if lesson.time.end_hour
+                                            span.badge.badge-info= lesson.time.end_hour*60 + lesson.time.end_minute - lesson.time.start_hour*60 - lesson.time.start_minute
+                                                |  phút
+                                    .text-gray-800
+                                        .h5.font-weight-bold.mb-0= lesson.getDetailedDate()
+                                        span= lesson.getDetailedTime()
+                                .col-auto
+                                    a(href="/lessons/"+lesson.date)
+                                        i.fas.fa-clock.fa-2x.text-gray-300
+                .col-lg-6
+                    .card.shadow.border-left-primary.mb-2
+                        .card-body
+                            .row.no-gutters.align-items-center
+                                .col.mr-2
+                                    .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Chủ đề
+                                    .text-gray-800
+                                        .h5.mb-0
+                                            if lesson.topic
+                                                .d-inline(class=lesson.topic.length < 20 ? "font-weight-bold" : "")= lesson.topic
+                                                if lesson.total_problems
+                                                    span.ml-1.badge.badge-info #{lesson.total_problems} câu
+                                            else
+                                                | Chưa cập nhật
+                                .col-auto
+                                    if (lesson.type=='Lý thuyết')
+                                        i.fas.fa-book.fa-2x.text-gray-300
+                                    else if (lesson.type=='Bài tập')
+                                        i.fas.fa-calculator.fa-2x.text-gray-300
+                                    else
+                                        i.fas.fa-question-circle.fa-2x.text-gray-300
+                .col
+                    .card.shadow.border-left-primary.mb-2
+                        .card-body
+                            .row.no-gutters.align-items-center
+                                .col.mr-2
+                                    .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Nhận xét
+                                    .h5.text-gray-800.mb-0= lesson.comment_of_tutor ? lesson.comment_of_tutor : 'Chưa có nhận xét'
+                                .col-auto
+                                    if lesson.rating
+                                        +btn-rating(lesson.rating)
+                                    else
+                                        i.fas.fa-sticky-note.fa-2x.text-gray-300
+                            .text-right
+                                .text-muted
+                                    span.badge.badge-info.mr-1= lastUpdateTime + ' trước'
+                                    if (lesson.last_update.user) 
+                                        span.mr-1 bởi
+                                        a.mr-1(href='/user/'+lesson.last_update.user.username)= lesson.last_update.user.name
+                                        span.badge.badge-info= lesson.last_update.user.role.toUpperCase()

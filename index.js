@@ -44,7 +44,7 @@ const apiLessonRoute = require('./api/routers/lesson.route');
 const authMiddleware = require('./middlewares/auth.middleware');
 const viewMiddleware = require('./middlewares/view.middleware');
 
-app.set('views', './views1');
+app.set('views', './views');
 app.set('view engine', 'pug');
 
 app.use(bodyParser.json())

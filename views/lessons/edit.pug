@@ -54,7 +54,7 @@ block content
             .col
                 button.btn.btn-primary.w-100(type='submit') Lưu
             .col
-                a.btn.btn-light.w-100(href='/lessons/view/'+lesson._id) Hủy
+                a.btn.btn-light.w-100(href="/lessons/" + lesson.date + '/' + lesson._id) Hủy
     script(src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js')
     script(type='text/javascript', src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
     script(type='text/javascript', src='/student.search.js')

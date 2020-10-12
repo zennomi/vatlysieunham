@@ -25,6 +25,5 @@ function getCellValue(row, index) { return $(row).children('td').eq(index).text(
 function getName(string) {
   let stringArray = string.split(' ');
   name = stringArray[stringArray.length - 1];
-  console.log(string, name);
   return name;
 }

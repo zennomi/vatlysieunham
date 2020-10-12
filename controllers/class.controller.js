@@ -54,7 +54,6 @@ module.exports.index = async (req, res) => {
             $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$nameArr", 0 ] }, "$$ROOT" ] } }
         }
     ])));
-    console.log(classes);
     res.render('classes/index', {classes})
 };
 

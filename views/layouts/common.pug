@@ -1,224 +1,200 @@
-html
-    head
-        link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css", integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z", crossorigin="anonymous")
-        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
-        meta(name='viewport', content='width=device-width, initial-scale=1')
-        style(type='text/css').
-            body {
-                background: rgb(234,255,222);
-                background: -moz-linear-gradient(0deg, rgba(234,255,222,1) 0%, rgba(255,255,255,1) 100%);
-                background: -webkit-linear-gradient(0deg, rgba(234,255,222,1) 0%, rgba(255,255,255,1) 100%);
-                background: linear-gradient(0deg, rgba(234,255,222,1) 0%, rgba(255,255,255,1) 100%);
-                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#eaffde",endColorstr="#ffffff",GradientType=1);   
-                background-size: cover;
-                background-attachment: fixed;
-                background-position: center;
-                min-height:100%;
-                position:relative;
-            }
-            body::after{ content:''; display:block; height:100px; }
-            .table, .card:hover {
-                -webkit-box-shadow: 0px 0px 15px -5px rgba(0,0,0,0.75);
-                -moz-box-shadow: 0px 0px 15px -5px rgba(0,0,0,0.75);
-                box-shadow: 0px 0px 15px -5px rgba(0,0,0,0.75);
-            }
-            .bg-nav {
-                background: #eaffde;
-            }
-            .card:hover {
-                position: relative;
-                bottom: 1px;
-            }
-            .progress-bar:hover {
-                color:white !important;
-            }
-            .footer {
-                background: #cdf3b8;
-                position: absolute;
-                bottom: 0;
-                width: 100%;
-                text-align: center;
-            }
-            .slider {
-                -webkit-appearance: none;
-                margin-top: 7px;
-                width: 100%;
-                height: 24px;
-                border-radius: 10px;
-                background: #d3d3d3;
-                outline: none;
-                opacity: 0.7;
-                -webkit-transition: .2s;
-                transition: opacity .2s;
-            }
-
-            .slider:hover {
-                opacity: 1;
-            }
-
-            .slider::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                appearance: none;
-                width: 36px;
-                height: 36px;
-                border-radius: 50%; 
-                background: #4CAF50;
-                cursor: pointer;
-            }
-
-            .slider::-moz-range-thumb {
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                background: #4CAF50;
-                cursor: pointer;
-            }
-            /* The container */
-            .container-checkbox {
-                display: block;
-                position: relative;
-                padding-left: 35px;
-                cursor: pointer;
-                font-size: 22px;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
-
-            /* Hide the browser's default checkbox */
-            .container-checkbox input {
-                position: absolute;
-                opacity: 0;
-                cursor: pointer;
-                height: 0;
-                width: 0;
-            }
-            label.container-checkbox {
-                margin: 0;
-            }
-            /* Create a custom checkbox */
-            .checkmark {
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 25px;
-                width: 25px;
-                background-color: #eee;
-            }
-
-            /* On mouse-over, add a grey background color */
-            .container-checkbox:hover input ~ .checkmark {
-                background-color: #ccc;
-            }
-
-            /* When the checkbox is checked, add a blue background */
-            .container-checkbox input:checked ~ .checkmark {
-                background-color: #4CAF50;
-            }
-
-            /* Create the checkmark/indicator (hidden when not checked) */
-            .checkmark:after {
-                content: "";
-                position: absolute;
-                display: none;
-            }
-
-            /* Show the checkmark when checked */
-            .container-checkbox input:checked ~ .checkmark:after {
-                display: block;
-            }
-
-            /* Style the checkmark/indicator */
-            .container-checkbox .checkmark:after {
-                left: 7px;
-                top: 3px;
-                width: 10px;
-                height: 15px;
-                border: solid white;
-                border-width: 0 3px 3px 0;
-                -webkit-transform: rotate(45deg);
-                -ms-transform: rotate(45deg);
-                transform: rotate(45deg);
-            }
-            @media screen and (max-width: 576px) {
-                #navbar-bottom {
-                    -webkit-box-shadow: 0px 0px 15px -5px rgba(0,0,0,0.75);
-                    -moz-box-shadow: 0px 0px 15px -5px rgba(0,0,0,0.75);
-                    box-shadow: 0px 0px 15px -5px rgba(0,0,0,0.75);
-                    border-radius: 15px 15px 0px 0px;
-                    z-index: 1;
-                    opacity: 0.98;
-                    background-color: #eaffde;
-                    position: fixed;
-                    padding: 5px;
-                    bottom: 0;
-                    width: 100%;
-                    transition: bottom 0.3s;
-                }
-                #navbar-bottom .col {
-                    padding: 0 5px;
-                }
-            }
-        block header
-    body
-        nav.navbar.navbar-expand-lg.navbar-light.bg-nav
-            if (user)
-                a.navbar-brand(href='/user/'+user.username)= user.username
-            else
-                a.navbar-brand(href='/') VLSN
-            button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
-                span.navbar-toggler-icon
-            #navbarNavDropdown.collapse.navbar-collapse
-                ul.navbar-nav
-                    li.nav-item.active
-                        a.nav-link(href='/') Trang chủ 
-                    li.nav-item.dropdown
-                        a.nav-link.dropdown-toggle(href="#", id="navbarDropdown", role="button", data-toggle="dropdown") Học sinh
-                        .dropdown-menu
-                            a.dropdown-item(href='/students') Danh sách
-                            a.dropdown-item(href="/students/create") Thêm mới
-                    li.nav-item
-                        a.nav-link(href='/classes') Lớp học
-                    li.nav-item.dropdown
-                        a.nav-link.dropdown-toggle(href="#", id="navbarDropdown", role="button", data-toggle="dropdown") Trợ giảng
-                        .dropdown-menu
-                            a.dropdown-item(href='/lessons') Sổ trợ giảng
-                            a.dropdown-item(href='/lessons/create') Thêm mới
-                            a.dropdown-item(href='/lessons/register') Đăng ký
-                            a.dropdown-item(href='/lessons/analyse') Thống kê
-                    li.nav-item.dropdown
-                        a.nav-link.dropdown-toggle(href="#", id="navbarDropdown", role="button", data-toggle="dropdown") Bản ghi
-                        .dropdown-menu
-                            a.dropdown-item(href='/records') Danh sách
-                            a.dropdown-item(href='/records/create') Thêm mới
-                    li.nav-item.dropdown
-                        a.nav-link.dropdown-toggle(href="#", id="navbarDropdown", role="button", data-toggle="dropdown") Buổi học
-                        .dropdown-menu
-                            a.dropdown-item(href='/periods') Danh sách
-                            a.dropdown-item(href='/periods/create') Thêm mới
- 
-                    li.nav-item
-                        a.nav-link(href='/user/') Tài khoản
-        .container.pt-1.pt-md-5
-            if (messages)
-                each message in messages
-                    .alert.alert-dismissible.fade.show(role='alert', class='alert-'+message[0])
-                        span= message[1]
-                        if (message[2])
-                            a.ml-1.alert-link(href=message[2])
-                                svg.bi.bi-pencil-square(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                                    path(d='M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z')
-                                    path(fill-rule='evenodd', d='M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z')
-
-                        button.close(type='button', data-dismiss='alert', aria-label='Close')
-                            span(aria-hidden='true') &times;
-            block content
-            
-        .p-1.footer
-            | © 2020 - Nguyen Dang Tuan Anh
-        script(src='https://code.jquery.com/jquery-3.5.1.slim.min.js', integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj', crossorigin='anonymous')
-        script(src='https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js', integrity='sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN', crossorigin='anonymous')
-        script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js', integrity='sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV', crossorigin='anonymous')
-        script(type='text/javascript', src='/navbar-scroll.js')
-        block script
+doctype html
+head
+	meta(charset='utf-8')
+	meta(http-equiv='X-UA-Compatible', content='IE=edge')
+	meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+	meta(name='description', content='')
+	meta(name='author', content='')
+	block title
+	title= title || 'WEB APP QUẢN LÝ HỌC SINH'
+	// Custom fonts for this template
+	link(href='//cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@8af0edd/css/all.css', rel='stylesheet', type='text/css')
+	link(href='https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i', rel='stylesheet')
+	// Custom styles for this template
+	link(href='/css/sb-admin-2.min.css', rel='stylesheet')
+	block stylesheet
+	block header
+body#page-top.sidebar-toggled
+	#wrapper
+		// Sidebar
+		ul#accordionSidebar.navbar-nav.bg-gradient-primary.sidebar.sidebar-dark.accordion.toggled
+			// Sidebar - Brand
+			a.sidebar-brand.d-flex.align-items-center.justify-content-center(href='/dashboard')
+				.sidebar-brand-icon
+					i.fab.fa-quora
+				.sidebar-brand-text.mx-3
+					| VLSN
+					sup 2.0.0
+			// Divider
+			hr.sidebar-divider.my-0
+			// Nav Item - Dashboard
+			li.nav-item(class=(breadcrumb[1]=='')?"active":"")
+				a.nav-link(href='/dashboard')
+					i.fas.fa-fw.fa-tachometer-alt
+					span Trang Admin
+			// Divider
+			hr.sidebar-divider
+			// Heading
+			.sidebar-heading
+				| Dữ liệu
+			// Nav Item
+			li.nav-item(class=(breadcrumb[1]=='students')?"active":"")
+				a.nav-link.collapsed(href='#', data-toggle='collapse', data-target='#collapseStudent', aria-expanded='true', aria-controls='collapseStudent')
+					i.fas.fa-users.fa-cog
+					span Học sinh
+				#collapseStudent.collapse(aria-labelledby='headingTwo', data-parent='#accordionSidebar')
+					.bg-white.py-2.collapse-inner.rounded
+						a.collapse-item(href='/students') Danh sách
+						a.collapse-item(href='/students/create') Thêm HS mới
+			// Nav Item
+			li.nav-item(class=(breadcrumb[1]=='classes')?"active":"")
+				a.nav-link.collapsed(href='/classes')
+					i.fas.fa-chalkboard
+					span Lớp học
+			// 
+			li.nav-item(class=(breadcrumb[1]=='records')?"active":"")
+				a.nav-link.collapsed(href='#', data-toggle='collapse', data-target='#collapseRecord', aria-expanded='true', aria-controls='collapseRecord')
+					i.fas.fa-clipboard
+					span Bản ghi
+				#collapseRecord.collapse(aria-labelledby='headingTwo', data-parent='#accordionSidebar')
+					.bg-white.py-2.collapse-inner.rounded
+						a.collapse-item(href='/records') Danh sách
+						a.collapse-item(href='/records/create') Thêm mới
+			//
+			li.nav-item(class=(breadcrumb[1]=='lessons')?"active":"")
+				a.nav-link.collapsed(href='#', data-toggle='collapse', data-target='#collapseLesson', aria-expanded='true', aria-controls='collapseLesson')
+					i.fas.fa-chalkboard-teacher
+					span Trợ giảng
+				#collapseLesson.collapse(aria-labelledby='headingTwo', data-parent='#accordionSidebar')
+					.bg-white.py-2.collapse-inner.rounded
+						h6.collapse-header Dành cho trợ giảng
+						a.collapse-item(href='/lessons') Danh sách
+						a.collapse-item(href='/lessons/create') Thêm mới
+						a.collapse-item(href='/lessons/analyse') Danh sách
+						h6.collapse-header Dành cho học sinh
+						a.collapse-item(href='/lessons/register') Đăng ký
+			// Divider
+			hr.sidebar-divider.d-none.d-md-block
+			// Sidebar Toggler (Sidebar)
+			.text-center.d-none.d-md-inline
+				button#sidebarToggle.rounded-circle.border-0
+		// End of Sidebar
+		// Content Wrapper
+		#content-wrapper.d-flex.flex-column
+			// Main Content
+			#content
+				// Topbar
+				nav.navbar.navbar-expand.navbar-light.bg-white.topbar.mb-4.static-top.shadow
+					// Sidebar Toggle (Topbar)
+					button#sidebarToggleTop.btn.btn-link.d-md-none.rounded-circle.mr-3
+						i.fa.fa-bars
+					// Topbar Search
+					form.d-none.d-sm-inline-block.form-inline.mr-auto.ml-md-3.my-2.my-md-0.mw-100.navbar-search(action="/students/search", method="GET")
+						.input-group
+							input.form-control.bg-light.border-0.small(name="name" type='text', placeholder='Tìm học sinh...', aria-label='Search', aria-describedby='basic-addon2')
+							.input-group-append
+								button.btn.btn-primary(type='submit')
+									i.fas.fa-search.fa-sm
+					// Topbar Navbar
+					ul.navbar-nav.ml-auto
+						// Nav Item - Search Dropdown (Visible Only XS)
+						li.nav-item.dropdown.no-arrow.d-sm-none
+							a#searchDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+								i.fas.fa-search.fa-fw
+							// Dropdown - Messages
+							.dropdown-menu.dropdown-menu-right.p-3.shadow.animated--grow-in(aria-labelledby='searchDropdown')
+								form.form-inline.mr-auto.w-100.navbar-search(action="/students/search", method="GET")
+									.input-group
+										input.form-control.bg-light.border-0.small(name="name" type='text', placeholder='Tìm học sinh...', aria-label='Search', aria-describedby='basic-addon2')
+										.input-group-append
+											button.btn.btn-primary(type='button')
+												i.fas.fa-search.fa-sm
+						// Nav Item - Alerts
+						li.nav-item.dropdown.no-arrow.mx-1
+							a#alertsDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+								i.fas.fa-bell.fa-fw
+								// Counter - Alerts
+								if messages && messages.length > 0
+									span.badge.badge-danger.badge-counter= messages.length
+							// Dropdown - Alerts
+							.dropdown-list.dropdown-menu.dropdown-menu-right.shadow.animated--grow-in(aria-labelledby='alertsDropdown')
+								h6.dropdown-header
+									| Thông báo
+								if (messages && messages.length > 0)
+									each message in messages
+										a.dropdown-item.d-flex.align-items-center(href= message[2] ? message[2]  : '#')
+											.mr-3
+												.icon-circle(class="bg-"+message[0])
+													i.fas.fa-exclamation-triangle.text-white
+											div
+												span= message[1]
+								else
+									a.dropdown-item.d-flex.align-items-center
+										.mr-3
+											div Không có thông báo nào.
+						.topbar-divider.d-none.d-sm-block
+						// Nav Item - User Information
+						if user
+							li.nav-item.dropdown.no-arrow
+								a#userDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+									span.mr-2.d-none.d-lg-inline.text-gray-600.small= user.username
+									img.img-profile.rounded-circle(src='/img/logo.png')
+								// Dropdown - User Information
+								.dropdown-menu.dropdown-menu-right.shadow.animated--grow-in(aria-labelledby='userDropdown')
+									a.dropdown-item(href='#')
+										i.fas.fa-user.fa-sm.fa-fw.mr-2.text-gray-400
+										|									 Trang cá nhân
+									a.dropdown-item(href='#')
+										i.fas.fa-cogs.fa-sm.fa-fw.mr-2.text-gray-400
+										|									 Sửa thông tin cá nhân
+									a.dropdown-item(href='#')
+										i.fas.fa-list.fa-sm.fa-fw.mr-2.text-gray-400
+										|									 Lịch sử hoạt động
+									.dropdown-divider
+									a.dropdown-item(href='#', data-toggle='modal', data-target='#logoutModal')
+										i.fas.fa-sign-out-alt.fa-sm.fa-fw.mr-2.text-gray-400
+										|									 Logout
+				// End of Topbar
+				// Begin Page Content
+				.container-fluid.mt-4
+					nav(aria-label="breadcrumb").mb-2
+						ol.breadcrumb.mb-0
+							li.breadcrumb-item
+								a(href='/dashboard') DASHBOARD
+							- for (var i=1;i<breadcrumb.length;i++)
+								li.d-inline-block.breadcrumb-item.text-truncate
+									a(href=breadcrumb.slice(0,i+1).join('/'))= breadcrumb[i].toUpperCase()
+					// /.container-fluid
+					block content
+				// End of Main Content
+				// Footer
+				footer.sticky-footer.bg-white
+					.container.my-auto
+						.copyright.text-center.my-auto
+							span Copyright &copy; 2020 - Nguyễn Đăng Tuấn Anh
+				// End of Footer
+			// End of Content Wrapper
+		// End of Page Wrapper
+		// Scroll to Top Button
+		a.scroll-to-top.rounded(href='#page-top')
+			i.fas.fa-angle-up
+		// Logout Modal
+		#logoutModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+			.modal-dialog(role='document')
+				.modal-content
+					.modal-header
+						h5#exampleModalLabel.modal-title Bỏ em à anh ơi?
+						button.close(type='button', data-dismiss='modal', aria-label='Close')
+							span(aria-hidden='true') &times;
+					.modal-body Click "Đăng xuất" phía dưới là chúng ta không còn thấy mặt nhau nữa đâu :((
+					.modal-footer
+						button.btn.btn-secondary(type='button', data-dismiss='modal') Hủy
+						a.btn.btn-primary(href='/auth/logout') Đăng xuất
+		// Bootstrap core JavaScript
+		script(src='/vendor/jquery/jquery.min.js')
+		script(src='/vendor/bootstrap/js/bootstrap.bundle.min.js')
+		// Core plugin JavaScript
+		script(src='/vendor/jquery-easing/jquery.easing.min.js')
+		// Custom scripts for all pages
+		script(src='/js/sb-admin-2.min.js')
+		block script

@@ -15,4 +15,4 @@ block content
                     span#inputGroup-sizing-default.input-group-text Tên học sinh
                 input.form-control(type='text', value= lesson.student_id.name, readonly)
             button.btn.btn-danger Xác nhận
-            a.btn.btn-light.ml-2(href="/lessons/view/"+lesson._id) Hủy
+            a.btn.btn-light.ml-2(href="/lessons/" + lesson.date + '/' + lesson._id) Hủy

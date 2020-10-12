@@ -65,7 +65,6 @@ module.exports.schedule = async (req, res) => {
     nowTime = nowTime.valueOf() + 252e5;
     nowTime = new Date(nowTime);
     nowTime = nowTime.toISOString();
-    console.log(nowTime)
     let nowHour = parseInt(nowTime.slice(11, 13));
     let nowMinute = parseInt(nowTime.slice(14, 16));
     let lessons = await Lesson.find({ date: { $gt: nowTime.slice(0, 10) } }).populate('student_id');
@@ -448,7 +447,7 @@ module.exports.postEdit =(req, res) => {
         if (req.body.type == 'Bài tập' && !req.body.total_problems) req.flash('messages', [['warning', 'Chưa cập nhật số bài tập.', `/lessons/${lesson.date}/${lesson._id}/edit#total_problems`]]);
         if (!req.body.rating) req.flash('messages', [['warning', 'Chưa cập nhật đánh giá.', `/lessons/${lesson.date}/${lesson._id}/edit#rating`]]);
         if (!req.body.comment_of_tutor) req.flash('messages', [['warning', 'Chưa cập nhật nhận xét.', `/lessons/${lesson.date}/${lesson._id}/edit#comment_of_tutor`]]);
-        res.redirect('/lessons/' + lesson.date + + '/' + lesson._id);
+        res.redirect('/lessons/' + lesson.date + '/' + lesson._id);
     })
 }
 
