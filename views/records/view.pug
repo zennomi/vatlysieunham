@@ -20,91 +20,87 @@ block stylesheet
 
 block content
     h1.h3.text-gray-800 Thông tin chi tiết bản ghi
-    .card.shadow.mb-2
-        .card-header.py-3
-            ul#pills-tab.nav.nav-pills(role='tablist')
-                li.nav-item
-                    a#pills-home-tab.nav-link.active(data-toggle='pill', href='#pills-home', role='tab', aria-controls='pills-home', aria-selected='true') Tổng quan
-                if record.link
-                    li.nav-item
-                        a#pills-profile-tab.nav-link(data-toggle='pill', href='#pills-profile', role='tab', aria-controls='pills-profile', aria-selected='false') Link đề
-        .card-body
-            #pills-tabContent.tab-content
-                #pills-home.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='pills-home-tab')
+    ul#pills-tab.nav.nav-pills.bg-light.mb-2(role='tablist')
+        li.nav-item
+            a#pills-home-tab.nav-link.active(data-toggle='pill', href='#pills-home', role='tab', aria-controls='pills-home', aria-selected='true') Tổng quan
+        li.nav-item
+            a#pills-profile-tab.nav-link(class= record.link ? "" : "disabled" data-toggle='pill', href='#pills-profile', role='tab', aria-controls='pills-profile', aria-selected='false') Link đề
+    #pills-tabContent.tab-content
+        #pills-home.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='pills-home-tab')
+            .row
+                .col-md-4
+                    .card.shadow.mb-2.border-primary(style="border-width: 3px;")
+                        .card-body.p-0.text-center
+                            .bg-gradient-primary.pt-4.pb-2.text-center
+                                .display-4.text-white= record.type
+                            .p-2
+                                h5.text-gray-900.font-weight-bold.mb-1= record.name
+                                a.h5.text-gray-900(href="/classes/"+record.class.name)= record.class.name
+                                br
+                                h5.text-gray-900= record.getDetailedDate()
+                                a.mx-1.my-1.btn.btn-success.btn-icon-split(href="/records/"+record.id+"/edit")
+                                    span.icon.text-white-50
+                                        i.fas.fa-edit
+                                    span.text Sửa
+                                a.mx-1.my-1.btn.btn-danger.btn-icon-split(href="/records/"+record.id+"/delete")
+                                    span.icon.text-white-50
+                                        i.fas.fa-trash
+                                    span.text Xóa
+                    if record.note
+                        .card.shadow.border-left-primary.mb-2
+                            .card-body
+                                .row.no-gutters.align-items-center
+                                    .col.mr-2
+                                        .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Ghi chú
+                                        .h5.mb-0.text-gray-800= record.note
+                                    .col-auto
+                                        i.fas.fa-sticky-note.fa-2x.text-gray-300
+                .col-md-4
                     .row
-                        .col-md-4
-                            .card.shadow.mb-2.border-primary(style="border-width: 3px;")
-                                .card-body.p-0.text-center
-                                    .bg-gradient-primary.pt-4.pb-2.text-center
-                                        .display-4.text-white= record.type
-                                    .p-2
-                                        h5.text-gray-900.font-weight-bold.mb-1= record.name
-                                        a.h5.text-gray-900(href="/classes/"+record.class.name)= record.class.name
-                                        br
-                                        h5.text-gray-900= record.getDetailedDate()
-                                        a.mx-1.my-1.btn.btn-success.btn-icon-split(href="/records/"+record.id+"/edit")
-                                            span.icon.text-white-50
-                                                i.fas.fa-edit
-                                            span.text Sửa
-                                        a.mx-1.my-1.btn.btn-danger.btn-icon-split(href="/records/"+record.id+"/delete")
-                                            span.icon.text-white-50
-                                                i.fas.fa-trash
-                                            span.text Xóa
-                            if record.note
-                                .card.shadow.border-left-primary.mb-2
-                                    .card-body
-                                        .row.no-gutters.align-items-center
-                                            .col.mr-2
-                                                .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Ghi chú
-                                                .h5.mb-0.text-gray-800= record.note
-                                            .col-auto
-                                                i.fas.fa-sticky-note.fa-2x.text-gray-300
-                        .col-md-4
-                            .row
-                                .col-6.col-md-12
-                                    .card.shadow.border-left-primary.mb-2
-                                        .card-body
-                                            .row.no-gutters.align-items-center
-                                                .col.mr-2
-                                                    .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Thang điểm
-                                                    .h5.mb-0.font-weight-bold.text-gray-800= record.total
-                                                .col-auto
-                                                    i.fad.fa-marker.fa-2x.text-gray-300
-                                .col-6.col-md-12
-                                    .card.shadow.border-left-primary.mb-2
-                                        .card-body
-                                            .row.no-gutters.align-items-center
-                                                .col.mr-2
-                                                    .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Số HS
-                                                    .h5.mb-0.font-weight-bold.text-gray-800= record.student.length
-                                                .col-auto
-                                                    i.fad.fa-users.fa-2x.text-gray-300
-                                .col-12.col-md-12
-                                    .card.shadow.border-left-primary.mb-2
-                                        .card-body
-                                            .row.no-gutters.align-items-center
-                                                .col.mr-2
-                                                    .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Điểm trung bình
-                                                    .h5.mb-0.font-weight-bold.text-gray-800= Math.round(record.getAverageMark()*10)/10
-                                                        sup.text-xs.text-primary= "(" + Math.round(record.getAverageMark()/10*record.total) + ")"
-                                                .col-auto
-                                                    i.fad.fa-users.fa-2x.text-gray-300
-                        
-                        .col-md-4
-                            .card.shadow.mb-4
-                                // Card Header - Dropdown
-                                .card-header.py-3.d-flex.flex-row.align-items-center.justify-content-between
-                                    h6.m-0.font-weight-bold.text-primary
-                                        i.fad.fa-chart-pie-alt
-                                        |   Tỷ lệ
-                                // Card Body
+                        .col-6.col-md-12
+                            .card.shadow.border-left-primary.mb-2
                                 .card-body
-                                    .chart-pie
-                                        canvas#myPieChart(data-array=record.getPieChartData())
-                    
-                if record.link                 
-                    #pills-profile.tab-pane.fade.text-center(role='tabpanel', aria-labelledby='pills-profile-tab')
-                        iframe(width="480px" height="600px" src=record.link)
+                                    .row.no-gutters.align-items-center
+                                        .col.mr-2
+                                            .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Thang điểm
+                                            .h5.mb-0.font-weight-bold.text-gray-800= record.total
+                                        .col-auto
+                                            i.fad.fa-marker.fa-2x.text-gray-300
+                        .col-6.col-md-12
+                            .card.shadow.border-left-primary.mb-2
+                                .card-body
+                                    .row.no-gutters.align-items-center
+                                        .col.mr-2
+                                            .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Số HS
+                                            .h5.mb-0.font-weight-bold.text-gray-800= record.student.length
+                                        .col-auto
+                                            i.fad.fa-users.fa-2x.text-gray-300
+                        .col-12.col-md-12
+                            .card.shadow.border-left-primary.mb-2
+                                .card-body
+                                    .row.no-gutters.align-items-center
+                                        .col.mr-2
+                                            .text-xs.font-weight-bold.text-primary.text-uppercase.mb-1 Điểm trung bình
+                                            .h5.mb-0.font-weight-bold.text-gray-800= Math.round(record.getAverageMark()*10)/10
+                                                sup.text-xs.text-primary= "(" + Math.round(record.getAverageMark()/10*record.total) + ")"
+                                        .col-auto
+                                            i.fad.fa-users.fa-2x.text-gray-300
+                
+                .col-md-4
+                    .card.shadow.mb-4
+                        // Card Header - Dropdown
+                        .card-header.py-3.d-flex.flex-row.align-items-center.justify-content-between
+                            h6.m-0.font-weight-bold.text-primary
+                                i.fad.fa-chart-pie-alt
+                                |   Tỷ lệ
+                        // Card Body
+                        .card-body
+                            .chart-pie
+                                canvas#myPieChart(data-array=record.getPieChartData())
+            
+        if record.link                 
+            #pills-profile.tab-pane.fade.text-center(role='tabpanel', aria-labelledby='pills-profile-tab')
+                iframe.w-100(style="max-width: 480px; height: 600px" src=record.link)
     table.table.w-100.database-table
         thead
             tr
