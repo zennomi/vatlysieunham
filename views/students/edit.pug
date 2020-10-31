@@ -6,45 +6,55 @@ block content
     .card.shadow.mb-2
         .card-body
             form(action="/students/edit", method="POST")
-                .form-group
-                    .custom-control.custom-switch
-                        if (student.is_active)
-                            input#is_active.custom-control-input(name="is_active" type='checkbox' checked="checked")
-                        else
-                            input#is_active.custom-control-input(name="is_active" type='checkbox')
-                        label.custom-control-label(for='is_active') Còn theo học tại trung tâm
-                .form-group
-                    label(for="id") ID
-                    input#id.form-control(name="id", type="number", value=student.id, readonly)
-                .form-row
-                    .form-group.col-md-6
-                        label(for="name") Tên
-                        input#name.form-control(name="name", type="text", value=student.name)
-                    .form-group.col-md-6
-                        label Ngày sinh
-                        input.form-control(name="dob", type="date", value= student.dob ? student.dob.toISOString().slice(0,10) : '')
-                .form-row
-                    .form-group.col-6
-                        label Lớp
-                        select.form-control(name="class")
-                            option(selected, hidden, value=student.classroom._id)= student.classroom.name
-                            each cla in classes
-                                option(value=cla._id)= cla.name
-                    .form-group.col-6
-                        label Lớp luyện đề
-                        select.form-control(name="test_class")
-                            if(student.test_class)
-                                option(selected, hidden, value=student.test_class._id)= student.test_class.name
-                            option(value="") Trống
-                            each cla in testClasses
-                                option(value=cla._id)= cla.name
-                .form-group
-                    label Dán nhãn
-                    input.form-control(name='tags', type='text', value= student.tags ? student.tags.join(', ') : '', placeholder='mới, yếu,...')
-                    .text-muted.text-xs Mỗi tag cách nhau một dấu ","
-                .form-group
-                    label Ghi chú
-                    textarea.form-control(name="note")= student.note
+                .row
+                    .col-12.form-group
+                        .custom-control.custom-switch
+                            if (student.is_active)
+                                input#is_active.custom-control-input(name="is_active" type='checkbox' checked="checked")
+                            else
+                                input#is_active.custom-control-input(name="is_active" type='checkbox')
+                            label.custom-control-label(for='is_active') Còn theo học tại trung tâm
+                    .col-sm-6
+                        h2.h4.text-primary Thông tin cơ bản
+                        .form-group
+                            label(for="id") ID
+                            input#id.form-control(name="id", type="number", value=student.id, readonly)
+                        .form-group
+                            label(for="name") Tên
+                            input#name.form-control(name="name", type="text", value=student.name)
+                        .form-group
+                            label Ngày sinh
+                            input.form-control(name="dob", type="date", value= student.dob ? student.dob.toISOString().slice(0,10) : '')
+                        .form-group
+                            label Link Facebook
+                            input.form-control(name='facebook_link', type='text', pattern= "https://www.facebook.com/*+", placeholder="https://www.facebook.com/todamathetniemtinroi", value=student.facebook_link)
+                        .form-group
+                            label Link Insta
+                            input.form-control(name='insta_link', type='text', pattern= "https://www.facebook.com/*+", placeholder="https://www.instagram.com/todamathetniemtinroi", value=student.insta_link)
+                    .col-sm-6
+                        h2.h4.text-primary Thông tin tại hệ thống
+                        .form-row
+                            .form-group.col-6
+                                label Lớp học
+                                select.form-control(name="class")
+                                    option(selected, hidden, value=student.classroom._id)= student.classroom.name
+                                    each cla in classes
+                                        option(value=cla._id)= cla.name
+                            .form-group.col-6
+                                label Lớp luyện đề
+                                select.form-control(name="test_class")
+                                    if(student.test_class)
+                                        option(selected, hidden, value=student.test_class._id)= student.test_class.name
+                                    option(value="") Trống
+                                    each cla in testClasses
+                                        option(value=cla._id)= cla.name
+                        .form-group
+                            label Dán nhãn
+                            input.form-control(name='tags', type='text', value= student.tags ? student.tags.join(', ') : '', placeholder='mới, yếu,...')
+                            .text-muted.text-xs Mỗi tag cách nhau một dấu ","
+                        .form-group
+                            label Ghi chú
+                            textarea.form-control(name="note")= student.note
                 button.mx-1.my-1.btn.btn-success.btn-icon-split(type="submit")
                     span.icon.text-white-50
                         i.fas.fa-save

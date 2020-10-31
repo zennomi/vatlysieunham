@@ -20,6 +20,20 @@ block content
     .card.shadow.mb-4
         .card-header.py-3
             h6.m-0.font-weight-bold.text-primary
+                i.fas.fa-users
+                |   Danh sách học sinh mới tuần qua
+        .card-body
+            each student in newStudents
+                .row.no-gutters.align-items-center
+                    .col.mr-2
+                        a.font-weight-bold.text-gray-800.mb-1(href="/students/"+student.id)= student.name
+                        a.font-weight-bold.badge.badge-primary.ml-2.mb-0(href="/classes/"+student.classroom.name)= student.classroom.name
+                    .col-auto
+                        .text-gray-500= student.created_at.toISOString().slice(0,10).split("-").reverse().join("/")
+
+    .card.shadow.mb-4
+        .card-header.py-3
+            h6.m-0.font-weight-bold.text-primary
                 i.fas.fa-chalkboard-teacher
                 |   Tình hình học sinh đi học trợ giảng
         .card-body

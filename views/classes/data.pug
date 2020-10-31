@@ -1,0 +1,79 @@
+extends ../layouts/common.pug
+block title
+    title Dữ liệu lớp #{className}
+block stylesheet
+    link(href='/vendor/datatables/dataTables.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css', rel='stylesheet')
+
+block content
+    h1.h3.font-gray-900 Tổng hợp dữ liệu
+    table.table.table-hover.bg-white.database-table
+        thead
+            tr
+                th ID
+                th(data-type="vn-str") Tên
+                th.text-center BTVN
+                th.text-center KT15P
+                th.text-center TEST
+                th.text-center TG
+                th
+        tbody
+            each student in data
+                tr
+                    td= student.id
+                    td(data-order=student.name.split(" ").reverse().join(" "))
+                        a(href="/students/"+student.id)= student.name
+                    td.text-center.text-gray-800= student.average[0]
+                    td.text-center.text-gray-800= student.average[1]
+                    td.text-center.text-gray-800= student.average[2]
+                    td.text-center.text-gray-800= student.average[3]
+                    td.align-middle.p-0
+                        button.btn.btn-light(data-toggle="modal" data-target="#modal"+student.id)
+                            i.fas.fa-ellipsis-v
+
+    each student in data
+        .modal(id="modal" + student.id tabindex='-1')
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        h5.modal-title
+                            b.text-primary= student.name
+                            if (student.tags)
+                                each tag in student.tags
+                                    .badge.badge-danger.ml-1= tag
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') &times;
+                    .modal-body(style="background: #f8f9fc;")
+                        h6.text-primary.font-weight-800.my-2 Điểm trung bình
+                        .row
+                            .col-6
+                                b.text-gray-800 BTVN:  
+                                span= student.average[0]
+                            .col-6
+                                b.text-gray-800 KT15P:  
+                                span= student.average[1]
+                            .col-6
+                                b.text-gray-800 KT50P:  
+                                span= student.average[2]
+                            .col-6
+                                b.text-gray-800 TG:  
+                                span= student.average[3]
+                        h6.text-primary.font-weight-800.my-2 Nhận xét
+                        each record in student.records
+                            if (record.note)
+                                b= record.type + ': '
+                                span= record.note
+                                br
+                        each lesson in student.lessons
+                            if (lesson.comment_of_tutor)
+                                b= lesson.type + ': '
+                                span= lesson.comment_of_tutor
+                                br
+                    .modal-footer
+                        button.btn.btn-secondary(type='button', data-dismiss='modal') Đóng
+                        a.btn.btn-primary(href="/students/"+student.id) Xem chi tiết
+block script
+    script(src="/vendor/datatables/jquery.dataTables.min.js")
+    script(src="/vendor/datatables/dataTables.bootstrap4.min.js")
+    script(src="/js/datatables/locale.sorting.js")
+    script(src="/js/datatables/common.js")

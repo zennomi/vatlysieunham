@@ -75,7 +75,12 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 app.get('/dashboard', pushMessage, async (req, res) => {
-    let numStudents = await Student.countDocuments({ is_active: true });
+    let nowTime = (new Date()).valueOf();
+    let students = await Student.find({ is_active: true }).populate('classroom');
+    let newStudents = students
+                        .filter(student => (student.created_at).valueOf() > nowTime - 7 * 24 * 3600 * 1000)
+                        .sort((a, b) => b.created_at.valueOf() - a.created_at.valueOf());
+    let numStudents = students.length;
     let numClasses = await Classroom.countDocuments({ type: 'LEARN' });
     let numLessons = await Lesson.countDocuments();
     let numRecords = await Record.countDocuments();
@@ -84,7 +89,8 @@ app.get('/dashboard', pushMessage, async (req, res) => {
         numStudents: numStudents,
         numClasses: numClasses,
         numRecords: numRecords,
-        numLessons: numLessons
+        numLessons: numLessons,
+        newStudents: newStudents
     });
 });
 

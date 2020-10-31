@@ -167,7 +167,8 @@ module.exports.postCreate = async (req, res) => {
         id: id,
         is_active: true,
         created_at: Date.now(),
-        updated_by: res.locals.user._id
+        updated_by: res.locals.user._id,
+        updated_at: Date.now()
     });
     if (req.body.dob) student.dob = new Date(req.body.dob);
     if (req.body.tags) {
@@ -259,6 +260,10 @@ module.exports.postEdit = async (req, res) => {
     else student.tags = undefined;
     if (req.body.note) student.note = req.body.note;
     else student.note = undefined;
+    if (req.body.facebook_link) student.facebook_link = req.body.facebook_link;
+    else student.facebook_link = undefined;
+    if (req.body.insta_link) student.insta_link = req.body.insta_link;
+    else student.insta_link = undefined;
     student.is_active = req.body.is_active ? true : false;
     student.updated_by = res.locals.user._id;
     student.updated_at = Date.now();

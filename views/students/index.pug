@@ -4,6 +4,7 @@ block title
 block stylesheet
     link(href='/vendor/datatables/dataTables.bootstrap4.min.css', rel='stylesheet')
     link(href='//cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap4.min.css', rel='stylesheet')
 
 block content
     h1.h3.text-gray-800 Danh sách học sinh
@@ -50,7 +51,7 @@ block content
                             a.dropdown-item(href="#searchForm" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="searchForm") Tìm kiếm nâng cao
 
             .card-body.px-0
-                table.table.table-striped.dt-responsive.w-100#database-table
+                table.table.table-striped.dt-responsive.w-100.student-table
                     thead
                         tr
                             th(data-priority="-1") ID
@@ -72,8 +73,12 @@ block content
                                 td.align-middle.mobile-l
                                     if student.dob
                                         span= student.dob.toISOString().slice(0,10)
-                                td.align-middle= student.classroom.name
+                                td.align-middle
+                                    a(href="/classes/"+student.classroom.name)= student.classroom.name
                                 td.align-middle.text-center
+                                    if student.facebook_link
+                                        a.btn.btn-facebook.btn-circle.mx-1(href=student.facebook_link target="_blank")
+                                            i.fab.fa-facebook
                                     a.btn.btn-success.btn-circle.mx-1(href="/students/" + student.id)
                                         i.fas.fa-eye
                                     a.btn.btn-info.btn-circle.mx-1(href="/students/edit/" + student.id)
@@ -95,11 +100,13 @@ block content
     //-                 a.page-link(href='/students/?page='+(page+1), aria-label='Next')
     //-                     span(aria-hidden='true') &raquo;
 block script
-    //script(type='text/javascript', src='/student.filter.js')
     // For table
     script(src="/vendor/datatables/jquery.dataTables.min.js")
     script(src="/vendor/datatables/dataTables.bootstrap4.min.js")
     script(src="//cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js")
-    script(src="//cdn.datatables.net/responsive/2.2.6/js/responsive.bootstrap4.min.js")
+    script(src="//cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js")
+    script(src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js")
+    script(src="//cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js")
     script(src="/js/datatables/locale.sorting.js")
-    script(src="/js/demo/datatables-demo.js")
+    script(src="/js/datatables/student-class.js")
+

@@ -1,45 +1,74 @@
 extends ../layouts/common.pug
+block title
+    title Lớp #{classroom.name}
+block stylesheet
+    link(href='/vendor/datatables/dataTables.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/responsive/2.2.6/css/responsive.bootstrap4.min.css', rel='stylesheet')
+    link(href='//cdn.datatables.net/buttons/1.6.4/css/buttons.bootstrap4.min.css', rel='stylesheet')
+    
 block content
-    h1 Lớp #{className}
+    .d-flex.flex-row.align-items-center.justify-content-between
+        h1.h3.text-gray-800
+            | Lớp #{classroom.name}
+            .badge.badge-primary.ml-2= students.length + " HS"
+        div
+            a.btn.btn-success.mx-1.my-1(href="/classes/"+classroom.name+"/edit") Sửa
+            a.btn.btn-info.mx-1.my-1(href="/classes/"+classroom.name+"/data") Dữ liệu
+    if classroom.main_tutor
+        .mb-2
+            .text-gray-800 Trợ giảng: 
+                b.text-primary= classroom.main_tutor.name
+                if classroom.side_tutor
+                    span= " và " + classroom.side_tutor.name
     if students.length == 0
-        .alert.alert-warning Không có dữ liệu.
+        .alert.alert-warning Lớp này chưa có HS.
     else
-        table.table.table-hover.table-light
-            thead
-                tr
-                    th.text-center ID
-                        svg.ml-1.bi.bi-arrow-down-up(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                            path(fill-rule='evenodd', d='M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z')
-                    th Tên
-                        svg.ml-1.bi.bi-arrow-down-up(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
-                            path(fill-rule='evenodd', d='M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z')
-                    th.d-none.d-md-block Ngày sinh
-                    th.text-center
-                        span.d-none.d-md-inline Thao tác
-            tbody
-                each student in students
-                    tr
-                        td.text-center= student.id
-                        td= student.name
-                            if student.tags
-                                each tag in student.tags
-                                    a.ml-1.badge.badge-danger(href="/students/search?tag="+tag)= tag
-                        td.d-none.d-md-block
-                            if (student.dob)
-                                student.dob.toLocaleDateString()
-                        td.text-center
-                            .dropdown
-                                button#dropdownMenuButton.btn.btn-light.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-                                .dropdown-menu(aria-labelledby='dropdownMenuButton')
-                                    a.dropdown-item(href="/students/" + student.id) Xem
-                                    a.dropdown-item(href="/students/edit/" + student.id) Sửa
-                                    a.dropdown-item(href='/students/delete/' + student.id) Xóa
+        .card.shadow.mb-2
+            a.d-block.card-header.py-3.collapsed(href="#listStudent" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="listStudent")
+                h6.m-0.font-weight-bold.text-primary
+                    i.fas.fa-users
+                    |   Danh sách học sinh
+            #listStudent.collapse
+                .card-body.px-0
+                    table.table.table-striped.dt-responsive.w-100.student-table
+                        thead
+                            tr
+                                th(data-priority="-1") ID
+                                th(data-type="vn-str" data-priority="-1") Tên
+                                th Ngày sinh
+                                th(data-priority="1").text-center Thao tác
+                                th
+                        tbody
+                            each student in students
+                                tr
+                                    td.align-middle= student.id
+                                    td.align-middle(data-order=student.name.trim().split(" ").reverse().join(" ") data-type="vn-str")
+                                        a.mr-2(href='/students/'+student.id class=(!student.is_active)?"text-danger":"")= student.name
+                                        if (student.tags && user)
+                                            br.d-inline.d-md-none
+                                            each tag in student.tags
+                                                a.badge.badge-danger.mr-1(href='/students/search?tag='+tag)= tag
+                                    td.align-middle.mobile-l
+                                        if student.dob
+                                            span= student.dob.toISOString().slice(0,10)
+                                    td.align-middle.text-center
+                                        if student.facebook_link
+                                            a.btn.btn-facebook.btn-circle.mx-1(href=student.facebook_link target="_blank")
+                                                i.fab.fa-facebook
+                                        a.btn.btn-success.btn-circle.mx-1(href="/students/" + student.id)
+                                            i.fas.fa-eye
+                                        a.btn.btn-info.btn-circle.mx-1(href="/students/edit/" + student.id)
+                                            i.fas.fa-edit
+                                        a.btn.btn-danger.btn-circle.mx-1(href='/students/delete/' + student.id)
+                                            i.fas.fa-trash-alt
+                                    td
     if (records.length == 0)
         .alert.alert-warning Danh sách BTVN của lớp này trống.
     else
-        h3 Danh sách Bài tập lớp #{className}
-        .table-responsive
-            table.table.table-hover
+        h1.h3.text-gray-900 Danh sách Bài ghi lớp #{classroom.name}
+            .badge.badge-primary.ml-2= records.length
+        .table-responsive.bg-white
+            table.table.table-hover#student-table
                 thead
                     tr
                         th Tên HS
@@ -47,14 +76,14 @@ block content
                                 path(fill-rule='evenodd', d='M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z')
                         each record in records
                             th.text-center
-                                a.text-dark(href='/records/'+record._id, title=record.type + ': ' +record.name)= record.date.toISOString().slice(5,10)
+                                a(href='/records/'+record._id, title=record.type + ': ' +record.name)= record.date.toISOString().slice(5,10)
                                 svg.ml-1.bi.bi-arrow-down-up(width='1em', height='1em', viewbox='0 0 16 16', fill='currentColor', xmlns='http://www.w3.org/2000/svg')
                                     path(fill-rule='evenodd', d='M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z')
                 tbody
                     each student in recordsOfStudents
                         tr
                             td
-                                a.text-dark(href='/students/'+student.student[0].id)= student.student[0].name
+                                a.text-gray-800(href='/students/'+student.student[0].id)= student.student[0].name
                             each record in student.arrayOfRecords
                                 if record
                                     if (record.note)
@@ -62,4 +91,13 @@ block content
                                     else
                                         td.text-center= record.point
 block script
-    script(type='text/javascript', src='/student.filter.js')
+    // For table
+    script(src="/vendor/datatables/jquery.dataTables.min.js")
+    script(src="/vendor/datatables/dataTables.bootstrap4.min.js")
+    script(src="//cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js")
+    script(src="//cdn.datatables.net/buttons/1.6.4/js/dataTables.buttons.min.js")
+    script(src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js")
+    script(src="//cdn.datatables.net/buttons/1.6.4/js/buttons.html5.min.js")
+    script(src="/js/datatables/locale.sorting.js")
+    script(src="/js/datatables/student-class.js")
+    script(src="/student.filter.js")

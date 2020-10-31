@@ -6,7 +6,10 @@ const classroomSchema = new Schema({
     type: {
         type: String,
         enum: ['LEARN', 'TEST']
-    }
+    },
+    main_tutor: {type: Schema.Types.ObjectId, ref: 'User'},
+    side_tutor: {type: Schema.Types.ObjectId, ref: 'User'},
+    note: String
 })
 classroomSchema.methods.getNumberOfStudents = async function() {
     return await Student
