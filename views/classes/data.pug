@@ -7,6 +7,14 @@ block stylesheet
 
 block content
     h1.h3.font-gray-900 Tổng hợp dữ liệu
+    form(action="/classes/"+className+"/data" method="GET")
+        .form-row.justify-content-end
+            .col-sm-6.col-md-2.mb-1
+                input.form-control(name="start_date" type="date" value=startDate)
+            .col-sm-6.col-md-2.mb-1
+                input.form-control(name="end_date" type="date" value=endDate)
+            .col-md-2.mb-2
+                button.btn.btn-primary(type="submit" style="bottom: 0;") Chặn ngày
     table.table.table-hover.bg-white.database-table
         thead
             tr

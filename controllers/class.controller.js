@@ -128,6 +128,9 @@ module.exports.getByName = async (req, res) => {
 };
 
 module.exports.getDataStudents = async (req, res) => {
+    let startDate = req.query.start_date || '2020-06-01';
+    let endDate = req.query.end_date || (new Date()).toISOString().slice(0,10);
+    console.log(endDate)
     let classroom = await Classroom.findOne({ name: req.params.name });
     let students = await Student.find({ classroom: classroom._id });
     let idArray = students.map(student => student._id);
@@ -138,7 +141,8 @@ module.exports.getDataStudents = async (req, res) => {
         {
             $match: {
                 'student.student_id': { $in: idArray },
-                'student.finish_count': { $ne: null, $ne: undefined }
+                'student.finish_count': { $ne: null, $ne: undefined },
+                'date': {$gte: new Date(startDate), $lte: new Date(endDate)}
             }
         },
         {
@@ -171,7 +175,9 @@ module.exports.getDataStudents = async (req, res) => {
                     $filter: {
                         input: "$lessons",
                         as: "lesson",
-                        cond: { $ne: ['$$lesson.rating', null] }
+                        cond: {$and: [{$ne: ['$$lesson.rating', null]},
+                            {$gte: ['$$lesson.date', startDate]},
+                            {$lte: ['$$lesson.date', endDate]}] }
                     }
                 }
             }
@@ -198,7 +204,8 @@ module.exports.getDataStudents = async (req, res) => {
     })
     res.render('classes/data', {
         className: req.params.name,
-        data: records
+        data: records,
+        startDate, endDate
     })
 }
 
