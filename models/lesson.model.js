@@ -15,7 +15,8 @@ const lessonSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ['Lý thuyết', 'Bài tập']
+        enum: ['Lý thuyết', 'Bài tập'],
+        default: 'Lý thuyết'
     },
     time: {
         start_hour: Number,
@@ -33,8 +34,8 @@ const lessonSchema = new Schema({
     comment_of_student: String,
     comment_of_tutor: String,
     last_update: {
-        time: {type: Date, default: Date.now},
-        user: {type: Schema.Types.ObjectId, ref: 'User'}
+        time: { type: Date, default: Date.now },
+        user: { type: Schema.Types.ObjectId, ref: 'User' }
     }
 });
 
@@ -44,15 +45,15 @@ lessonSchema.methods.getDetailedDate = function () {
     let date = new Date(this.date);
     let day = date.getUTCDay();
     if (date.getUTCDay() != 0) {
-        day = 'Thứ ' + (day+1)
+        day = 'Thứ ' + (day + 1)
     } else {
         day = 'Chủ nhật'
     }
-    return `${day} ${this.date.slice(8,10)}/${this.date.slice(5, 7)} `
+    return `${day} ${this.date.slice(8, 10)}/${this.date.slice(5, 7)} `
 }
 lessonSchema.methods.getDetailedTime = function () {
     if (this.time.start_hour == undefined) return '';
-    return (this.time.start_hour<10?'0':'') + this.time.start_hour + (this.time.start_minute<10?':0':':') + this.time.start_minute + (this.time.end_hour?' - ' + this.time.end_hour + (this.time.end_minute<10?':0':':') + this.time.end_minute:'')
+    return (this.time.start_hour < 10 ? '0' : '') + this.time.start_hour + (this.time.start_minute < 10 ? ':0' : ':') + this.time.start_minute + (this.time.end_hour ? ' - ' + this.time.end_hour + (this.time.end_minute < 10 ? ':0' : ':') + this.time.end_minute : '')
 }
 const Lesson = mongoose.model('Lesson', lessonSchema);
 

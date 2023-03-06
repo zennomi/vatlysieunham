@@ -128,9 +128,8 @@ module.exports.getByName = async (req, res) => {
 };
 
 module.exports.getDataStudents = async (req, res) => {
-    let startDate = req.query.start_date || '2020-06-01';
+    let startDate = req.query.start_date || '2022-06-01';
     let endDate = req.query.end_date || (new Date()).toISOString().slice(0,10);
-    console.log(endDate)
     let classroom = await Classroom.findOne({ name: req.params.name });
     let students = await Student.find({ classroom: classroom._id });
     let idArray = students.map(student => student._id);

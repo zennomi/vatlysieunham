@@ -12,7 +12,7 @@ function date_format(date) {
 function getChart() {
     topDatesLineChart.destroy();
     let nowTime = new Date();
-    let startTime = $('#start-time').val() || '2020-10';
+    let startTime = $('#start-time').val() || '2022-10';
     let endTime = $('#end-time').val() || nowTime.toISOString().slice(0, 10);
 
     fetch(`api/lessons/top-dates?start_date=${startTime}&end_date=${endTime}`)

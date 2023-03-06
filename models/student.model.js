@@ -12,8 +12,8 @@ const studentSchema = new Schema({
     is_active: Boolean,
     facebook_link: String,
     insta_link: String,
-    created_at: {type: Date, default: '01/09/2020'},
-    updated_at: {type: Date, default: '01/10/2020'},
+    created_at: {type: Date, default: '01/09/2022'},
+    updated_at: {type: Date, default: '01/10/2022'},
     updated_by: {type: Schema.Types.ObjectId, ref: 'User', default: userId}
 })
 studentSchema.index({id: -1});
